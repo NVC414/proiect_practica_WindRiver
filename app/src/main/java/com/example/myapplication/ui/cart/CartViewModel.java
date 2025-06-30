@@ -12,6 +12,7 @@ public class CartViewModel extends ViewModel
     public CartViewModel()
     {
         mText = new MutableLiveData<>();
+
         mText.setValue("This is cart");
     }
 
