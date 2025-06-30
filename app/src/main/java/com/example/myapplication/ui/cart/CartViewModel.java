@@ -12,7 +12,7 @@ public class CartViewModel extends ViewModel
     public CartViewModel()
     {
         mText = new MutableLiveData<>();
-        mText.setValue("This is cart");
+        mText.setValue("Proiect Marius Branch");
     }
 
     public LiveData<String> getText()
