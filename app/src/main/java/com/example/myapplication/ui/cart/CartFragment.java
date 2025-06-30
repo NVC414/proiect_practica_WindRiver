@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.notifications;
+package com.example.myapplication.ui.cart;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,21 +12,21 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.myapplication.databinding.FragmentNotificationsBinding;
 
-public class NotificationsFragment extends Fragment
+public class CartFragment extends Fragment
     {
 
     private FragmentNotificationsBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        NotificationsViewModel notificationsViewModel = new ViewModelProvider(this).get(
-                NotificationsViewModel.class);
+        CartViewModel cartViewModel = new ViewModelProvider(this).get(
+                CartViewModel.class);
 
         binding = FragmentNotificationsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         final TextView textView = binding.textNotifications;
-        notificationsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        cartViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 
