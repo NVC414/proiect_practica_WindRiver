@@ -19,7 +19,7 @@
 
     <fragment
         android:id="@+id/navigation_cart"
-        android:name="com.example.myapplication.ui.notifications.NotificationsFragment"
+        android:name="com.example.myapplication.ui.cart.CartFragment"
         android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/fragment_cart" />
 </navigation>
