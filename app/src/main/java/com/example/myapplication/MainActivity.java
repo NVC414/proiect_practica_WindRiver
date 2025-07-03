@@ -30,7 +30,6 @@ import kotlin.random.URandomKt;
 public class MainActivity extends AppCompatActivity
     {
 
-    private ActivityMainBinding binding;
         private DatabaseReference mDatabase;
 
     @Override
@@ -39,7 +38,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         BottomNavigationView navView = findViewById(R.id.nav_view);

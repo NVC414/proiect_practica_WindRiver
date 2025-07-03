@@ -6,14 +6,10 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.myapplication.R;
 import com.example.myapplication.databinding.FragmentProfileBinding;
@@ -25,8 +21,8 @@ public class ProfileFragment extends Fragment
     {
         binding = FragmentProfileBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-        ImageButton settingsButton = root.findViewById(R.id.imageButton4);
-        ImageButton callButton = root.findViewById(R.id.imageButton3);
+        ImageButton settingsButton = root.findViewById(R.id.myOrdersButton);
+        ImageButton callButton = root.findViewById(R.id.callSupportButton);
 
         setupButtonFeedback(settingsButton);
         setupButtonFeedback(callButton);
