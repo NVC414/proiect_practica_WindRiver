@@ -1,34 +1,60 @@
 package com.example.myapplication.ui.profile;
 
+import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.myapplication.R;
 import com.example.myapplication.databinding.FragmentProfileBinding;
 
 public class ProfileFragment extends Fragment
     {
 
-    private FragmentProfileBinding binding;
-
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    private FragmentProfileBinding binding;    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        ProfileViewModel ProfileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
-
         binding = FragmentProfileBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+        ImageButton settingsButton = root.findViewById(R.id.imageButton4);
+        ImageButton callButton = root.findViewById(R.id.imageButton3);
 
+        setupButtonFeedback(settingsButton);
+        setupButtonFeedback(callButton);
 
-        return root;
+                return root;
+    }
+    private void setupButtonFeedback(ImageButton button) {
+        button.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    animateButton(v, 0.9f);
+                    break;
+                case MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL:
+                    animateButton(v, 1.0f);
+                    break;
+            }
+            return false;
+        });
     }
 
-    @Override
+    private void animateButton(View view, float scale) {
+        ObjectAnimator scaleX = ObjectAnimator.ofFloat(view, "scaleX", scale);
+        ObjectAnimator scaleY = ObjectAnimator.ofFloat(view, "scaleY", scale);
+        scaleX.setDuration(100);
+        scaleY.setDuration(100);
+        scaleX.start();
+        scaleY.start();
+    }@Override
     public void onDestroyView()
     {
         super.onDestroyView();
