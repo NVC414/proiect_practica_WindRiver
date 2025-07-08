@@ -16,6 +16,7 @@ recyclerview = "1.4.0"
 firebaseDatabase = "21.0.0"
 annotation = "1.9.1"
 viewpager2 = "1.1.0"
+firebaseAuth = "23.2.1"
 
 [libraries]
 firebase-ai = { module = "com.google.firebase:firebase-ai" }
@@ -36,6 +37,7 @@ recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version
 firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }
 annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
 viewpager2 = { group = "androidx.viewpager2", name = "viewpager2", version.ref = "viewpager2" }
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

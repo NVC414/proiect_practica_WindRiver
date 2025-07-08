@@ -7,16 +7,9 @@ android {
     namespace = "com.example.myapplication"
     compileSdk = 36
 
-    packagingOptions { // For older AGP versions, this might be packagingOptions
-        resources {
-            excludes += "/META-INF/DEPENDENCIES"
-            excludes += "/META-INF/INDEX.LIST"
-            excludes += "mozilla/public-suffix-list.txt"
-        }}
     defaultConfig {
         applicationId = "com.example.myapplication"
         minSdk = 35
-        //noinspection OldTargetApi
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -41,20 +34,10 @@ android {
         viewBinding = true
     }
     buildToolsVersion = "36.0.0"
-    ndkVersion = "29.0.13599879 rc2"
 }
 
 dependencies {
-    // Retrofit for networking
-    implementation(libs.retrofit) // Use the latest version
-    implementation(libs.converter.gson) // Or another converter like Moshi
 
-    // OkHttp (usually included by Retrofit, but good to be aware of)
-    implementation(libs.okhttp) // Use the latest version
-    implementation(libs.logging.interceptor) // For logging requests/responses (optional, for debugging)
-    implementation(libs.google.genai)
-    // Kotlin Coroutines for asynchronous operations
-    implementation(libs.kotlinx.coroutines.android) // Use the latest version
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.constraintlayout)
@@ -65,10 +48,7 @@ dependencies {
     implementation(libs.mediarouter)
     implementation(libs.recyclerview)
     implementation(libs.firebase.database)
-    implementation(libs.firebase.crashlytics.buildtools)
-    implementation(libs.annotation)
     implementation(libs.firebase.auth)
-    implementation(libs.activity)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
