@@ -8,12 +8,24 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.myapplication.ImageAdapter;
 import com.example.myapplication.R;
+import com.example.myapplication.adapter.CaseAdapter;
+import com.example.myapplication.model.CaseItem;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class HomeFragment extends Fragment {
 
@@ -46,5 +58,37 @@ public class HomeFragment extends Fragment {
                 }
         ).attach();
 
+        // Setup RecyclerView for cases
+        RecyclerView caseRecyclerView = view.findViewById(R.id.caseRecyclerView);
+        caseRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        List<CaseItem> caseList = new ArrayList<>();
+        CaseAdapter caseAdapter = new CaseAdapter(caseList);
+        caseRecyclerView.setAdapter(caseAdapter);
+
+        // Fetch first 5 cases from Firebase
+        DatabaseReference caseRef = FirebaseDatabase.getInstance().getReference().child("case");
+        caseRef.limitToFirst(5).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<CaseItem> newList = new ArrayList<>();
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    String name = "";
+                    String price = "";
+                    if (child.child("name").getValue() != null) {
+                        name = child.child("name").getValue().toString();
+                    }
+                    if (child.child("price").getValue() != null) {
+                        price = child.child("price").getValue().toString();
+                    }
+                    newList.add(new CaseItem(name, price));
+                }
+                caseAdapter.setCaseList(newList);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle error
+            }
+        });
     }
 }
