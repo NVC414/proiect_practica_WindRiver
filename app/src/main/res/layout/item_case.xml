@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="150dp"
+    android:layout_height="180dp"
+    android:orientation="vertical"
+    android:background="@drawable/case_item_bg"
+    android:layout_marginEnd="16dp"
+    android:padding="10dp">
+
+    <!-- Blank square (placeholder for image) -->
+    <View
+        android:id="@+id/caseImagePlaceholder"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#EEE"
+        android:layout_gravity="center_horizontal" />
+
+    <!-- Name -->
+    <TextView
+        android:id="@+id/caseName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Case Name"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:gravity="center_horizontal"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:layout_marginTop="8dp" />
+
+    <!-- Price -->
+    <TextView
+        android:id="@+id/casePrice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Price"
+        android:textSize="12sp"
+        android:textColor="#888"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="2dp" />
+
+</LinearLayout>
