@@ -17,6 +17,7 @@ firebaseDatabase = "21.0.0"
 firebaseCrashlyticsBuildtools = "3.0.4"
 
 [libraries]
+firebase-ai = { module = "com.google.firebase:firebase-ai" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }

@@ -9,7 +9,7 @@
         android:id="@+id/navigation_cart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:icon="@drawable/shopping_cart_outline_svgrepo_com200"
+        android:icon="@drawable/shopping_cart_outline"
         android:title="@string/title_cart" />
     <item
         android:id="@+id/navigation_profile"

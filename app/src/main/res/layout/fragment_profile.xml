@@ -8,9 +8,10 @@
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="409dp"
-        android:layout_height="729dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:orientation="vertical"
+        android:paddingTop="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -19,64 +20,68 @@
         app:layout_constraintVertical_bias="0.0">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/welcomeBannerTextView"
             android:layout_width="match_parent"
-            android:layout_height="107dp"
-            android:drawableStart="@drawable/user_profile_svgrepo_com128"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="10dp"
             android:drawablePadding="20dp"
             android:gravity="center_vertical"
             android:padding="20dp"
-            android:paddingTop="10dp"
             android:text="Welcome Guest"
-            android:textIsSelectable="false" />
+            android:textIsSelectable="false"
+            android:textSize="18sp"
+            android:textStyle="italic"
+            app:drawableStartCompat="@drawable/guest_icon" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/linearLayout2"
             android:layout_width="match_parent"
-            android:layout_height="67dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
             android:gravity="center">
 
             <ImageButton
-                android:id="@+id/imageButton4"
+                android:id="@+id/myOrdersButton"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="111dp"
                 android:layout_marginEnd="64dp"
                 android:background="@drawable/button_ripple"
                 android:clickable="true"
-                android:contentDescription="Profile Settings"
+                android:contentDescription="@string/my_orders"
                 android:focusable="true"
                 android:scaleType="centerInside"
-                android:src="@drawable/rect4"
-                app:layout_constraintBottom_toBottomOf="@+id/imageButton3"
-                app:layout_constraintEnd_toStartOf="@+id/imageButton3"
+                android:src="@drawable/three_bars"
+                app:layout_constraintBottom_toBottomOf="@+id/callSupportButton"
+                app:layout_constraintEnd_toStartOf="@+id/callSupportButton"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/imageButton3"
+                app:layout_constraintTop_toTopOf="@+id/callSupportButton"
                 app:layout_constraintVertical_bias="0.0" />
 
             <ImageButton
-                android:id="@+id/imageButton3"
+                android:id="@+id/callSupportButton"
                 android:layout_width="0dp"
                 android:layout_height="64dp"
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="106dp"
                 android:background="@drawable/button_ripple"
                 android:clickable="true"
-                android:contentDescription="Call Support"
+                android:contentDescription="@string/call_support"
                 android:focusable="true"
                 android:scaleType="centerInside"
-                android:src="@drawable/phone_call_svgrepo_com"
+                android:src="@drawable/phone_icon"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imageButton4"
+                app:layout_constraintStart_toEndOf="@+id/myOrdersButton"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="496dp"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <Button
@@ -90,11 +95,44 @@
             <TextView
                 android:id="@+id/textView2"
                 android:layout_width="match_parent"
-                android:layout_height="75dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp"
+                android:layout_height="wrap_content"
                 android:text="TextView"
                 app:layout_constraintStart_toStartOf="parent" />
+
+            <Button
+                android:id="@+id/sendPrompt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="requestData"
+                android:text="Request AI Prompt" />
+
+            <EditText
+                android:id="@+id/userPrompt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:gravity="start|top"
+                android:inputType="textMultiLine"
+                android:text="input here" />
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/aiPrompt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="TextView"
+                        app:layout_constraintStart_toStartOf="parent" />
+                </LinearLayout>
+            </ScrollView>
+
         </LinearLayout>
 
     </LinearLayout>
