@@ -48,6 +48,8 @@ dependencies {
     implementation(libs.mediarouter)
     implementation(libs.recyclerview)
     implementation(libs.firebase.database)
+    implementation(libs.annotation)
+    implementation(libs.viewpager2)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

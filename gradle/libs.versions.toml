@@ -14,6 +14,8 @@ navigationUi = "2.9.0"
 mediarouter = "1.8.0"
 recyclerview = "1.4.0"
 firebaseDatabase = "21.0.0"
+annotation = "1.9.1"
+viewpager2 = "1.1.0"
 
 [libraries]
 firebase-ai = { module = "com.google.firebase:firebase-ai" }
@@ -32,6 +34,8 @@ navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version
 mediarouter = { group = "androidx.mediarouter", name = "mediarouter", version.ref = "mediarouter" }
 recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
 firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }
+annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
+viewpager2 = { group = "androidx.viewpager2", name = "viewpager2", version.ref = "viewpager2" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

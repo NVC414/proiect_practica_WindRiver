@@ -5,19 +5,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.example.myapplication.databinding.ActivityMainBinding;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -31,14 +27,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import com.example.myapplication.databinding.ActivityMainBinding;
-
-import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-
-import kotlin.random.URandomKt;
 
 public class MainActivity extends AppCompatActivity
     {
@@ -65,7 +56,7 @@ public class MainActivity extends AppCompatActivity
 // Initialize the Gemini Developer API backend service
 // Create a `GenerativeModel` instance with a model that supports your use case
         GenerativeModel ai = FirebaseAI.getInstance(GenerativeBackend.googleAI())
-                .generativeModel("gemini-2.5-flash");
+                .generativeModel("gemini-2.5-pro");
 
 // Use the GenerativeModelFutures Java compatibility layer which offers
 // support for ListenableFuture and Publisher APIs
