@@ -1,5 +1,5 @@
 [versions]
-agp = "8.10.1"
+agp = "8.11.0"
 firebaseBom = "33.16.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -14,6 +14,7 @@ navigationUi = "2.9.0"
 mediarouter = "1.8.0"
 recyclerview = "1.4.0"
 firebaseDatabase = "21.0.0"
+firebaseCrashlyticsBuildtools = "3.0.4"
 
 [libraries]
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
@@ -31,6 +32,7 @@ navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version
 mediarouter = { group = "androidx.mediarouter", name = "mediarouter", version.ref = "mediarouter" }
 recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
 firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }
+firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -7,6 +7,12 @@ android {
     namespace = "com.example.myapplication"
     compileSdk = 36
 
+    packagingOptions { // For older AGP versions, this might be packagingOptions
+        resources {
+            excludes += "/META-INF/DEPENDENCIES"
+            excludes += "/META-INF/INDEX.LIST"
+            excludes += "mozilla/public-suffix-list.txt"
+        }}
     defaultConfig {
         applicationId = "com.example.myapplication"
         minSdk = 35
@@ -37,7 +43,16 @@ android {
 }
 
 dependencies {
+    // Retrofit for networking
+    implementation("com.squareup.retrofit2:retrofit:2.9.0") // Use the latest version
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0") // Or another converter like Moshi
 
+    // OkHttp (usually included by Retrofit, but good to be aware of)
+    implementation("com.squareup.okhttp3:okhttp:4.10.0") // Use the latest version
+    implementation("com.squareup.okhttp3:logging-interceptor:4.10.0") // For logging requests/responses (optional, for debugging)
+    implementation("com.google.genai:google-genai:1.0.0")
+    // Kotlin Coroutines for asynchronous operations
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3") // Use the latest version
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.constraintlayout)
@@ -48,6 +63,7 @@ dependencies {
     implementation(libs.mediarouter)
     implementation(libs.recyclerview)
     implementation(libs.firebase.database)
+    implementation(libs.firebase.crashlytics.buildtools)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
