@@ -2,7 +2,6 @@ package com.example.myapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
-// Removed android.util.Log
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -100,8 +99,8 @@ private void setupNavigation() {
 
 private void initializeGeminiAI() {
     try {
-        GenerativeModel ai = FirebaseAI.getInstance(GenerativeBackend.googleAI())
-                .generativeModel("gemini-1.5-flash-latest"); // Or "gemini-pro"
+        GenerativeModel ai = FirebaseAI.getInstance(GenerativeBackend.googleAI()).generativeModel(
+                "gemini-2.5-flash"); // Or "gemini-pro"
         this.generativeModel = GenerativeModelFutures.from(ai);
     } catch (Exception e) {
         Toast.makeText(this, "Error initializing AI features.", Toast.LENGTH_SHORT).show();

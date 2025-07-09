@@ -94,6 +94,16 @@ public class Login_activity extends AppCompatActivity {
 
             }
         });
+    Button btnQuickLogin = findViewById(R.id.btn_quick_login);
+    btnQuickLogin.setOnClickListener(new View.OnClickListener()
+        {
+        @Override
+        public void onClick(View v)
+            {
+            editTextEmail.setText("123123@gmail.com");
+            editTextPassword.setText("123123");
+            }
+        });
 
     }
 }

@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
@@ -16,6 +17,8 @@ import com.example.myapplication.ImageAdapter;
 import com.example.myapplication.R;
 import com.example.myapplication.adapter.CaseAdapter;
 import com.example.myapplication.model.CaseItem;
+import com.example.myapplication.ui.cart.CartItem;
+import com.example.myapplication.ui.cart.CartViewModel;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.database.DataSnapshot;
@@ -26,6 +29,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class HomeFragment extends Fragment {
 
@@ -52,8 +56,8 @@ public void onViewCreated(@NonNull View view,
     ImageAdapter adapter = new ImageAdapter(requireContext(), images);
     viewPager.setAdapter(adapter);
 
-    new TabLayoutMediator(tabLayout, viewPager,
-            (tab, position) -> { // this works, i dont know quite why, but it does
+new TabLayoutMediator(tabLayout, viewPager, (tab, position) ->
+    { // this works, i don't know quite why, but it does
                 tab.setCustomView(R.layout.custom_tab);
             }
     ).attach();
@@ -65,30 +69,79 @@ public void onViewCreated(@NonNull View view,
     CaseAdapter caseAdapter = new CaseAdapter(caseList);
     caseRecyclerView.setAdapter(caseAdapter);
 
-    // Fetch first 5 cases from Firebase
+// CartViewModel for cart operations
+CartViewModel cartViewModel = new ViewModelProvider(requireActivity()).get(CartViewModel.class);
+
+// Add to Cart button logic
+CaseAdapter.OnAddToCartClickListener addToCartClickListener = item ->
+    {
+        double price = 0.0;
+        try
+        {
+            price = Double.parseDouble(item.price.replaceAll("[^0-9.]", ""));
+        }
+        catch (Exception ignored)
+        {
+        }
+        CartItem cartItem = new CartItem(item.name, price, 1);
+        cartViewModel.addItem(cartItem);
+        android.widget.Toast.makeText(getContext(), "Added to cart",
+                android.widget.Toast.LENGTH_SHORT).show();
+    };
+caseAdapter.setOnAddToCartClickListener(addToCartClickListener);
+
+// Fetch all cases from Firebase, shuffle, pick 5 random, add 'View More' item
     DatabaseReference caseRef = FirebaseDatabase.getInstance().getReference().child("case");
-    caseRef.limitToFirst(5).addListenerForSingleValueEvent(new ValueEventListener() {
+caseRef.addListenerForSingleValueEvent(new ValueEventListener()
+    {
     @Override
-    public void onDataChange(@NonNull DataSnapshot snapshot) {
-        List<CaseItem> newList = new ArrayList<>();
-        for (DataSnapshot child : snapshot.getChildren()) {
+    public void onDataChange(@NonNull DataSnapshot snapshot)
+        {
+        List<CaseItem> allCases = new ArrayList<>();
+        for (DataSnapshot child : snapshot.getChildren())
+        {
             String name = "";
             String price = "";
-            if (child.child("name").getValue() != null) {
-                name = child.child("name").getValue().toString();
+            if (child.child("name").getValue() != null)
+            {
+                name = Objects.requireNonNull(child.child("name").getValue()).toString();
             }
-            if (child.child("price").getValue() != null) {
-                price = child.child("price").getValue().toString();
+            if (child.child("price").getValue() != null)
+            {
+                price = Objects.requireNonNull(child.child("price").getValue()).toString();
             }
-            newList.add(new CaseItem(name, price));
+            allCases.add(new CaseItem(name, price));
+            }
+        java.util.Collections.shuffle(allCases);
+        List<CaseItem> randomFive = new ArrayList<>();
+        for (int i = 0; i < Math.min(5, allCases.size()); i++)
+        {
+            randomFive.add(allCases.get(i));
         }
-        caseAdapter.setCaseList(newList);
-    }
+        // Add a special 'View More' item (use a flag or special name)
+        CaseItem viewMoreItem = new CaseItem("__VIEW_MORE__", "");
+        randomFive.add(viewMoreItem);
+        caseAdapter.setCaseList(randomFive);
+        caseAdapter.setAllCases(allCases); // For grid dialog
+        }
 
     @Override
-    public void onCancelled(@NonNull DatabaseError error) {
-        // Handle error
-    }
+    public void onCancelled(@NonNull DatabaseError error)
+        {
+        android.util.Log.e("HomeFragment", "Database error: " + error.getMessage());
+        android.widget.Toast.makeText(getContext(), "Failed to load cases: " + error.getMessage(),
+                android.widget.Toast.LENGTH_SHORT).show();
+        }
+    });
+
+// Handle 'View More' click
+caseAdapter.setOnViewMoreClickListener(() ->
+    {
+        // Show dialog/fragment with all cases in a grid (3 per row)
+        AllCasesDialog dialog = new AllCasesDialog(caseAdapter.getAllCases(), addToCartClickListener
+                // pass the same listener
+        );
+        dialog.show(getParentFragmentManager(), "AllCasesDialog");
     });
 }
 }

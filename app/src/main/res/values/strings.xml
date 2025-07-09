@@ -21,4 +21,6 @@
     <string name="click_to_login">Click to login</string>
     <string name="click_to_register">Click to register</string>
     <string name="logout">Logout</string>
+    <string name="total_0_00_ron">Total: 0.00 RON</string>
+    <string name="checkout">Checkout</string>
 </resources>
