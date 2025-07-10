@@ -6,13 +6,6 @@ plugins {
 android {
     namespace = "com.example.myapplication"
     compileSdk = 36
-
-    packagingOptions { // For older AGP versions, this might be packagingOptions
-        resources {
-            excludes += "/META-INF/DEPENDENCIES"
-            excludes += "/META-INF/INDEX.LIST"
-            excludes += "mozilla/public-suffix-list.txt"
-        }}
     defaultConfig {
         applicationId = "com.example.myapplication"
         minSdk = 35
@@ -40,7 +33,7 @@ android {
     buildFeatures {
         viewBinding = true
     }
-    buildToolsVersion = "36.0.0"
+    buildToolsVersion = "35.0.0"
     ndkVersion = "29.0.13599879 rc2"
 }
 
@@ -75,5 +68,7 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.ai)
+    implementation(libs.glide)
+    annotationProcessor(libs.compiler)
 
 }

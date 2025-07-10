@@ -102,6 +102,7 @@ caseRef.addListenerForSingleValueEvent(new ValueEventListener()
         {
             String name = "";
             String price = "";
+            String imageUrl = "";
             if (child.child("name").getValue() != null)
             {
                 name = Objects.requireNonNull(child.child("name").getValue()).toString();
@@ -110,7 +111,11 @@ caseRef.addListenerForSingleValueEvent(new ValueEventListener()
             {
                 price = Objects.requireNonNull(child.child("price").getValue()).toString();
             }
-            allCases.add(new CaseItem(name, price));
+            if (child.child("image-url").getValue() != null)
+            {
+                imageUrl = Objects.requireNonNull(child.child("image-url").getValue()).toString();
+            }
+            allCases.add(new CaseItem(name, price, imageUrl));
             }
         java.util.Collections.shuffle(allCases);
         List<CaseItem> randomFive = new ArrayList<>();
@@ -119,7 +124,7 @@ caseRef.addListenerForSingleValueEvent(new ValueEventListener()
             randomFive.add(allCases.get(i));
         }
         // Add a special 'View More' item (use a flag or special name)
-        CaseItem viewMoreItem = new CaseItem("__VIEW_MORE__", "");
+        CaseItem viewMoreItem = new CaseItem("__VIEW_MORE__", "", "");
         randomFive.add(viewMoreItem);
         caseAdapter.setCaseList(randomFive);
         caseAdapter.setAllCases(allCases); // For grid dialog

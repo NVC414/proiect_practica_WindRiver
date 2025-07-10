@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">PC Store</string>
     <string name="title_home">Home</string>
     <string name="title_profile">Profile</string>
     <string name="title_cart">Cart</string>
@@ -23,4 +23,8 @@
     <string name="logout">Logout</string>
     <string name="total_0_00_ron">Total: 0.00 RON</string>
     <string name="checkout">Checkout</string>
+    <string name="price">Price</string>
+    <string name="case_name">Case Name</string>
+    <string name="add_to_cart">Add to Cart</string>
+    <string name="case_image">case image</string>
 </resources>
