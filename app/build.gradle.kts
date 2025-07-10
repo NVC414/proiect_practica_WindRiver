@@ -6,6 +6,14 @@ plugins {
 android {
     namespace = "com.example.myapplication"
     compileSdk = 36
+
+    packaging {
+        resources {
+            excludes += "/META-INF/DEPENDENCIES"
+            excludes += "/META-INF/INDEX.LIST"
+            excludes += "mozilla/public-suffix-list.txt"
+        }
+    }
     defaultConfig {
         applicationId = "com.example.myapplication"
         minSdk = 35
