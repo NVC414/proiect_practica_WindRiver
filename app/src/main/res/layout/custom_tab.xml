@@ -3,4 +3,5 @@
     android:layout_width="12dp"
     android:layout_height="12dp"
     android:layout_margin="6dp"
-    android:background="@drawable/tab_selector" />
+    android:background="@drawable/tab_selector"
+    android:contentDescription="@string/custom_tab" />

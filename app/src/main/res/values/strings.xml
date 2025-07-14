@@ -27,4 +27,17 @@
     <string name="case_name">Case Name</string>
     <string name="add_to_cart">Add to Cart</string>
     <string name="case_image">case image</string>
+    <string name="back">Back</string>
+    <string name="memory_image">Memory Image</string>
+    <string name="all_memory">All Memory</string>
+    <string name="cpu_image">CPU Image</string>
+    <string name="custom_tab">custom tab</string>
+    <string name="carcase">Carcase</string>
+    <string name="procesoare">Procesoare</string>
+    <string name="memorii">Memorii</string>
+    <string name="item_name">Item Name</string>
+    <string name="_0_00_ron">0.00 RON</string>
+    <string name="item_case_name">Case Name</string>
+    <string name="pret">Pret</string>
+    <string name="memory_name">Memory Name</string>
 </resources>

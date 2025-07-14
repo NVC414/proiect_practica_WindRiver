@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.cart;
+package com.example.myapplication.ui.Cart;
 
 import android.view.LayoutInflater;
 import android.view.View;

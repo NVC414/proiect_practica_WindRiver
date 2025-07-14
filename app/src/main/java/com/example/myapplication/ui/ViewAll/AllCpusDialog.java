@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.home;
+package com.example.myapplication.ui.ViewAll;
 
 import android.app.Dialog;
 import android.os.Bundle;
@@ -16,20 +16,21 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
-import com.example.myapplication.adapter.CaseAdapter;
-import com.example.myapplication.adapter.CaseAdapter.OnAddToCartClickListener;
-import com.example.myapplication.model.CaseItem;
+import com.example.myapplication.adapter.CpuAdapter;
+import com.example.myapplication.model.CpuItem;
+import com.example.myapplication.ui.DetailView.CpuDetailsActivity;
 
 import java.util.List;
 
-public class AllCasesDialog extends DialogFragment
+public class AllCpusDialog extends DialogFragment
     {
-    private final List<CaseItem> allCases;
-    private final OnAddToCartClickListener addToCartClickListener;
+    private final List<CpuItem> allCpus;
+    private final CpuAdapter.OnAddToCartClickListener addToCartClickListener;
 
-    public AllCasesDialog(List<CaseItem> allCases, OnAddToCartClickListener addToCartClickListener)
+    public AllCpusDialog(List<CpuItem> allCpus,
+                         CpuAdapter.OnAddToCartClickListener addToCartClickListener)
         {
-        this.allCases = allCases;
+        this.allCpus = allCpus;
         this.addToCartClickListener = addToCartClickListener;
         }
 
@@ -38,11 +39,27 @@ public class AllCasesDialog extends DialogFragment
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState)
         {
-        View view = inflater.inflate(R.layout.dialog_all_cases, container, false);
-        RecyclerView recyclerView = view.findViewById(R.id.allCasesRecyclerView);
+        View view = inflater.inflate(R.layout.dialog_all_cpus, container, false);
+        RecyclerView recyclerView = view.findViewById(R.id.allCpusRecyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
-        CaseAdapter adapter = new CaseAdapter(allCases, R.layout.item_case_grid);
+        CpuAdapter adapter = new CpuAdapter(allCpus, R.layout.item_cpu);
         adapter.setOnAddToCartClickListener(addToCartClickListener);
+        adapter.setOnItemClickListener(item ->
+            {
+                android.content.Intent intent = new android.content.Intent(getContext(),
+                        CpuDetailsActivity.class);
+                intent.putExtra("name", item.name);
+                intent.putExtra("price", item.price);
+                intent.putExtra("imageUrl", item.imageUrl);
+                intent.putExtra("boost_clock", item.boost_clock);
+                intent.putExtra("core_clock", item.core_clock);
+                intent.putExtra("core_count", item.core_count);
+                intent.putExtra("graphics", item.graphics);
+                intent.putExtra("smt", item.smt);
+                intent.putExtra("socket", item.socket);
+                intent.putExtra("tdp", item.tdp);
+                startActivity(intent);
+            });
         recyclerView.setAdapter(adapter);
         ImageButton backButton = view.findViewById(R.id.buttonBack);
         backButton.setOnClickListener(v -> dismiss());
@@ -67,7 +84,7 @@ public class AllCasesDialog extends DialogFragment
     public Dialog onCreateDialog(Bundle savedInstanceState)
         {
         Dialog dialog = super.onCreateDialog(savedInstanceState);
-        dialog.setTitle("All Cases");
+        dialog.setTitle("All CPUs");
         return dialog;
         }
     }

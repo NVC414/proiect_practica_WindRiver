@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.profile;
+package com.example.myapplication.ui.Profile;
 
 import android.animation.ObjectAnimator;
 import android.content.Intent;
@@ -13,8 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.myapplication.Login_activity;
 import com.example.myapplication.databinding.FragmentProfileBinding;
+import com.example.myapplication.ui.LoginRegister.Login_activity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 

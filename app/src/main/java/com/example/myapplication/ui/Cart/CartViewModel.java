@@ -1,8 +1,10 @@
-package com.example.myapplication.ui.cart;
+package com.example.myapplication.ui.Cart;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+
+import com.example.myapplication.repository.CartRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +14,17 @@ public class CartViewModel extends ViewModel
     private final MutableLiveData<List<CartItem>> cartItems = new MutableLiveData<>(
             new ArrayList<>());
     private final MutableLiveData<Double> totalSum = new MutableLiveData<>(0.0);
+
+    private static CartViewModel instance;
+
+    public static CartViewModel getInstance()
+        {
+        if (instance == null)
+        {
+            instance = new CartViewModel();
+        }
+        return instance;
+        }
 
     public LiveData<List<CartItem>> getCartItems()
         {
@@ -25,26 +38,15 @@ public class CartViewModel extends ViewModel
 
     public void addItem(CartItem item)
         {
-        List<CartItem> currentItems = cartItems.getValue();
-        if (currentItems == null)
-        {
-            currentItems = new ArrayList<>();
+        CartRepository.getInstance().addItem(item);
+        cartItems.setValue(CartRepository.getInstance().getCartItems());
+        recalculateTotal();
         }
-        boolean found = false;
-        for (CartItem cartItem : currentItems)
+
+    public void clearCart()
         {
-            if (cartItem.getName().equals(item.getName()))
-            {
-                cartItem.setQuantity(cartItem.getQuantity() + item.getQuantity());
-                found = true;
-                break;
-            }
-        }
-        if (!found)
-        {
-            currentItems.add(item);
-        }
-        cartItems.setValue(new ArrayList<>(currentItems));
+        CartRepository.getInstance().clearCart();
+        cartItems.setValue(CartRepository.getInstance().getCartItems());
         recalculateTotal();
     }
 
@@ -61,4 +63,15 @@ public class CartViewModel extends ViewModel
         }
         totalSum.setValue(sum);
     }
+
+    public CartViewModel()
+        {
+        CartRepository.getInstance().setOnCartChangedListener(newCartItems ->
+            {
+                cartItems.setValue(newCartItems);
+                recalculateTotal();
+            });
+        cartItems.setValue(CartRepository.getInstance().getCartItems());
+        recalculateTotal();
+        }
     }

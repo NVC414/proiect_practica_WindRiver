@@ -14,6 +14,8 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.myapplication.databinding.ActivityMainBinding;
+import com.example.myapplication.ui.Cart.CartViewModel;
+import com.example.myapplication.ui.LoginRegister.Login_activity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -76,7 +78,26 @@ protected void onCreate(Bundle savedInstanceState) {
 }
 
 private void setupNavigation() {
-    BottomNavigationView navView = findViewById(R.id.nav_view);
+BottomNavigationView navView = binding.navView;
+CartViewModel cartViewModel = CartViewModel.getInstance();
+cartViewModel.getCartItems().observe(this, items ->
+    {
+        int count = 0;
+        for (com.example.myapplication.ui.Cart.CartItem item : items)
+        {
+            count += item.getQuantity();
+        }
+        if (count > 0)
+        {
+            navView.getOrCreateBadge(R.id.navigation_cart).setNumber(count);
+            navView.getOrCreateBadge(R.id.navigation_cart).setVisible(true);
+        }
+        else
+        {
+            navView.removeBadge(R.id.navigation_cart);
+        }
+    });
+
     if (navView == null) {
         Toast.makeText(this, "Error: Navigation view missing.", Toast.LENGTH_LONG).show();
         return;

@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.cart;
+package com.example.myapplication.ui.Cart;
 
 public class CartItem
     {

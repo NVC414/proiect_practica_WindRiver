@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="140dp"
-    android:layout_height="260dp"
+    android:layout_width="match_parent"
+    android:layout_height="220dp"
     android:orientation="vertical"
     android:background="@drawable/case_item_bg"
     android:layout_marginEnd="8dp"
@@ -11,22 +11,22 @@
     android:padding="6dp">
 
     <ImageView
-        android:id="@+id/caseImage"
+        android:id="@+id/memoryImage"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1.5"
+        android:layout_weight="1.3"
         android:layout_gravity="center_horizontal"
-        android:contentDescription="@string/case_image"
+        android:contentDescription="@string/memory_image"
         android:scaleType="fitCenter"
         android:background="#EEE" />
 
     <TextView
-        android:id="@+id/caseName"
+        android:id="@+id/memoryName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/item_case_name"
+        android:text="@string/memory_name"
         android:textStyle="bold"
-        android:textSize="15sp"
+        android:textSize="14sp"
         android:gravity="center_horizontal"
         android:ellipsize="end"
         android:maxLines="2"
@@ -34,11 +34,11 @@
         android:layout_marginBottom="2dp" />
 
     <TextView
-        android:id="@+id/casePrice"
+        android:id="@+id/memoryPrice"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/pret"
-        android:textSize="13sp"
+        android:textSize="12sp"
         android:textColor="#888"
         android:gravity="center_horizontal"
         android:layout_marginTop="2dp"
@@ -48,7 +48,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.2" />
-    <!-- Add to Cart Button always at bottom -->
+
     <Button
         android:id="@+id/buttonAddToCart"
         android:layout_width="match_parent"

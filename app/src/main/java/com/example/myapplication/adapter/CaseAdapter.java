@@ -24,6 +24,7 @@ private static final int TYPE_VIEW_MORE = 1;
 private OnViewMoreClickListener viewMoreClickListener;
 private List<CaseItem> allCases = new java.util.ArrayList<>();
 private final int layoutResId;
+private OnItemClickListener itemClickListener;
 
     public CaseAdapter(List<CaseItem> caseList) {
     this(caseList, R.layout.item_case);
@@ -63,6 +64,16 @@ public void setAllCases(List<CaseItem> allCases)
 public List<CaseItem> getAllCases()
     {
     return allCases;
+    }
+
+public interface OnItemClickListener
+    {
+    void onItemClick(CaseItem item);
+    }
+
+public void setOnItemClickListener(OnItemClickListener listener)
+    {
+    this.itemClickListener = listener;
     }
 
 @Override
@@ -130,6 +141,13 @@ public int getItemViewType(int position)
                     addToCartClickListener.onAddToCart(item);
                 }
             });
+            holder.itemView.setOnClickListener(v ->
+                {
+                    if (itemClickListener != null)
+                    {
+                        itemClickListener.onItemClick(item);
+                    }
+                });
             // Load image using Glide, avoid null
             if (holder.caseImage != null) {
                 String url = item.imageUrl != null ? item.imageUrl : "";
