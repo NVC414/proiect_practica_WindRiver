@@ -7,19 +7,19 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.example.myapplication.ui.Home.HomeFragment"
+        android:name="com.WindRiver.internshipProject2025.ui.Home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/navigation_profile"
-        android:name="com.example.myapplication.ui.Profile.ProfileFragment"
+        android:name="com.WindRiver.internshipProject2025.ui.Profile.ProfileFragment"
         android:label="@string/title_profile"
         tools:layout="@layout/fragment_profile" />
 
     <fragment
         android:id="@+id/navigation_cart"
-        android:name="com.example.myapplication.ui.Cart.CartFragment"
+        android:name="com.WindRiver.internshipProject2025.ui.Cart.CartFragment"
         android:label="@string/title_cart"
         tools:layout="@layout/fragment_cart" />
 </navigation>

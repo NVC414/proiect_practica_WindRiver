@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.myapplication"
+    namespace = "com.WindRiver.internshipProject2025"
     compileSdk = 36
 
     packaging {
@@ -15,7 +15,7 @@ android {
         }
     }
     defaultConfig {
-        applicationId = "com.example.myapplication"
+        applicationId = "com.WindRiver.internshipProject2025"
         minSdk = 35
         //noinspection OldTargetApi
         targetSdk = 35
@@ -70,6 +70,7 @@ dependencies {
     implementation(libs.annotation)
     implementation(libs.firebase.auth)
     implementation(libs.activity)
+    implementation(libs.firebase.storage)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

@@ -8,9 +8,47 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:49456315324:android:edd28ba7a7ec119cb909b9",
+        "android_client_info": {
+          "package_name": "com.WindRiver.internshipProject2025"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFj07-bTo3vzfCZDHXVjLx1t5XuTY4hVY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:49456315324:android:dc49de0cf3430933b909b9",
         "android_client_info": {
           "package_name": "com.example.myapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFj07-bTo3vzfCZDHXVjLx1t5XuTY4hVY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:49456315324:android:1753e0f001478c68b909b9",
+        "android_client_info": {
+          "package_name": "com.windriver.myapplication"
         }
       },
       "oauth_client": [],
