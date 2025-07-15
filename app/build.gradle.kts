@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.WindRiver.internshipProject2025"
+    namespace = "com.windriver.pcgate"
     compileSdk = 35
 
     packaging {
@@ -15,7 +15,7 @@ android {
         }
     }
     defaultConfig {
-        applicationId = "com.WindRiver.internshipProject2025"
+        applicationId = "com.windriver.pcgate"
         minSdk = 35
         //noinspection OldTargetApi
         targetSdk = 35
