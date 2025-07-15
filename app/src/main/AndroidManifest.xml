@@ -44,7 +44,7 @@
 
         <activity android:name=".ui.DetailView.MotherboardDetailsActivity"
             android:exported="false" />
-        <activity android:name=".activity.GpuDetailsActivity"
+        <activity android:name=".ui.DetailView.GpuDetailsActivity"
             android:exported="false" />
         <activity
             android:name=".ui.DetailView.PsuDetailsActivity"

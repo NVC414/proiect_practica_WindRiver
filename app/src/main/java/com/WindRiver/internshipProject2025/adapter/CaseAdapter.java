@@ -121,7 +121,6 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
             viewMoreHolder.addToCartButton.setVisibility(View.GONE);
             if (viewMoreHolder.caseImage != null)
             {
-                // Always show the placeholder for 'View More'
                 viewMoreHolder.caseImage.setVisibility(View.VISIBLE);
                 viewMoreHolder.caseImage.setImageResource(R.drawable.ic_image_placeholder);
             }
@@ -153,7 +152,6 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
                         itemClickListener.onItemClick(item);
                     }
                 });
-            // Load image using Glide, avoid null
             if (holder.caseImage != null)
             {
                 String url = item.imageUrl != null ? item.imageUrl : "";

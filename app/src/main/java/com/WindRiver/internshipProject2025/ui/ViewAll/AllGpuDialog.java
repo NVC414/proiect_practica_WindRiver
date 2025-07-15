@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.WindRiver.internshipProject2025.R;
 import com.WindRiver.internshipProject2025.adapter.GpuAdapter;
 import com.WindRiver.internshipProject2025.model.GpuItem;
-import com.WindRiver.internshipProject2025.activity.GpuDetailsActivity;
+import com.WindRiver.internshipProject2025.ui.DetailView.GpuDetailsActivity;
 
 import java.util.List;
 

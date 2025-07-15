@@ -1,4 +1,4 @@
-package com.WindRiver.internshipProject2025.activity;
+package com.WindRiver.internshipProject2025.ui.DetailView;
 
 import android.content.Intent;
 import android.os.Bundle;
