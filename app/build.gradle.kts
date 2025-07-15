@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.WindRiver.internshipProject2025"
-    compileSdk = 36
+    compileSdk = 35
 
     packaging {
         resources {
