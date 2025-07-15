@@ -137,16 +137,44 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/memoryTitle" />
 
+    <!-- Title for Motherboards -->
+        <TextView
+            android:id="@+id/motherboardTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/placi_de_baza"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.091"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/memoryRecyclerView" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/motherboardRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:clipToPadding="false"
+        android:overScrollMode="never"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:scrollbars="none"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/motherboardTitle" />
+
         <!-- Spacer view to ensure scrollable area above nav bar -->
         <View
             android:id="@+id/bottomSpacer"
             android:layout_width="0dp"
             android:layout_height="96dp"
             android:background="@android:color/transparent"
-            app:layout_constraintTop_toBottomOf="@id/memoryRecyclerView"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/motherboardRecyclerView" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

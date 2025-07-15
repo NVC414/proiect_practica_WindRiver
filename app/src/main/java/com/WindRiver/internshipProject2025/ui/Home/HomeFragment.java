@@ -42,6 +42,7 @@ public class HomeFragment extends Fragment
     private static List<CaseItem> persistentRandomCases = null;
     private static List<com.WindRiver.internshipProject2025.model.CpuItem> persistentRandomCpus = null;
     private static List<com.WindRiver.internshipProject2025.model.MemoryItem> persistentRandomMemory = null;
+    private static List<com.WindRiver.internshipProject2025.model.MotherboardItem> persistentRandomMotherboards = null;
 
     private final int[] images = {R.drawable.banner_image1, R.drawable.banner_image2, R.drawable.banner_image3};
 
@@ -461,5 +462,118 @@ public class HomeFragment extends Fragment
                 intent.putIntegerArrayListExtra("speed", new java.util.ArrayList<>(item.speed));
                 startActivity(intent);
             });
+
+        // Setup RecyclerView for Motherboards
+        RecyclerView motherboardRecyclerView = view.findViewById(R.id.motherboardRecyclerView);
+        motherboardRecyclerView.setLayoutManager(
+                new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        List<com.WindRiver.internshipProject2025.model.MotherboardItem> motherboardList = new ArrayList<>();
+        com.WindRiver.internshipProject2025.adapter.MotherboardAdapter motherboardAdapter = new com.WindRiver.internshipProject2025.adapter.MotherboardAdapter(motherboardList);
+        motherboardRecyclerView.setAdapter(motherboardAdapter);
+
+        // Add to Cart button logic for Motherboards
+        com.WindRiver.internshipProject2025.adapter.MotherboardAdapter.OnAddToCartClickListener addToCartClickListenerMotherboard = item -> {
+            double price = 0.0;
+            try {
+                price = Double.parseDouble(item.price.replaceAll("[^0-9.]", ""));
+            } catch (Exception ignored) {}
+            CartItem cartItem = new CartItem(item.name, price, 1);
+            cartViewModel.addItem(cartItem);
+            android.widget.Toast.makeText(getContext(), "Added to cart", android.widget.Toast.LENGTH_SHORT).show();
+        };
+        motherboardAdapter.setOnAddToCartClickListener(addToCartClickListenerMotherboard);
+
+        // Fetch all motherboards from Firebase, shuffle, pick 5 random, add 'View More' item
+        DatabaseReference motherboardRef = FirebaseDatabase.getInstance().getReference().child("motherboard");
+        motherboardRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<com.WindRiver.internshipProject2025.model.MotherboardItem> allMotherboards = new ArrayList<>();
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    String name = "";
+                    String price = "";
+                    String imageUrl = "";
+                    String color = "";
+                    String ddrType = "";
+                    String formFactor = "";
+                    String socket = "";
+                    int maxMemory = 0;
+                    int memorySlots = 0;
+                    if (child.child("name").getValue() != null) {
+                        name = Objects.requireNonNull(child.child("name").getValue()).toString();
+                    }
+                    if (child.child("price").getValue() != null) {
+                        price = Objects.requireNonNull(child.child("price").getValue()).toString();
+                    }
+                    if (child.child("image-url").getValue() != null) {
+                        imageUrl = Objects.requireNonNull(child.child("image-url").getValue()).toString();
+                    }
+                    if (child.child("color").getValue() != null) {
+                        color = Objects.requireNonNull(child.child("color").getValue()).toString();
+                    }
+                    if (child.child("ddr_type").getValue() != null) {
+                        ddrType = Objects.requireNonNull(child.child("ddr_type").getValue()).toString();
+                    }
+                    if (child.child("form_factor").getValue() != null) {
+                        formFactor = Objects.requireNonNull(child.child("form_factor").getValue()).toString();
+                    }
+                    if (child.child("socket").getValue() != null) {
+                        socket = Objects.requireNonNull(child.child("socket").getValue()).toString();
+                    }
+                    if (child.child("max_memory").getValue() != null) {
+                        try {
+                            maxMemory = Integer.parseInt(Objects.requireNonNull(child.child("max_memory").getValue()).toString());
+                        } catch (Exception ignored) {}
+                    }
+                    if (child.child("memory_slots").getValue() != null) {
+                        try {
+                            memorySlots = Integer.parseInt(Objects.requireNonNull(child.child("memory_slots").getValue()).toString());
+                        } catch (Exception ignored) {}
+                    }
+                    allMotherboards.add(new com.WindRiver.internshipProject2025.model.MotherboardItem(name, price, imageUrl, color, ddrType, formFactor, socket, maxMemory, memorySlots));
+                }
+                if (persistentRandomMotherboards == null) {
+                    java.util.Collections.shuffle(allMotherboards);
+                    persistentRandomMotherboards = new ArrayList<>();
+                    for (int i = 0; i < Math.min(5, allMotherboards.size()); i++) {
+                        persistentRandomMotherboards.add(allMotherboards.get(i));
+                    }
+                    com.WindRiver.internshipProject2025.model.MotherboardItem viewMoreItem = new com.WindRiver.internshipProject2025.model.MotherboardItem("__VIEW_MORE__", "", "", "", "", "", "", 0, 0);
+                    persistentRandomMotherboards.add(viewMoreItem);
+                }
+                motherboardAdapter.setMotherboardList(persistentRandomMotherboards);
+                motherboardAdapter.setAllMotherboards(allMotherboards);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                android.util.Log.e("HomeFragment", "Database error: " + error.getMessage());
+                android.widget.Toast.makeText(getContext(), "Failed to load motherboards: " + error.getMessage(), android.widget.Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Handle 'View More' click for Motherboards
+        motherboardAdapter.setOnViewMoreClickListener(() -> {
+            com.WindRiver.internshipProject2025.ui.ViewAll.AllMotherboardsDialog dialog = new com.WindRiver.internshipProject2025.ui.ViewAll.AllMotherboardsDialog(
+                motherboardAdapter.getAllMotherboards(), addToCartClickListenerMotherboard);
+            dialog.show(getParentFragmentManager(), "AllMotherboardsDialog");
+        });
+
+        motherboardAdapter.setOnItemClickListener(item -> {
+            if ("__VIEW_MORE__".equals(item.name)) {
+                return;
+            }
+            Intent intent = new Intent(getContext(), com.WindRiver.internshipProject2025.ui.DetailView.MotherboardDetailsActivity.class);
+            intent.putExtra("name", item.name);
+            intent.putExtra("price", item.price);
+            intent.putExtra("imageUrl", item.imageUrl);
+            intent.putExtra("color", item.color);
+            intent.putExtra("ddr_type", item.ddrType);
+            intent.putExtra("form_factor", item.formFactor);
+            intent.putExtra("socket", item.socket);
+            intent.putExtra("max_memory", item.maxMemory);
+            intent.putExtra("memory_slots", item.memorySlots);
+            startActivity(intent);
+        });
         }
     }

@@ -40,4 +40,7 @@
     <string name="item_case_name">Case Name</string>
     <string name="pret">Pret</string>
     <string name="memory_name">Memory Name</string>
+    <string name="placi_de_baza">Placi de baza</string>
+    <string name="view_more">View more</string>
+    <string name="motherboard_image">placa de baza</string>
 </resources>

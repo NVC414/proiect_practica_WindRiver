@@ -41,6 +41,9 @@
         <activity
             android:name=".ui.DetailView.MemoryDetailsActivity"
             android:exported="false" />
+
+        <activity android:name=".ui.DetailView.MotherboardDetailsActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
