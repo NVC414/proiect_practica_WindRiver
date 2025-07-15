@@ -43,6 +43,7 @@ public class HomeFragment extends Fragment
     private static List<com.WindRiver.internshipProject2025.model.CpuItem> persistentRandomCpus = null;
     private static List<com.WindRiver.internshipProject2025.model.MemoryItem> persistentRandomMemory = null;
     private static List<com.WindRiver.internshipProject2025.model.MotherboardItem> persistentRandomMotherboards = null;
+    private static List<com.WindRiver.internshipProject2025.model.GpuItem> persistentRandomGpus = null;
 
     private final int[] images = {R.drawable.banner_image1, R.drawable.banner_image2, R.drawable.banner_image3};
 
@@ -573,6 +574,148 @@ public class HomeFragment extends Fragment
             intent.putExtra("socket", item.socket);
             intent.putExtra("max_memory", item.maxMemory);
             intent.putExtra("memory_slots", item.memorySlots);
+            startActivity(intent);
+        });
+
+        // Setup RecyclerView for GPUs
+        RecyclerView gpuRecyclerView = view.findViewById(R.id.gpuRecyclerView);
+        gpuRecyclerView.setLayoutManager(
+                new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        List<com.WindRiver.internshipProject2025.model.GpuItem> gpuList = new ArrayList<>();
+        com.WindRiver.internshipProject2025.adapter.GpuAdapter gpuAdapter = new com.WindRiver.internshipProject2025.adapter.GpuAdapter(gpuList);
+        gpuRecyclerView.setAdapter(gpuAdapter);
+
+        // Add to Cart button logic for GPUs
+        com.WindRiver.internshipProject2025.adapter.GpuAdapter.OnAddToCartClickListener addToCartClickListenerGpu = item -> {
+            double price = 0.0;
+            try {
+                price = Double.parseDouble(item.price.replaceAll("[^0-9.]", ""));
+            } catch (Exception ignored) {}
+            CartItem cartItem = new CartItem(item.name, price, 1);
+            cartViewModel.addItem(cartItem);
+            android.widget.Toast.makeText(getContext(), "Added to cart", android.widget.Toast.LENGTH_SHORT).show();
+        };
+        gpuAdapter.setOnAddToCartClickListener(addToCartClickListenerGpu);
+
+        // Fetch all GPUs from Firebase, shuffle, pick 5 random, add 'View More' item
+        DatabaseReference gpuRef = FirebaseDatabase.getInstance().getReference().child("video-card");
+        gpuRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<com.WindRiver.internshipProject2025.model.GpuItem> allGpus = new ArrayList<>();
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    String name = child.child("name").getValue(String.class);
+                    String price = "";
+                    Object priceObj = child.child("price").getValue();
+                    if (priceObj != null) {
+                        if (priceObj instanceof Double) {
+                            price = String.format("%.2f", (Double) priceObj);
+                        } else if (priceObj instanceof Long) {
+                            price = String.format("%d", (Long) priceObj);
+                        } else if (priceObj instanceof String) {
+                            price = (String) priceObj;
+                        } else {
+                            price = String.valueOf(priceObj);
+                        }
+                    }
+                    String imageUrl = child.child("image-url").getValue(String.class);
+                    String color = child.child("color").getValue(String.class);
+                    String chipset = child.child("chipset").getValue(String.class);
+                    String core_clock = "";
+                    Object coreClockObj = child.child("core_clock").getValue();
+                    if (coreClockObj != null) {
+                        if (coreClockObj instanceof Double) {
+                            core_clock = String.format("%.0f", (Double) coreClockObj);
+                        } else if (coreClockObj instanceof Long) {
+                            core_clock = String.format("%d", (Long) coreClockObj);
+                        } else if (coreClockObj instanceof String) {
+                            core_clock = (String) coreClockObj;
+                        } else {
+                            core_clock = String.valueOf(coreClockObj);
+                        }
+                    }
+                    String boost_clock = "";
+                    Object boostClockObj = child.child("boost_clock").getValue();
+                    if (boostClockObj != null) {
+                        if (boostClockObj instanceof Double) {
+                            boost_clock = String.format("%.0f", (Double) boostClockObj);
+                        } else if (boostClockObj instanceof Long) {
+                            boost_clock = String.format("%d", (Long) boostClockObj);
+                        } else if (boostClockObj instanceof String) {
+                            boost_clock = (String) boostClockObj;
+                        } else {
+                            boost_clock = String.valueOf(boostClockObj);
+                        }
+                    }
+                    int memory = 0;
+                    Object memoryObj = child.child("memory").getValue();
+                    if (memoryObj != null) {
+                        if (memoryObj instanceof Long) {
+                            memory = ((Long) memoryObj).intValue();
+                        } else if (memoryObj instanceof Integer) {
+                            memory = (Integer) memoryObj;
+                        } else if (memoryObj instanceof String) {
+                            try {
+                                memory = Integer.parseInt((String) memoryObj);
+                            } catch (Exception ignored) {}
+                        }
+                    }
+                    int length = 0;
+                    Object lengthObj = child.child("length").getValue();
+                    if (lengthObj != null) {
+                        if (lengthObj instanceof Long) {
+                            length = ((Long) lengthObj).intValue();
+                        } else if (lengthObj instanceof Integer) {
+                            length = (Integer) lengthObj;
+                        } else if (lengthObj instanceof String) {
+                            try {
+                                length = Integer.parseInt((String) lengthObj);
+                            } catch (Exception ignored) {}
+                        }
+                    }
+                    allGpus.add(new com.WindRiver.internshipProject2025.model.GpuItem(name, price, imageUrl, color, chipset, core_clock, boost_clock, memory, length));
+                }
+                if (persistentRandomGpus == null) {
+                    java.util.Collections.shuffle(allGpus);
+                    persistentRandomGpus = new ArrayList<>();
+                    for (int i = 0; i < Math.min(5, allGpus.size()); i++) {
+                        persistentRandomGpus.add(allGpus.get(i));
+                    }
+                    com.WindRiver.internshipProject2025.model.GpuItem viewMoreItem = new com.WindRiver.internshipProject2025.model.GpuItem("__VIEW_MORE__", "", "", "", "", "", "", 0, 0);
+                    persistentRandomGpus.add(viewMoreItem);
+                }
+                gpuAdapter.setGpuList(persistentRandomGpus);
+                gpuAdapter.setAllGpus(allGpus);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                android.util.Log.e("HomeFragment", "Database error: " + error.getMessage());
+                android.widget.Toast.makeText(getContext(), "Failed to load GPUs: " + error.getMessage(), android.widget.Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Handle 'View More' click for GPUs
+        gpuAdapter.setOnViewMoreClickListener(() -> {
+            com.WindRiver.internshipProject2025.ui.ViewAll.AllGpuDialog dialog = new com.WindRiver.internshipProject2025.ui.ViewAll.AllGpuDialog(
+                gpuAdapter.getAllGpus(), addToCartClickListenerGpu);
+            dialog.show(getParentFragmentManager(), "AllGpuDialog");
+        });
+
+        gpuAdapter.setOnItemClickListener(item -> {
+            if ("__VIEW_MORE__".equals(item.name)) {
+                return;
+            }
+            Intent intent = new Intent(getContext(), com.WindRiver.internshipProject2025.activity.GpuDetailsActivity.class);
+            intent.putExtra("name", item.name);
+            intent.putExtra("price", item.price);
+            intent.putExtra("imageUrl", item.imageUrl);
+            intent.putExtra("color", item.color);
+            intent.putExtra("chipset", item.chipset);
+            intent.putExtra("core_clock", item.core_clock);
+            intent.putExtra("boost_clock", item.boost_clock);
+            intent.putExtra("memory", item.memory);
+            intent.putExtra("length", item.length);
             startActivity(intent);
         });
         }

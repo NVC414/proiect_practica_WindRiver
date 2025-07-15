@@ -43,4 +43,7 @@
     <string name="placi_de_baza">Placi de baza</string>
     <string name="view_more">View more</string>
     <string name="motherboard_image">placa de baza</string>
+    <string name="placi_video">Placi Video</string>
+    <string name="gpu_image">gpu image</string>
+    <string name="item_gpu_name">item gpu name</string>
 </resources>

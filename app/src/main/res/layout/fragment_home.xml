@@ -165,6 +165,34 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/motherboardTitle" />
 
+        <!-- Title for GPUs -->
+        <TextView
+            android:id="@+id/gpuTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/placi_video"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.091"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/motherboardRecyclerView" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/gpuRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:clipToPadding="false"
+        android:overScrollMode="never"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:scrollbars="none"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/gpuTitle" />
+
         <!-- Spacer view to ensure scrollable area above nav bar -->
         <View
             android:id="@+id/bottomSpacer"
@@ -174,7 +202,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/motherboardRecyclerView" />
+            app:layout_constraintTop_toBottomOf="@id/gpuRecyclerView" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
