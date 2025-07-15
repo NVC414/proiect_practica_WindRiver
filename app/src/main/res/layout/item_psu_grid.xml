@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="220dp"
+    android:orientation="vertical"
+    android:background="@drawable/case_item_bg"
+    android:layout_marginEnd="8dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
+    android:padding="6dp">
+
+    <ImageView
+        android:id="@+id/psuImage"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.3"
+        android:layout_gravity="center_horizontal"
+        android:contentDescription="@string/psu_image"
+        android:scaleType="fitCenter"
+        android:background="#EEE"
+        android:src="@drawable/ic_psu_placeholder" />
+
+    <TextView
+        android:id="@+id/psuName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/item_psu_name"
+        android:textStyle="bold"
+        android:textSize="14sp"
+        android:gravity="center_horizontal"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="2dp" />
+
+    <TextView
+        android:id="@+id/psuPrice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/price"
+        android:textSize="12sp"
+        android:textColor="#888"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.2" />
+
+    <Button
+        android:id="@+id/buttonAddToCart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_to_cart"
+        android:textSize="12sp"
+        android:layout_gravity="bottom" />
+
+</LinearLayout>
+

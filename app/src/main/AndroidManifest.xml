@@ -46,6 +46,9 @@
             android:exported="false" />
         <activity android:name=".activity.GpuDetailsActivity"
             android:exported="false" />
+        <activity
+            android:name=".ui.DetailView.PsuDetailsActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

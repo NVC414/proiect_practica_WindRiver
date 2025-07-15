@@ -44,6 +44,7 @@ public class HomeFragment extends Fragment
     private static List<com.WindRiver.internshipProject2025.model.MemoryItem> persistentRandomMemory = null;
     private static List<com.WindRiver.internshipProject2025.model.MotherboardItem> persistentRandomMotherboards = null;
     private static List<com.WindRiver.internshipProject2025.model.GpuItem> persistentRandomGpus = null;
+    private static List<com.WindRiver.internshipProject2025.model.PsuItem> persistentRandomPsus = null;
 
     private final int[] images = {R.drawable.banner_image1, R.drawable.banner_image2, R.drawable.banner_image3};
 
@@ -716,6 +717,126 @@ public class HomeFragment extends Fragment
             intent.putExtra("boost_clock", item.boost_clock);
             intent.putExtra("memory", item.memory);
             intent.putExtra("length", item.length);
+            startActivity(intent);
+        });
+
+        // Setup RecyclerView for PSUs
+        RecyclerView psuRecyclerView = view.findViewById(R.id.psuRecyclerView);
+        psuRecyclerView.setLayoutManager(
+                new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        List<com.WindRiver.internshipProject2025.model.PsuItem> psuList = new ArrayList<>();
+        com.WindRiver.internshipProject2025.adapter.PsuAdapter psuAdapter = new com.WindRiver.internshipProject2025.adapter.PsuAdapter(psuList);
+        psuRecyclerView.setAdapter(psuAdapter);
+
+        // Add to Cart button logic for PSUs
+        com.WindRiver.internshipProject2025.adapter.PsuAdapter.OnAddToCartClickListener addToCartClickListenerPsu = item -> {
+            double price = 0.0;
+            try {
+                price = Double.parseDouble(item.price.replaceAll("[^0-9.]", ""));
+            } catch (Exception ignored) {}
+            CartItem cartItem = new CartItem(item.name, price, 1);
+            cartViewModel.addItem(cartItem);
+            android.widget.Toast.makeText(getContext(), "Added to cart", android.widget.Toast.LENGTH_SHORT).show();
+        };
+        psuAdapter.setOnAddToCartClickListener(addToCartClickListenerPsu);
+
+        // Fetch all PSUs from Firebase, shuffle, pick 5 random, add 'View More' item
+        DatabaseReference psuRef = FirebaseDatabase.getInstance().getReference().child("power-supply");
+        psuRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<com.WindRiver.internshipProject2025.model.PsuItem> allPsus = new ArrayList<>();
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    String name = "";
+                    String price = "";
+                    String imageUrl = "";
+                    String color = "";
+                    String efficiency = "";
+                    String modular = "";
+                    String type = "";
+                    int wattage = 0;
+                    if (child.child("name").getValue() != null) {
+                        name = Objects.requireNonNull(child.child("name").getValue()).toString();
+                    }
+                    Object priceObj = child.child("price").getValue();
+                    if (priceObj != null) {
+                        if (priceObj instanceof Double) {
+                            price = String.format("%.2f", (Double) priceObj);
+                        } else if (priceObj instanceof Long) {
+                            price = String.format("%d", (Long) priceObj);
+                        } else if (priceObj instanceof String) {
+                            price = (String) priceObj;
+                        } else {
+                            price = String.valueOf(priceObj);
+                        }
+                    }
+                    if (child.child("image-url").getValue() != null) {
+                        imageUrl = Objects.requireNonNull(child.child("image-url").getValue()).toString();
+                    }
+                    if (child.child("color").getValue() != null) {
+                        color = Objects.requireNonNull(child.child("color").getValue()).toString();
+                    }
+                    if (child.child("efficiency").getValue() != null) {
+                        efficiency = Objects.requireNonNull(child.child("efficiency").getValue()).toString();
+                    }
+                    if (child.child("modular").getValue() != null) {
+                        modular = Objects.requireNonNull(child.child("modular").getValue()).toString();
+                    }
+                    if (child.child("type").getValue() != null) {
+                        type = Objects.requireNonNull(child.child("type").getValue()).toString();
+                    }
+                    Object wattageObj = child.child("wattage").getValue();
+                    if (wattageObj != null) {
+                        if (wattageObj instanceof Long) {
+                            wattage = ((Long) wattageObj).intValue();
+                        } else if (wattageObj instanceof Integer) {
+                            wattage = (Integer) wattageObj;
+                        } else if (wattageObj instanceof String) {
+                            try {
+                                wattage = Integer.parseInt((String) wattageObj);
+                            } catch (Exception ignored) {}
+                        }
+                    }
+                    allPsus.add(new com.WindRiver.internshipProject2025.model.PsuItem(name, price, imageUrl, color, efficiency, modular, type, wattage));
+                }
+                if (persistentRandomPsus == null) {
+                    java.util.Collections.shuffle(allPsus);
+                    persistentRandomPsus = new ArrayList<>();
+                    for (int i = 0; i < Math.min(5, allPsus.size()); i++) {
+                        persistentRandomPsus.add(allPsus.get(i));
+                    }
+                    com.WindRiver.internshipProject2025.model.PsuItem viewMoreItem = new com.WindRiver.internshipProject2025.model.PsuItem("__VIEW_MORE__", "", "", "", "", "", "", 0);
+                    persistentRandomPsus.add(viewMoreItem);
+                }
+                psuAdapter.setPsuList(persistentRandomPsus);
+                psuAdapter.setAllPsus(allPsus);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                android.util.Log.e("HomeFragment", "Database error: " + error.getMessage());
+                android.widget.Toast.makeText(getContext(), "Failed to load PSUs: " + error.getMessage(), android.widget.Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        psuAdapter.setOnViewMoreClickListener(() -> {
+            com.WindRiver.internshipProject2025.ui.ViewAll.AllPsuDialog dialog = new com.WindRiver.internshipProject2025.ui.ViewAll.AllPsuDialog(psuAdapter.getAllPsus(), addToCartClickListenerPsu);
+            dialog.show(getParentFragmentManager(), "AllPsuDialog");
+        });
+
+        psuAdapter.setOnItemClickListener(item -> {
+            if ("__VIEW_MORE__".equals(item.name)) {
+                return;
+            }
+            Intent intent = new Intent(getContext(), com.WindRiver.internshipProject2025.ui.DetailView.PsuDetailsActivity.class);
+            intent.putExtra("name", item.name);
+            intent.putExtra("price", item.price);
+            intent.putExtra("imageUrl", item.imageUrl);
+            intent.putExtra("color", item.color);
+            intent.putExtra("efficiency", item.efficiency);
+            intent.putExtra("modular", item.modular);
+            intent.putExtra("type", item.type);
+            intent.putExtra("wattage", item.wattage);
             startActivity(intent);
         });
         }

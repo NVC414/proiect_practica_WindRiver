@@ -46,4 +46,9 @@
     <string name="placi_video">Placi Video</string>
     <string name="gpu_image">gpu image</string>
     <string name="item_gpu_name">item gpu name</string>
+    <string name="surse">Surse</string>
+    <string name="all_psu">All PSUs</string>
+    <string name="psu_image">PSU Image</string>
+    <string name="item_psu_name">PSU Name</string>
+    <string name="psu_price">PSU Price</string>
 </resources>

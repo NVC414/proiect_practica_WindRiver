@@ -193,7 +193,35 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/gpuTitle" />
 
-        <!-- Spacer view to ensure scrollable area above nav bar -->
+        <!-- Title for PSUs -->
+        <TextView
+            android:id="@+id/psuTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/surse"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.091"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/gpuRecyclerView" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/psuRecyclerView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:clipToPadding="false"
+            android:overScrollMode="never"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:scrollbars="none"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/psuTitle" />
+
+        <!-- Spatiu -->
         <View
             android:id="@+id/bottomSpacer"
             android:layout_width="0dp"
@@ -202,7 +230,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/gpuRecyclerView" />
+            app:layout_constraintTop_toBottomOf="@id/psuRecyclerView" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
