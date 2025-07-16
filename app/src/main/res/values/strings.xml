@@ -51,4 +51,8 @@
     <string name="psu_image">PSU Image</string>
     <string name="item_psu_name">PSU Name</string>
     <string name="psu_price">PSU Price</string>
+    <string name="laptopuri">Laptopuri</string>
+    <string name="laptop_image">Laptop image</string>
+    <string name="item_laptop_model">Model</string>
+    <string name="all_laptops">All Laptops</string>
 </resources>

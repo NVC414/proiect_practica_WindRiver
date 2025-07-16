@@ -79,7 +79,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/carcaseTitle" />
 
-
         <TextView
             android:id="@+id/cpuTitle"
             android:layout_width="wrap_content"
@@ -107,9 +106,35 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cpuTitle" />
 
-        <!-- Title for Memory -->
+        <!-- Title for Laptops -->
+        <TextView
+            android:id="@+id/laptopTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/laptopuri"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.091"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cpuRecyclerView" />
 
-        <!-- Horizontally scrollable section for Memory -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/laptopRecyclerView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:clipToPadding="false"
+            android:overScrollMode="never"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:scrollbars="none"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/laptopTitle" />
+
+        <!-- Title for Memory -->
         <TextView
             android:id="@+id/memoryTitle"
             android:layout_width="wrap_content"
@@ -121,7 +146,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.091"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cpuRecyclerView" />
+            app:layout_constraintTop_toBottomOf="@id/laptopRecyclerView" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/memoryRecyclerView"

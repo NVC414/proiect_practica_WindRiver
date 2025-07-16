@@ -49,6 +49,9 @@
         <activity
             android:name=".ui.DetailView.PsuDetailsActivity"
             android:exported="false" />
+        <activity
+            android:name=".ui.DetailView.LaptopDetailsActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

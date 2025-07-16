@@ -15,6 +15,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.windriver.pcgate.R;
 import com.windriver.pcgate.adapter.CaseAdapter;
 import com.windriver.pcgate.adapter.ImageAdapter;
@@ -25,13 +32,6 @@ import com.windriver.pcgate.ui.DetailView.CaseDetailsActivity;
 import com.windriver.pcgate.ui.DetailView.CpuDetailsActivity;
 import com.windriver.pcgate.ui.ViewAll.AllCasesDialog;
 import com.windriver.pcgate.ui.ViewAll.AllCpusDialog;
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +46,7 @@ public class HomeFragment extends Fragment
     private static List<com.windriver.pcgate.model.MotherboardItem> persistentRandomMotherboards = null;
     private static List<com.windriver.pcgate.model.GpuItem> persistentRandomGpus = null;
     private static List<com.windriver.pcgate.model.PsuItem> persistentRandomPsus = null;
+    private static List<com.windriver.pcgate.model.LaptopItem> persistentRandomLaptops = null;
 
     private final int[] images = {R.drawable.banner_image1, R.drawable.banner_image2, R.drawable.banner_image3};
 
@@ -345,6 +346,169 @@ public class HomeFragment extends Fragment
                 intent.putExtra("tdp", item.tdp);
                 startActivity(intent);
             });
+
+    // Setup RecyclerView for laptops
+    RecyclerView laptopRecyclerView = view.findViewById(R.id.laptopRecyclerView);
+    laptopRecyclerView.setLayoutManager(
+            new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+    List<com.windriver.pcgate.model.LaptopItem> laptopList = new ArrayList<>();
+    com.windriver.pcgate.adapter.LaptopAdapter laptopAdapter = new com.windriver.pcgate.adapter.LaptopAdapter(
+            laptopList);
+    laptopRecyclerView.setAdapter(laptopAdapter);
+    ProgressBar laptopLoadingProgressBar = new ProgressBar(getContext());
+    laptopLoadingProgressBar.setIndeterminate(true);
+    ((ViewGroup) laptopRecyclerView.getParent()).addView(laptopLoadingProgressBar);
+    laptopLoadingProgressBar.setVisibility(View.VISIBLE);
+    laptopRecyclerView.setVisibility(View.INVISIBLE);
+
+    // Add to Cart button logic for laptops
+    com.windriver.pcgate.adapter.LaptopAdapter.OnAddToCartClickListener addToCartClickListenerLaptop = item ->
+        {
+            double price = 0.0;
+            try
+            {
+                price = Double.parseDouble(item.price.replaceAll("[^0-9.]", ""));
+            }
+            catch (Exception ignored)
+            {
+            }
+            CartItem cartItem = new CartItem(item.model, price, 1);
+            cartViewModel.addItem(cartItem);
+            android.widget.Toast.makeText(getContext(), "Added to cart",
+                    android.widget.Toast.LENGTH_SHORT).show();
+        };
+    laptopAdapter.setOnAddToCartClickListener(addToCartClickListenerLaptop);
+
+    // Firebase listeners are already async, so remove the Thread wrapper
+    DatabaseReference laptopRef = FirebaseDatabase.getInstance().getReference().child("laptop");
+    laptopRef.addListenerForSingleValueEvent(new ValueEventListener()
+        {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot)
+            {
+            List<com.windriver.pcgate.model.LaptopItem> allLaptops = new ArrayList<>();
+            for (DataSnapshot child : snapshot.getChildren())
+            {
+                String brand = "";
+                String model = "";
+                String price = "";
+                String imageUrl = "";
+                String processor = "";
+                String ram_gb = "";
+                String ram_type = "";
+                String graphic_card_gb = "";
+                String hdd = "";
+                String ssd = "";
+                if (child.child("brand").getValue() != null)
+                {
+                    brand = Objects.requireNonNull(child.child("brand").getValue()).toString();
+                }
+                if (child.child("model").getValue() != null)
+                {
+                    model = Objects.requireNonNull(child.child("model").getValue()).toString();
+                }
+                if (child.child("price").getValue() != null)
+                {
+                    price = Objects.requireNonNull(child.child("price").getValue()).toString();
+                }
+                if (child.child("image-url").getValue() != null)
+                {
+                    imageUrl = Objects.requireNonNull(
+                            child.child("image-url").getValue()).toString();
+                }
+                if (child.child("processor").getValue() != null)
+                {
+                    processor = Objects.requireNonNull(
+                            child.child("processor").getValue()).toString();
+                }
+                if (child.child("ram_gb").getValue() != null)
+                {
+                    ram_gb = Objects.requireNonNull(child.child("ram_gb").getValue()).toString();
+                }
+                if (child.child("ram_type").getValue() != null)
+                {
+                    ram_type = Objects.requireNonNull(
+                            child.child("ram_type").getValue()).toString();
+                }
+                if (child.child("graphic_card_gb").getValue() != null)
+                {
+                    graphic_card_gb = Objects.requireNonNull(
+                            child.child("graphic_card_gb").getValue()).toString();
+                }
+                if (child.child("hdd").getValue() != null)
+                {
+                    hdd = Objects.requireNonNull(child.child("hdd").getValue()).toString();
+                }
+                if (child.child("ssd").getValue() != null)
+                {
+                    ssd = Objects.requireNonNull(child.child("ssd").getValue()).toString();
+                }
+                allLaptops.add(
+                        new com.windriver.pcgate.model.LaptopItem(brand, model, price, imageUrl,
+                                processor, ram_gb, ram_type, graphic_card_gb, hdd, ssd));
+            }
+            java.util.Collections.shuffle(allLaptops);
+            persistentRandomLaptops = new ArrayList<>();
+            for (int i = 0; i < Math.min(5, allLaptops.size()); i++)
+            {
+                persistentRandomLaptops.add(allLaptops.get(i));
+            }
+            com.windriver.pcgate.model.LaptopItem viewMoreItem = new com.windriver.pcgate.model.LaptopItem(
+                    "", "__VIEW_MORE__", "", "", "", "", "", "", "", "");
+            persistentRandomLaptops.add(viewMoreItem);
+            laptopAdapter.setLaptopList(persistentRandomLaptops);
+            laptopAdapter.setAllLaptops(allLaptops);
+            laptopLoadingProgressBar.setVisibility(View.GONE);
+            laptopRecyclerView.setVisibility(View.VISIBLE);
+            }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error)
+            {
+            android.util.Log.e("HomeFragment", "Database error: " + error.getMessage());
+            android.widget.Toast.makeText(getContext(),
+                    "Failed to load laptops: " + error.getMessage(),
+                    android.widget.Toast.LENGTH_SHORT).show();
+            laptopLoadingProgressBar.setVisibility(View.GONE);
+            laptopRecyclerView.setVisibility(View.VISIBLE);
+            }
+        });
+
+    // Handle 'View More' click for laptops
+    laptopAdapter.setOnViewMoreClickListener(() ->
+        {
+            if (laptopAdapter.getAllLaptops() == null || laptopAdapter.getAllLaptops().isEmpty())
+            {
+                android.widget.Toast.makeText(getContext(),
+                        "Laptops are still loading. Please wait.",
+                        android.widget.Toast.LENGTH_SHORT).show();
+                return;
+            }
+            com.windriver.pcgate.ui.ViewAll.AllLaptopsDialog dialog = new com.windriver.pcgate.ui.ViewAll.AllLaptopsDialog(
+                    laptopAdapter.getAllLaptops(), addToCartClickListenerLaptop);
+            dialog.show(getParentFragmentManager(), "AllLaptopsDialog");
+        });
+
+    laptopAdapter.setOnItemClickListener(item ->
+        {
+            if ("__VIEW_MORE__".equals(item.model))
+            {
+                return;
+            }
+            Intent intent = new Intent(getContext(),
+                    com.windriver.pcgate.ui.DetailView.LaptopDetailsActivity.class);
+            intent.putExtra("brand", item.brand);
+            intent.putExtra("model", item.model);
+            intent.putExtra("price", item.price);
+            intent.putExtra("imageUrl", item.imageUrl);
+            intent.putExtra("processor", item.processor);
+            intent.putExtra("ram_gb", item.ram_gb);
+            intent.putExtra("ram_type", item.ram_type);
+            intent.putExtra("graphic_card_gb", item.graphic_card_gb);
+            intent.putExtra("hdd", item.hdd);
+            intent.putExtra("ssd", item.ssd);
+            startActivity(intent);
+        });
 
         // Setup RecyclerView for Memory
         RecyclerView memoryRecyclerView = view.findViewById(R.id.memoryRecyclerView);
