@@ -53,7 +53,7 @@ public class CpuDetailsActivity extends AppCompatActivity
                 R.drawable.ic_image_placeholder).centerCrop().into(cpuImage);
 
         cpuName.setText(name);
-        cpuPrice.setText(String.format("%.2f RON", price));
+        cpuPrice.setText(String.format("$%.2f", price));
         cpuBoostClock.setText("Boost Clock: " + boostClock + " GHz");
         cpuCoreClock.setText("Core Clock: " + coreClock + " GHz");
         cpuCoreCount.setText("Core Count: " + coreCount);

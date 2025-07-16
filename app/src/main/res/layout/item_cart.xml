@@ -29,7 +29,7 @@
             android:id="@+id/text_cart_item_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/_0_00_ron"
+            android:text="@string/dol_0_00_"
             android:textSize="16sp"
             android:textColor="#222"
             android:layout_marginStart="16dp" />

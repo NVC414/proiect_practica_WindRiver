@@ -14,7 +14,7 @@ public class PsuItem {
 
     public PsuItem(String name, String price, String imageUrl, String color, String efficiency, String modular, String type, int wattage) {
         this.name = name;
-        this.price = price + " RON";
+        this.price = "$"+price;
         this.imageUrl = imageUrl;
         this.color = color;
         this.efficiency = efficiency;

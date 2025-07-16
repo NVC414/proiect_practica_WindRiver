@@ -104,7 +104,7 @@ public class CpuAdapter extends RecyclerView.Adapter<CpuAdapter.CpuViewHolder>
         else
         {
             holder.name.setText(item.name);
-            holder.price.setText(String.format("%.2f RON", item.price));
+            holder.price.setText(String.format("$%.2f", item.price));
             Glide.with(holder.itemView.getContext()).load(item.imageUrl).placeholder(
                     R.drawable.ic_cpu_placeholder).centerCrop().into(holder.image);
             holder.addToCartButton.setVisibility(View.VISIBLE);

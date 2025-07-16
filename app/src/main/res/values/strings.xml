@@ -21,7 +21,7 @@
     <string name="click_to_login">Click to login</string>
     <string name="click_to_register">Click to register</string>
     <string name="logout">Logout</string>
-    <string name="total_0_00_ron">Total: 0.00 RON</string>
+    <string name="total_0_00_ron">Total: $0.00</string>
     <string name="checkout">Checkout</string>
     <string name="price">Price</string>
     <string name="case_name">Case Name</string>
@@ -36,7 +36,7 @@
     <string name="procesoare">Procesoare</string>
     <string name="memorii">Memorii</string>
     <string name="item_name">Item Name</string>
-    <string name="_0_00_ron">0.00 RON</string>
+    <string name="dol_0_00_">$0.00</string>
     <string name="item_case_name">Case Name</string>
     <string name="pret">Pret</string>
     <string name="memory_name">Memory Name</string>

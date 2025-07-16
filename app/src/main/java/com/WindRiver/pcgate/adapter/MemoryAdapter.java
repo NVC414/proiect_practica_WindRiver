@@ -132,7 +132,7 @@ public class MemoryAdapter extends RecyclerView.Adapter<MemoryAdapter.MemoryView
         {
             MemoryItem item = memoryList.get(position);
             holder.name.setText(item.name);
-            holder.price.setText(item.price + " RON");
+            holder.price.setText("$%s".formatted(item.price));
             holder.addToCartButton.setVisibility(View.VISIBLE);
             holder.addToCartButton.setOnClickListener(v ->
                 {

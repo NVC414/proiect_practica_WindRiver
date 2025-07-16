@@ -611,7 +611,7 @@ public class HomeFragment extends Fragment
         };
 
         // Fetch all GPUs from Firebase, shuffle, pick 5 random, add 'View More' item
-        DatabaseReference gpuRef = FirebaseDatabase.getInstance().getReference("gpus");
+        DatabaseReference gpuRef = FirebaseDatabase.getInstance().getReference("video-card");
         gpuRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

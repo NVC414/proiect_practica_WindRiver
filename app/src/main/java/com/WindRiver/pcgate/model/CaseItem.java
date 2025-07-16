@@ -20,7 +20,7 @@ public class CaseItem
                     String side_panel, String psu, int internal_35_bays, double external_volume)
         {
         this.name = name;
-        this.price = price + " RON";
+        this.price = "$"+price;
         this.imageUrl = imageUrl;
         this.color = color;
         this.type = type;

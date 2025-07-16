@@ -16,7 +16,7 @@ public class MotherboardItem {
     public MotherboardItem(String name, String price, String imageUrl, String color, String ddrType,
                            String formFactor, String socket, int maxMemory, int memorySlots) {
         this.name = name;
-        this.price = price + " RON";
+        this.price = "$"+price;
         this.imageUrl = imageUrl;
         this.color = color;
         this.ddrType = ddrType;

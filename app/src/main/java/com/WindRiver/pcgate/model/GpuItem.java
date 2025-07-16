@@ -16,7 +16,7 @@ public class GpuItem {
     public GpuItem(String name, String price, String imageUrl, String color, String chipset,
                    String core_clock, String boost_clock, int memory, int length) {
         this.name = name;
-        this.price = price + " RON";
+        this.price = "$"+price;
         this.imageUrl = imageUrl;
         this.color = color;
         this.chipset = chipset;

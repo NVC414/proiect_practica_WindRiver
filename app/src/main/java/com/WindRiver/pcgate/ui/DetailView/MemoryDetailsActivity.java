@@ -53,7 +53,7 @@ public class MemoryDetailsActivity extends AppCompatActivity
                 R.drawable.ic_memory_placeholder).centerCrop().into(memoryImage);
 
         memoryName.setText(name);
-        memoryPrice.setText(price + " RON");
+        memoryPrice.setText("$"+price);
         memoryType.setText("Type: " + ddrType);
         memoryColor.setText("Color: " + color);
         memoryCasLatency.setText("CAS Latency: " + casLatency);
