@@ -17,8 +17,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.windriver.pcgate.R;
-import com.windriver.pcgate.adapter.MotherboardAdapter;
-import com.windriver.pcgate.adapter.MotherboardAdapter.OnAddToCartClickListener;
+import com.windriver.pcgate.adapter.ShopItemAdapter;
 import com.windriver.pcgate.model.MotherboardItem;
 import com.windriver.pcgate.ui.DetailView.MotherboardDetailsActivity;
 
@@ -26,9 +25,11 @@ import java.util.List;
 
 public class AllMotherboardsDialog extends DialogFragment {
     private final List<MotherboardItem> allMotherboards;
-    private final OnAddToCartClickListener addToCartClickListener;
+private final ShopItemAdapter.OnAddToCartListener addToCartClickListener;
 
-    public AllMotherboardsDialog(List<MotherboardItem> allMotherboards, OnAddToCartClickListener addToCartClickListener) {
+public AllMotherboardsDialog(List<MotherboardItem> allMotherboards,
+                             ShopItemAdapter.OnAddToCartListener addToCartClickListener)
+    {
         this.allMotherboards = allMotherboards;
         this.addToCartClickListener = addToCartClickListener;
     }
@@ -40,22 +41,24 @@ public class AllMotherboardsDialog extends DialogFragment {
         View view = inflater.inflate(R.layout.dialog_all_cases, container, false);
         RecyclerView recyclerView = view.findViewById(R.id.allCasesRecyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
-        MotherboardAdapter adapter = new MotherboardAdapter(allMotherboards, R.layout.item_case_grid);
-        adapter.setOnAddToCartClickListener(addToCartClickListener);
+    ShopItemAdapter<MotherboardItem> adapter = new ShopItemAdapter<>(allMotherboards);
+    adapter.setOnAddToCartListener(addToCartClickListener);
         adapter.setOnItemClickListener(item -> {
-            if ("__VIEW_MORE__".equals(item.name)) {
+            if ("__VIEW_MORE__".equals(item.getName()))
+            {
                 return;
             }
+            MotherboardItem mb = (MotherboardItem) item;
             Intent intent = new Intent(getContext(), MotherboardDetailsActivity.class);
-            intent.putExtra("name", item.name);
-            intent.putExtra("price", item.price);
-            intent.putExtra("imageUrl", item.imageUrl);
-            intent.putExtra("color", item.color != null ? item.color : "");
-            intent.putExtra("ddr_type", item.ddrType != null ? item.ddrType : "");
-            intent.putExtra("form_factor", item.formFactor != null ? item.formFactor : "");
-            intent.putExtra("socket", item.socket != null ? item.socket : "");
-            intent.putExtra("max_memory", item.maxMemory);
-            intent.putExtra("memory_slots", item.memorySlots);
+            intent.putExtra("name", mb.name);
+            intent.putExtra("price", mb.price);
+            intent.putExtra("imageUrl", mb.imageUrl);
+            intent.putExtra("color", mb.color != null ? mb.color : "");
+            intent.putExtra("ddr_type", mb.ddrType != null ? mb.ddrType : "");
+            intent.putExtra("form_factor", mb.formFactor != null ? mb.formFactor : "");
+            intent.putExtra("socket", mb.socket != null ? mb.socket : "");
+            intent.putExtra("max_memory", mb.maxMemory);
+            intent.putExtra("memory_slots", mb.memorySlots);
             startActivity(intent);
         });
         recyclerView.setAdapter(adapter);

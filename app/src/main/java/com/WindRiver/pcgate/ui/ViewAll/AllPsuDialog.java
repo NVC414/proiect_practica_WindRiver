@@ -17,8 +17,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.windriver.pcgate.R;
-import com.windriver.pcgate.adapter.PsuAdapter;
-import com.windriver.pcgate.adapter.PsuAdapter.OnAddToCartClickListener;
+import com.windriver.pcgate.adapter.ShopItemAdapter;
 import com.windriver.pcgate.model.PsuItem;
 import com.windriver.pcgate.ui.DetailView.PsuDetailsActivity;
 
@@ -26,9 +25,11 @@ import java.util.List;
 
 public class AllPsuDialog extends DialogFragment {
     private final List<PsuItem> allPsus;
-    private final OnAddToCartClickListener addToCartClickListener;
+private final ShopItemAdapter.OnAddToCartListener addToCartClickListener;
 
-    public AllPsuDialog(List<PsuItem> allPsus, OnAddToCartClickListener addToCartClickListener) {
+public AllPsuDialog(List<PsuItem> allPsus,
+                    ShopItemAdapter.OnAddToCartListener addToCartClickListener)
+    {
         this.allPsus = allPsus;
         this.addToCartClickListener = addToCartClickListener;
     }
@@ -40,21 +41,23 @@ public class AllPsuDialog extends DialogFragment {
         View view = inflater.inflate(R.layout.dialog_all_psu, container, false);
         RecyclerView recyclerView = view.findViewById(R.id.allPsuRecyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
-        PsuAdapter adapter = new PsuAdapter(allPsus, R.layout.item_psu_grid);
-        adapter.setOnAddToCartClickListener(addToCartClickListener);
+    ShopItemAdapter<PsuItem> adapter = new ShopItemAdapter<>(allPsus);
+    adapter.setOnAddToCartListener(addToCartClickListener);
         adapter.setOnItemClickListener(item -> {
-            if ("__VIEW_MORE__".equals(item.name)) {
+            if ("__VIEW_MORE__".equals(item.getName()))
+            {
                 return;
             }
+            PsuItem psu = (PsuItem) item;
             Intent intent = new Intent(getContext(), PsuDetailsActivity.class);
-            intent.putExtra("name", item.name);
-            intent.putExtra("price", item.price);
-            intent.putExtra("imageUrl", item.imageUrl);
-            intent.putExtra("color", item.color != null ? item.color : "");
-            intent.putExtra("efficiency", item.efficiency != null ? item.efficiency : "");
-            intent.putExtra("modular", item.modular != null ? item.modular : "");
-            intent.putExtra("type", item.type != null ? item.type : "");
-            intent.putExtra("wattage", item.wattage);
+            intent.putExtra("name", psu.name);
+            intent.putExtra("price", psu.price);
+            intent.putExtra("imageUrl", psu.imageUrl);
+            intent.putExtra("color", psu.color != null ? psu.color : "");
+            intent.putExtra("efficiency", psu.efficiency != null ? psu.efficiency : "");
+            intent.putExtra("modular", psu.modular != null ? psu.modular : "");
+            intent.putExtra("type", psu.type != null ? psu.type : "");
+            intent.putExtra("wattage", psu.wattage);
             startActivity(intent);
         });
         recyclerView.setAdapter(adapter);

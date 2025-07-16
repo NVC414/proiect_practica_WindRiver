@@ -1,53 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="140dp"
-    android:layout_height="260dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@drawable/case_item_bg"
-    android:layout_marginEnd="8dp"
-    android:layout_marginStart="8dp"
-    android:layout_marginTop="8dp"
-    android:layout_marginBottom="8dp"
-    android:padding="6dp">
+    android:padding="8dp"
+    android:background="@drawable/case_item_bg">
 
     <ImageView
-        android:id="@+id/caseImage"
+        android:id="@+id/itemImage"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1.5"
-        android:layout_gravity="center_horizontal"
-        android:contentDescription="@string/case_image"
+        android:layout_height="120dp"
         android:scaleType="fitCenter"
-        android:background="#EEE" />
+        android:background="#EEE"
+        android:contentDescription="@string/item_image" />
 
     <TextView
-        android:id="@+id/caseName"
+        android:id="@+id/itemName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/item_case_name"
+        android:textSize="16sp"
         android:textStyle="bold"
-        android:textSize="15sp"
         android:gravity="center_horizontal"
         android:ellipsize="end"
         android:maxLines="2"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="2dp" />
+        android:layout_marginTop="8dp" />
 
     <TextView
-        android:id="@+id/casePrice"
+        android:id="@+id/itemPrice"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/pret"
-        android:textSize="13sp"
+        android:textSize="14sp"
         android:textColor="#888"
         android:gravity="center_horizontal"
         android:layout_marginTop="2dp"
-        android:layout_marginBottom="2dp" />
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.2" />
+        android:layout_marginBottom="8dp" />
 
     <LinearLayout
         android:id="@+id/cartControlsLayout"
@@ -82,13 +68,14 @@
             android:text="+"
             android:textSize="18sp" />
     </LinearLayout>
-    <!-- Add to Cart Button always at bottom -->
+
     <Button
         android:id="@+id/buttonAddToCart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/add_to_cart"
-        android:textSize="13sp"
+        android:textSize="14sp"
         android:layout_gravity="bottom" />
 
 </LinearLayout>
+

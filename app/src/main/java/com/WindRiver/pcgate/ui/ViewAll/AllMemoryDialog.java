@@ -15,8 +15,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.windriver.pcgate.R;
-import com.windriver.pcgate.adapter.MemoryAdapter;
-import com.windriver.pcgate.adapter.MemoryAdapter.OnAddToCartClickListener;
+import com.windriver.pcgate.adapter.ShopItemAdapter;
 import com.windriver.pcgate.model.MemoryItem;
 
 import java.util.List;
@@ -24,10 +23,10 @@ import java.util.List;
 public class AllMemoryDialog extends DialogFragment
     {
     private final List<MemoryItem> allMemory;
-    private final OnAddToCartClickListener addToCartClickListener;
+    private final ShopItemAdapter.OnAddToCartListener addToCartClickListener;
 
     public AllMemoryDialog(List<MemoryItem> allMemory,
-                           OnAddToCartClickListener addToCartClickListener)
+                           ShopItemAdapter.OnAddToCartListener addToCartClickListener)
         {
         this.allMemory = allMemory;
         this.addToCartClickListener = addToCartClickListener;
@@ -41,25 +40,25 @@ public class AllMemoryDialog extends DialogFragment
         View view = inflater.inflate(R.layout.dialog_all_memory, container, false);
         RecyclerView recyclerView = view.findViewById(R.id.allMemoryRecyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
-        MemoryAdapter adapter = new MemoryAdapter(allMemory, R.layout.item_memory_grid);
-        adapter.setOnAddToCartClickListener(addToCartClickListener);
+        ShopItemAdapter<MemoryItem> adapter = new ShopItemAdapter<>(allMemory);
+        adapter.setOnAddToCartListener(addToCartClickListener);
         adapter.setOnItemClickListener(item ->
             {
-                if ("__VIEW_MORE__".equals(item.name))
+                if ("__VIEW_MORE__".equals(item.getName()))
                 {
                     return;
                 }
+                MemoryItem mem = (MemoryItem) item;
                 android.content.Intent intent = new android.content.Intent(getContext(),
                         com.windriver.pcgate.ui.DetailView.MemoryDetailsActivity.class);
-                intent.putExtra("name", item.name);
-                intent.putExtra("price", item.price);
-                intent.putExtra("imageUrl", item.imageUrl);
-                intent.putExtra("ddr_type", item.ddr_type);
-                intent.putExtra("color", item.color);
-                intent.putExtra("cas_latency", item.cas_latency);
-                intent.putExtra("first_word_latency", item.first_word_latency);
-                intent.putIntegerArrayListExtra("modules", new java.util.ArrayList<>(item.modules));
-                intent.putIntegerArrayListExtra("speed", new java.util.ArrayList<>(item.speed));
+                intent.putExtra("name", mem.name);
+                intent.putExtra("price", mem.price);
+                intent.putExtra("imageUrl", mem.imageUrl);
+                intent.putExtra("ddr_type", mem.ddr_type);
+                intent.putExtra("color", mem.color);
+                intent.putExtra("cas_latency", mem.cas_latency);
+                intent.putExtra("first_word_latency", mem.first_word_latency);
+                // Add other extras as needed
                 startActivity(intent);
             });
         recyclerView.setAdapter(adapter);

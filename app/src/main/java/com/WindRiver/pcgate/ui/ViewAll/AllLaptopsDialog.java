@@ -16,19 +16,18 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.windriver.pcgate.R;
-import com.windriver.pcgate.adapter.LaptopAdapter;
-import com.windriver.pcgate.adapter.LaptopAdapter.OnAddToCartClickListener;
-import com.windriver.pcgate.model.LaptopItem;
+import com.windriver.pcgate.adapter.ShopItemAdapter;
+import com.windriver.pcgate.model.ShopItem;
 
 import java.util.List;
 
 public class AllLaptopsDialog extends DialogFragment
     {
-    private final List<LaptopItem> allLaptops;
-    private final OnAddToCartClickListener addToCartClickListener;
+    private final List<ShopItem> allLaptops;
+    private final ShopItemAdapter.OnAddToCartListener addToCartClickListener;
 
-    public AllLaptopsDialog(List<LaptopItem> allLaptops,
-                            OnAddToCartClickListener addToCartClickListener)
+    public AllLaptopsDialog(List<ShopItem> allLaptops,
+                            ShopItemAdapter.OnAddToCartListener addToCartClickListener)
         {
         this.allLaptops = allLaptops;
         this.addToCartClickListener = addToCartClickListener;
@@ -42,26 +41,31 @@ public class AllLaptopsDialog extends DialogFragment
         View view = inflater.inflate(R.layout.dialog_all_laptops, container, false);
         RecyclerView recyclerView = view.findViewById(R.id.allLaptopsRecyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
-        LaptopAdapter adapter = new LaptopAdapter(allLaptops, R.layout.item_laptop_grid);
-        adapter.setOnAddToCartClickListener(addToCartClickListener);
+        ShopItemAdapter<ShopItem> adapter = new ShopItemAdapter<>(allLaptops);
+        adapter.setOnAddToCartListener(addToCartClickListener);
         adapter.setOnItemClickListener(item ->
             {
-                if ("__VIEW_MORE__".equals(item.model))
+                if ("__VIEW_MORE__".equals(item.getName()))
                 {
                     return;
                 }
                 android.content.Intent intent = new android.content.Intent(getContext(),
                         com.windriver.pcgate.ui.DetailView.LaptopDetailsActivity.class);
-                intent.putExtra("brand", item.brand);
-                intent.putExtra("model", item.model);
-                intent.putExtra("price", item.price);
-                intent.putExtra("imageUrl", item.imageUrl);
-                intent.putExtra("processor", item.processor);
-                intent.putExtra("ram_gb", item.ram_gb);
-                intent.putExtra("ram_type", item.ram_type);
-                intent.putExtra("graphic_card_gb", item.graphic_card_gb);
-                intent.putExtra("hdd", item.hdd);
-                intent.putExtra("ssd", item.ssd);
+                // Cast to LaptopItem for laptop-specific fields
+                if (item instanceof com.windriver.pcgate.model.LaptopItem)
+                {
+                    com.windriver.pcgate.model.LaptopItem laptop = (com.windriver.pcgate.model.LaptopItem) item;
+                    intent.putExtra("brand", laptop.brand);
+                    intent.putExtra("model", laptop.model);
+                    intent.putExtra("price", laptop.price);
+                    intent.putExtra("imageUrl", laptop.imageUrl);
+                    intent.putExtra("processor", laptop.processor);
+                    intent.putExtra("ram_gb", laptop.ram_gb);
+                    intent.putExtra("ram_type", laptop.ram_type);
+                    intent.putExtra("graphic_card_gb", laptop.graphic_card_gb);
+                    intent.putExtra("hdd", laptop.hdd);
+                    intent.putExtra("ssd", laptop.ssd);
+                }
                 startActivity(intent);
             });
         recyclerView.setAdapter(adapter);
