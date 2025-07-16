@@ -96,4 +96,41 @@
         android:textColor="@android:color/white"
         android:layout_marginTop="24dp" />
 
+    <LinearLayout
+        android:id="@+id/layoutCartActions"
+        android:layout_width="260dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:visibility="gone"
+        android:layout_marginTop="24dp">
+
+        <Button
+            android:id="@+id/buttonRemoveFromCart"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/remove"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/textQuantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp" />
+
+        <Button
+            android:id="@+id/buttonAddMoreToCart"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/add"
+            android:textSize="16sp" />
+    </LinearLayout>
+
 </LinearLayout>

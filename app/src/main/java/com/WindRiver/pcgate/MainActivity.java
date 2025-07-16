@@ -13,9 +13,6 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.windriver.pcgate.databinding.ActivityMainBinding;
-import com.windriver.pcgate.ui.Cart.CartViewModel;
-import com.windriver.pcgate.ui.LoginRegister.Login_activity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -32,6 +29,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.windriver.pcgate.databinding.ActivityMainBinding;
+import com.windriver.pcgate.ui.Cart.CartViewModel;
+import com.windriver.pcgate.ui.LoginRegister.Login_activity;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -125,6 +125,19 @@ public class MainActivity extends AppCompatActivity
 
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
+
+        // Hide BottomNavigationView when ChatFragment is visible
+        navController.addOnDestinationChangedListener((controller, destination, arguments) ->
+            {
+                if (destination.getId() == R.id.chatFragment)
+                {
+                    binding.navView.setVisibility(View.GONE); // Hide nav bar
+                }
+                else
+                {
+                    binding.navView.setVisibility(View.VISIBLE); // Show nav bar
+                }
+            });
         }
 
     private void initializeGeminiAI()

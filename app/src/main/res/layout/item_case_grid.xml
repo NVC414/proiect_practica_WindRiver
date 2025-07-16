@@ -55,7 +55,43 @@
         android:layout_height="wrap_content"
         android:text="@string/add_to_cart"
         android:textSize="12sp"
-        android:layout_gravity="bottom" />
+        android:layout_gravity="bottom"
+        android:visibility="visible" />
+
+    <LinearLayout
+        android:id="@+id/layoutCartActions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/buttonRemoveFromCart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/remove"
+            android:textSize="12sp"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/textQuantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1"
+            android:textSize="12sp"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp" />
+
+        <Button
+            android:id="@+id/buttonAddMoreToCart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/add"
+            android:textSize="12sp"
+            android:layout_marginTop="4dp" />
+    </LinearLayout>
 
 </LinearLayout>
-

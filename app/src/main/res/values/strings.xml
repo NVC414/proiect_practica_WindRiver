@@ -55,4 +55,6 @@
     <string name="laptop_image">Laptop image</string>
     <string name="item_laptop_model">Model</string>
     <string name="all_laptops">All Laptops</string>
+    <string name="remove">Remove</string>
+    <string name="add">Add</string>
 </resources>

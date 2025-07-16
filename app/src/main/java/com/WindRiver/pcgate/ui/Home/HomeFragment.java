@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
@@ -100,6 +101,48 @@ public class HomeFragment extends Fragment
                         android.widget.Toast.LENGTH_SHORT).show();
             };
         caseAdapter.setOnAddToCartClickListener(addToCartClickListener);
+
+    // Add Remove from Cart logic
+    CaseAdapter.OnRemoveFromCartClickListener removeFromCartClickListener = item ->
+        {
+            List<CartItem> currentCart = cartViewModel.getCartItems().getValue();
+            if (currentCart != null)
+            {
+                for (CartItem cartItem : currentCart)
+                {
+                    if (cartItem.getName().equals(item.name))
+                    {
+                        int newQty = cartItem.getQuantity() - 1;
+                        if (newQty > 0)
+                        {
+                            cartViewModel.addItem(new CartItem(item.name, cartItem.getPrice(), -1));
+                        }
+                        else
+                        {
+                            // Remove all of this item by setting quantity to 0
+                            cartViewModel.addItem(new CartItem(item.name, cartItem.getPrice(),
+                                    -cartItem.getQuantity()));
+                        }
+                        break;
+                    }
+                }
+            }
+        };
+    caseAdapter.setOnRemoveFromCartClickListener(removeFromCartClickListener);
+
+    // Observe cart and update adapter with quantities
+    cartViewModel.getCartItems().observe(getViewLifecycleOwner(), items ->
+        {
+            java.util.Map<String, Integer> quantities = new java.util.HashMap<>();
+            if (items != null)
+            {
+                for (CartItem cartItem : items)
+                {
+                    quantities.put(cartItem.getName(), cartItem.getQuantity());
+                }
+            }
+            caseAdapter.setCartQuantities(quantities);
+        });
 
         // Fetch all cases from Firebase, shuffle, pick 5 random, add 'View More' item
         DatabaseReference caseRef = FirebaseDatabase.getInstance().getReference().child("case");
@@ -1020,6 +1063,13 @@ public class HomeFragment extends Fragment
             intent.putExtra("type", item.type);
             intent.putExtra("wattage", item.wattage);
             startActivity(intent);
+        });
+
+    com.google.android.material.floatingactionbutton.FloatingActionButton fabChat = view.findViewById(
+            R.id.fabChat);
+    fabChat.setOnClickListener(v ->
+        {
+            Navigation.findNavController(view).navigate(R.id.chatFragment);
         });
         }
     }

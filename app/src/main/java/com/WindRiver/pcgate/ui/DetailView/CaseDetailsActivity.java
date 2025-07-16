@@ -2,6 +2,8 @@ package com.windriver.pcgate.ui.DetailView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -11,10 +13,10 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.windriver.pcgate.R;
 import com.windriver.pcgate.ui.Cart.CartItem;
 import com.windriver.pcgate.ui.Cart.CartViewModel;
-import com.bumptech.glide.Glide;
 
 public class CaseDetailsActivity extends AppCompatActivity
     {
@@ -46,6 +48,10 @@ public class CaseDetailsActivity extends AppCompatActivity
         TextView caseExternalVolume = findViewById(R.id.caseExternalVolume);
         Button addToCartButton = findViewById(R.id.buttonAddToCart);
         ImageButton backButton = findViewById(R.id.buttonBack);
+        android.view.View layoutCartActions = findViewById(R.id.layoutCartActions);
+        Button buttonRemoveFromCart = findViewById(R.id.buttonRemoveFromCart);
+        Button buttonAddMoreToCart = findViewById(R.id.buttonAddMoreToCart);
+        TextView textQuantity = findViewById(R.id.textQuantity);
 
         Glide.with(this).load(imageUrl).placeholder(
                 R.drawable.ic_image_placeholder).centerCrop().into(caseImage);
@@ -59,8 +65,125 @@ public class CaseDetailsActivity extends AppCompatActivity
         caseInternal35Bays.setText("Internal 3.5" + " Bays: " + internal35Bays);
         caseExternalVolume.setText("External Volume: " + externalVolume + " L");
 
-        // Use CartViewModel for add to cart (now delegates to CartRepository)
         CartViewModel cartViewModel = CartViewModel.getInstance();
+
+        // Helper to update UI based on cart
+        Runnable updateCartUI = () ->
+            {
+                java.util.List<CartItem> items = cartViewModel.getCartItems().getValue();
+                int quantity = 0;
+                double priceValue = 0.0;
+                try
+                {
+                    priceValue = price != null ? Double.parseDouble(
+                            price.replaceAll("[^0-9.]", "")) : 0.0;
+                }
+                catch (Exception ignored)
+                {
+                }
+                if (items != null)
+                {
+                    for (CartItem item : items)
+                    {
+                        if (item.getName().equals(name))
+                        {
+                            quantity = item.getQuantity();
+                            break;
+                        }
+                    }
+                }
+                boolean wasInCart = layoutCartActions.getVisibility() == android.view.View.VISIBLE;
+                boolean nowInCart = quantity > 0;
+                if (nowInCart)
+                {
+                    if (!wasInCart)
+                    {
+                        addToCartButton.clearAnimation();
+                        layoutCartActions.clearAnimation();
+                        Animation splitOut = AnimationUtils.loadAnimation(this,
+                                R.anim.button_split_out);
+                        Animation splitIn = AnimationUtils.loadAnimation(this,
+                                R.anim.button_split_in);
+                        splitOut.setAnimationListener(
+                                new android.view.animation.Animation.AnimationListener()
+                                    {
+                                    @Override
+                                    public void onAnimationStart(
+                                            android.view.animation.Animation animation)
+                                        {
+                                        }
+
+                                    @Override
+                                    public void onAnimationRepeat(
+                                            android.view.animation.Animation animation)
+                                        {
+                                        }
+
+                                    @Override
+                                    public void onAnimationEnd(
+                                            android.view.animation.Animation animation)
+                                        {
+                                        addToCartButton.setVisibility(android.view.View.GONE);
+                                        layoutCartActions.setVisibility(android.view.View.VISIBLE);
+                                        layoutCartActions.startAnimation(splitIn);
+                                        }
+                                    });
+                        addToCartButton.startAnimation(splitOut);
+                    }
+                    else
+                    {
+                        addToCartButton.setVisibility(android.view.View.GONE);
+                        layoutCartActions.setVisibility(android.view.View.VISIBLE);
+                    }
+                    textQuantity.setText(String.valueOf(quantity));
+                }
+                else
+                {
+                    if (wasInCart)
+                    {
+                        addToCartButton.clearAnimation();
+                        layoutCartActions.clearAnimation();
+                        Animation splitOut = AnimationUtils.loadAnimation(this,
+                                R.anim.button_split_out);
+                        Animation splitIn = AnimationUtils.loadAnimation(this,
+                                R.anim.button_split_in);
+                        splitOut.setAnimationListener(
+                                new android.view.animation.Animation.AnimationListener()
+                                    {
+                                    @Override
+                                    public void onAnimationStart(
+                                            android.view.animation.Animation animation)
+                                        {
+                                        }
+
+                                    @Override
+                                    public void onAnimationRepeat(
+                                            android.view.animation.Animation animation)
+                                        {
+                                        }
+
+                                    @Override
+                                    public void onAnimationEnd(
+                                            android.view.animation.Animation animation)
+                                        {
+                                        layoutCartActions.setVisibility(android.view.View.GONE);
+                                        addToCartButton.setVisibility(android.view.View.VISIBLE);
+                                        addToCartButton.startAnimation(splitIn);
+                                        }
+                                    });
+                        layoutCartActions.startAnimation(splitOut);
+                    }
+                    else
+                    {
+                        addToCartButton.setVisibility(android.view.View.VISIBLE);
+                        layoutCartActions.setVisibility(android.view.View.GONE);
+                    }
+                }
+            };
+
+        // Observe cart changes
+        cartViewModel.getCartItems().observe(this, items -> updateCartUI.run());
+
         addToCartButton.setOnClickListener(v ->
             {
                 double priceValue = 0.0;
@@ -76,7 +199,54 @@ public class CaseDetailsActivity extends AppCompatActivity
                 cartViewModel.addItem(cartItem);
                 Toast.makeText(this, "Added to cart", Toast.LENGTH_SHORT).show();
             });
-
+        buttonAddMoreToCart.setOnClickListener(v ->
+            {
+                double priceValue = 0.0;
+                try
+                {
+                    priceValue = price != null ? Double.parseDouble(
+                            price.replaceAll("[^0-9.]", "")) : 0.0;
+                }
+                catch (Exception ignored)
+                {
+                }
+                CartItem cartItem = new CartItem(name, priceValue, 1);
+                cartViewModel.addItem(cartItem);
+            });
+        buttonRemoveFromCart.setOnClickListener(v ->
+            {
+                java.util.List<CartItem> items = cartViewModel.getCartItems().getValue();
+                double priceValue = 0.0;
+                try
+                {
+                    priceValue = price != null ? Double.parseDouble(
+                            price.replaceAll("[^0-9.]", "")) : 0.0;
+                }
+                catch (Exception ignored)
+                {
+                }
+                if (items != null)
+                {
+                    for (CartItem item : items)
+                    {
+                        if (item.getName().equals(name))
+                        {
+                            int newQty = item.getQuantity() - 1;
+                            if (newQty > 0)
+                            {
+                                cartViewModel.addItem(new CartItem(name, priceValue, -1));
+                            }
+                            else
+                            {
+                                cartViewModel.addItem(
+                                        new CartItem(name, priceValue, -item.getQuantity()));
+                            }
+                            break;
+                        }
+                    }
+                }
+            });
         backButton.setOnClickListener(v -> finish());
+        updateCartUI.run();
         }
     }

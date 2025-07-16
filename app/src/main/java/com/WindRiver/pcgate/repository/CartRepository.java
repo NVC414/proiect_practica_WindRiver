@@ -51,16 +51,25 @@ public class CartRepository
     public void addItem(CartItem item)
         {
         boolean found = false;
-        for (CartItem cartItem : cartItems)
+        for (int i = 0; i < cartItems.size(); i++)
         {
+            CartItem cartItem = cartItems.get(i);
             if (cartItem.getName().equals(item.getName()))
             {
-                cartItem.setQuantity(cartItem.getQuantity() + item.getQuantity());
+                int newQty = cartItem.getQuantity() + item.getQuantity();
+                if (newQty > 0)
+                {
+                    cartItem.setQuantity(newQty);
+                }
+                else
+                {
+                    cartItems.remove(i);
+                }
                 found = true;
                 break;
             }
         }
-        if (!found)
+        if (!found && item.getQuantity() > 0)
         {
             cartItems.add(item);
         }
