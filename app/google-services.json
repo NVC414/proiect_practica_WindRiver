@@ -62,6 +62,25 @@
           "other_platform_oauth_client": []
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:49456315324:android:35965e4e35ddec8cb909b9",
+        "android_client_info": {
+          "package_name": "com.windriver.pcgate"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFj07-bTo3vzfCZDHXVjLx1t5XuTY4hVY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
     }
   ],
   "configuration_version": "1"
