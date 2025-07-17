@@ -31,7 +31,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             if (msg instanceof ChatMessage.AiMessage)
             {
                 messages.set(i, new ChatMessage.AiMessage(text));
-                notifyItemChanged(i, text); // Pass payload for partial update
+                notifyItemChanged(i, text);
                 break;
             }
         }
@@ -82,7 +82,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         boolean isLastOfType = false;
         if (message instanceof ChatMessage.UserMessage)
         {
-            // Find if this is the last user message
+
             for (int i = messages.size() - 1; i >= 0; i--)
             {
                 if (messages.get(i) instanceof ChatMessage.UserMessage)
@@ -95,7 +95,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
         else if (message instanceof ChatMessage.AiMessage)
         {
-            // Find if this is the last AI message
+
             for (int i = messages.size() - 1; i >= 0; i--)
             {
                 if (messages.get(i) instanceof ChatMessage.AiMessage)
@@ -114,7 +114,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         {
         if (!payloads.isEmpty() && holder instanceof AiViewHolder)
         {
-            // Animate text update
+
             String newText = (String) payloads.get(0);
             ((AiViewHolder) holder).animateTextUpdate(newText);
         }
@@ -169,7 +169,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         void animateTextUpdate(String text)
             {
-            // Animate height change as text grows
+
             int oldHeight = textView.getHeight();
             textView.setText(text);
             textView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);

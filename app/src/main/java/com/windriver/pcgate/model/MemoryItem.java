@@ -11,8 +11,8 @@ public class MemoryItem
     public String ddr_type;
     public int cas_latency;
     public int first_word_latency;
-    public List<Integer> modules; // [count, size]
-    public List<Integer> speed;   // [type, value]
+    public List<Integer> modules;
+    public List<Integer> speed;
 
     public MemoryItem()
         {

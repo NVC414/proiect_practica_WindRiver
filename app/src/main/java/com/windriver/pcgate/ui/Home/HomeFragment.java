@@ -67,11 +67,11 @@ public class HomeFragment extends Fragment
         viewPager.setAdapter(adapter);
 
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) ->
-            { // this works, i don't know quite why, but it does
+            {
                 tab.setCustomView(R.layout.custom_tab);
             }).attach();
 
-        // Setup RecyclerView for cases
+
         RecyclerView caseRecyclerView = view.findViewById(R.id.caseRecyclerView);
         caseRecyclerView.setLayoutManager(
                 new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -79,10 +79,10 @@ public class HomeFragment extends Fragment
         CaseAdapter caseAdapter = new CaseAdapter(caseList);
         caseRecyclerView.setAdapter(caseAdapter);
 
-        // CartViewModel for cart operations
+
         CartViewModel cartViewModel = CartViewModel.getInstance();
 
-        // Add to Cart button logic
+
         CaseAdapter.OnAddToCartClickListener addToCartClickListener = item ->
             {
                 double price = 0.0;
@@ -100,7 +100,7 @@ public class HomeFragment extends Fragment
             };
         caseAdapter.setOnAddToCartClickListener(addToCartClickListener);
 
-    // Add Remove from Cart logic
+
     CaseAdapter.OnRemoveFromCartClickListener removeFromCartClickListener = item ->
         {
             List<CartItem> currentCart = cartViewModel.getCartItems().getValue();
@@ -117,7 +117,7 @@ public class HomeFragment extends Fragment
                         }
                         else
                         {
-                            // Remove all of this item by setting quantity to 0
+
                             cartViewModel.addItem(new CartItem(item.name, cartItem.getPrice(),
                                     -cartItem.getQuantity()));
                         }
@@ -128,7 +128,7 @@ public class HomeFragment extends Fragment
         };
     caseAdapter.setOnRemoveFromCartClickListener(removeFromCartClickListener);
 
-    // Observe cart and update adapter with quantities
+
     cartViewModel.getCartItems().observe(getViewLifecycleOwner(), items ->
         {
             java.util.Map<String, Integer> quantities = new java.util.HashMap<>();
@@ -142,7 +142,7 @@ public class HomeFragment extends Fragment
             caseAdapter.setCartQuantities(quantities);
         });
 
-        // Fetch all cases from Firebase, shuffle, pick 5 random, add 'View More' item
+
         DatabaseReference caseRef = FirebaseDatabase.getInstance().getReference().child("case");
         caseRef.addListenerForSingleValueEvent(new ValueEventListener()
             {
@@ -229,7 +229,7 @@ public class HomeFragment extends Fragment
                     persistentRandomCases.add(viewMoreItem);
                 }
                 caseAdapter.setCaseList(persistentRandomCases);
-                caseAdapter.setAllCases(allCases); // For grid dialog
+                caseAdapter.setAllCases(allCases);
                 }
 
             @Override
@@ -242,13 +242,13 @@ public class HomeFragment extends Fragment
                 }
             });
 
-        // Handle 'View More' click
+
         caseAdapter.setOnViewMoreClickListener(() ->
             {
-                // Show dialog/fragment with all cases in a grid (3 per row)
+
                 AllCasesDialog dialog = new AllCasesDialog(caseAdapter.getAllCases(),
                         addToCartClickListener
-                        // pass the same listener
+
                 );
                 dialog.show(getParentFragmentManager(), "AllCasesDialog");
             });
@@ -263,8 +263,8 @@ public class HomeFragment extends Fragment
                 intent.putExtra("name", item.name);
                 intent.putExtra("price", item.price);
                 intent.putExtra("imageUrl", item.imageUrl);
-                // If you have more fields, fetch them from Firebase and add here
-                // For demo, try to get extra fields from allCases
+
+
                 for (CaseItem c : caseAdapter.getAllCases())
                 {
                     if (c.name.equals(item.name))
@@ -281,7 +281,7 @@ public class HomeFragment extends Fragment
                 startActivity(intent);
             });
 
-        // Setup RecyclerView for CPUs
+
         RecyclerView cpuRecyclerView = view.findViewById(R.id.cpuRecyclerView);
         cpuRecyclerView.setLayoutManager(
                 new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -290,7 +290,7 @@ public class HomeFragment extends Fragment
                 cpuList);
         cpuRecyclerView.setAdapter(cpuAdapter);
 
-        // Add to Cart button logic for CPUs
+
         com.windriver.pcgate.adapter.CpuAdapter.OnAddToCartClickListener addToCartClickListenerCpu = item ->
             {
                 double price = item.price;
@@ -301,7 +301,7 @@ public class HomeFragment extends Fragment
             };
         cpuAdapter.setOnAddToCartClickListener(addToCartClickListenerCpu);
 
-        // Add Remove from Cart logic for CPUs
+
         com.windriver.pcgate.adapter.CpuAdapter.OnRemoveFromCartClickListener removeFromCartClickListenerCpu = item -> {
             List<CartItem> currentCart = cartViewModel.getCartItems().getValue();
             if (currentCart != null) {
@@ -320,13 +320,13 @@ public class HomeFragment extends Fragment
         };
         cpuAdapter.setOnRemoveFromCartClickListener(removeFromCartClickListenerCpu);
 
-        // Add AddMoreToCart logic for CPUs
+
         com.windriver.pcgate.adapter.CpuAdapter.OnAddMoreToCartClickListener addMoreToCartClickListenerCpu = item -> {
             cartViewModel.addItem(new CartItem(item.name, item.price, 1));
         };
         cpuAdapter.setOnAddMoreToCartClickListener(addMoreToCartClickListenerCpu);
 
-        // Observe cart and update CPU adapter with quantities
+
         cartViewModel.getCartItems().observe(getViewLifecycleOwner(), items -> {
             java.util.Map<String, Integer> quantities = new java.util.HashMap<>();
             if (items != null) {
@@ -337,7 +337,7 @@ public class HomeFragment extends Fragment
             cpuAdapter.setCartQuantities(quantities);
         });
 
-        // Fetch all CPUs from Firebase, shuffle, pick 5 random, add 'View More' item
+
         DatabaseReference cpuRef = FirebaseDatabase.getInstance().getReference().child("cpu");
         cpuRef.addListenerForSingleValueEvent(new ValueEventListener()
             {
@@ -393,13 +393,13 @@ public class HomeFragment extends Fragment
                 }
             });
 
-        // Handle 'View More' click for CPUs
+
         cpuAdapter.setOnViewMoreClickListener(() ->
             {
-                // Show dialog/fragment with all CPUs in a grid (3 per row)
+
                 AllCpusDialog dialog = new AllCpusDialog(cpuAdapter.getAllCpus(),
                         addToCartClickListenerCpu
-                        // pass the same listener
+
                 );
                 dialog.show(getParentFragmentManager(), "AllCpusDialog");
             });
@@ -424,7 +424,7 @@ public class HomeFragment extends Fragment
                 startActivity(intent);
             });
 
-    // Setup RecyclerView for laptops
+
     RecyclerView laptopRecyclerView = view.findViewById(R.id.laptopRecyclerView);
     laptopRecyclerView.setLayoutManager(
             new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -438,7 +438,7 @@ public class HomeFragment extends Fragment
     laptopLoadingProgressBar.setVisibility(View.VISIBLE);
     laptopRecyclerView.setVisibility(View.INVISIBLE);
 
-    // Add to Cart button logic for laptops
+
     com.windriver.pcgate.adapter.LaptopAdapter.OnAddToCartClickListener addToCartClickListenerLaptop = item ->
         {
             double price = 0.0;
@@ -456,7 +456,7 @@ public class HomeFragment extends Fragment
         };
     laptopAdapter.setOnAddToCartClickListener(addToCartClickListenerLaptop);
 
-    // Firebase listeners are already async, so remove the Thread wrapper
+
     DatabaseReference laptopRef = FirebaseDatabase.getInstance().getReference().child("laptop");
     laptopRef.addListenerForSingleValueEvent(new ValueEventListener()
         {
@@ -551,7 +551,7 @@ public class HomeFragment extends Fragment
             }
         });
 
-    // Handle 'View More' click for laptops
+
     laptopAdapter.setOnViewMoreClickListener(() ->
         {
             if (laptopAdapter.getAllLaptops() == null || laptopAdapter.getAllLaptops().isEmpty())
@@ -587,7 +587,7 @@ public class HomeFragment extends Fragment
             startActivity(intent);
         });
 
-        // Setup RecyclerView for Memory
+
         RecyclerView memoryRecyclerView = view.findViewById(R.id.memoryRecyclerView);
         memoryRecyclerView.setLayoutManager(
                 new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -596,7 +596,7 @@ public class HomeFragment extends Fragment
                 memoryList);
         memoryRecyclerView.setAdapter(memoryAdapter);
 
-        // Add to Cart button logic for Memory
+
         com.windriver.pcgate.adapter.MemoryAdapter.OnAddToCartClickListener addToCartClickListenerMemory = item ->
             {
                 double price = item.price;
@@ -607,7 +607,7 @@ public class HomeFragment extends Fragment
             };
         memoryAdapter.setOnAddToCartClickListener(addToCartClickListenerMemory);
 
-        // Fetch all Memory from Firebase, shuffle, pick 5 random, add 'View More' item
+
         DatabaseReference memoryRef = FirebaseDatabase.getInstance().getReference().child("memory");
         memoryRef.addListenerForSingleValueEvent(new ValueEventListener()
             {
@@ -678,7 +678,7 @@ public class HomeFragment extends Fragment
                 }
             });
 
-        // Handle 'View More' click for Memory
+
         memoryAdapter.setOnViewMoreClickListener(() ->
             {
                 com.windriver.pcgate.ui.ViewAll.AllMemoryDialog dialog = new com.windriver.pcgate.ui.ViewAll.AllMemoryDialog(
@@ -706,7 +706,7 @@ public class HomeFragment extends Fragment
                 startActivity(intent);
             });
 
-        // Setup RecyclerView for Motherboards
+
         RecyclerView motherboardRecyclerView = view.findViewById(R.id.motherboardRecyclerView);
         motherboardRecyclerView.setLayoutManager(
                 new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -714,7 +714,7 @@ public class HomeFragment extends Fragment
         com.windriver.pcgate.adapter.MotherboardAdapter motherboardAdapter = new com.windriver.pcgate.adapter.MotherboardAdapter(motherboardList);
         motherboardRecyclerView.setAdapter(motherboardAdapter);
 
-        // Add to Cart button logic for Motherboards
+
         com.windriver.pcgate.adapter.MotherboardAdapter.OnAddToCartClickListener addToCartClickListenerMotherboard = item -> {
             double price = 0.0;
             try {
@@ -726,7 +726,7 @@ public class HomeFragment extends Fragment
         };
         motherboardAdapter.setOnAddToCartClickListener(addToCartClickListenerMotherboard);
 
-        // Fetch all motherboards from Firebase, shuffle, pick 5 random, add 'View More' item
+
         DatabaseReference motherboardRef = FirebaseDatabase.getInstance().getReference().child("motherboard");
         motherboardRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -795,7 +795,7 @@ public class HomeFragment extends Fragment
             }
         });
 
-        // Handle 'View More' click for Motherboards
+
         motherboardAdapter.setOnViewMoreClickListener(() -> {
             com.windriver.pcgate.ui.ViewAll.AllMotherboardsDialog dialog = new com.windriver.pcgate.ui.ViewAll.AllMotherboardsDialog(
                 motherboardAdapter.getAllMotherboards(), addToCartClickListenerMotherboard);
@@ -819,7 +819,7 @@ public class HomeFragment extends Fragment
             startActivity(intent);
         });
 
-        // Setup RecyclerView for GPUs
+
         RecyclerView gpuRecyclerView = view.findViewById(R.id.gpuRecyclerView);
         ProgressBar gpuLoadingProgressBar = view.findViewById(R.id.gpuLoadingProgressBar);
         gpuLoadingProgressBar.setVisibility(View.VISIBLE);
@@ -829,7 +829,7 @@ public class HomeFragment extends Fragment
         com.windriver.pcgate.adapter.GpuAdapter gpuAdapter = new com.windriver.pcgate.adapter.GpuAdapter(gpuList);
         gpuRecyclerView.setAdapter(gpuAdapter);
 
-        // Add to Cart button logic for GPUs
+
         com.windriver.pcgate.adapter.GpuAdapter.OnAddToCartClickListener addToCartClickListenerGpu = item -> {
             double price = 0.0;
             try {
@@ -841,7 +841,7 @@ public class HomeFragment extends Fragment
         };
         gpuAdapter.setOnAddToCartClickListener(addToCartClickListenerGpu);
 
-        // Track loading completion for all categories
+
         final int totalCategories = 6;
         final int[] loadedCount = {0};
         Runnable hideProgressBarIfDone = () -> {
@@ -851,7 +851,7 @@ public class HomeFragment extends Fragment
             }
         };
 
-        // Fetch all GPUs from Firebase, shuffle, pick 5 random, add 'View More' item
+
         DatabaseReference gpuRef = FirebaseDatabase.getInstance().getReference("video-card");
         gpuRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -953,7 +953,7 @@ public class HomeFragment extends Fragment
             }
         });
 
-        // Handle 'View More' click for GPUs
+
         gpuAdapter.setOnViewMoreClickListener(() -> {
             com.windriver.pcgate.ui.ViewAll.AllGpuDialog dialog = new com.windriver.pcgate.ui.ViewAll.AllGpuDialog(
                 gpuAdapter.getAllGpus(), addToCartClickListenerGpu);
@@ -977,7 +977,7 @@ public class HomeFragment extends Fragment
             startActivity(intent);
         });
 
-        // Setup RecyclerView for PSUs
+
         RecyclerView psuRecyclerView = view.findViewById(R.id.psuRecyclerView);
         psuRecyclerView.setLayoutManager(
                 new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -985,7 +985,7 @@ public class HomeFragment extends Fragment
         com.windriver.pcgate.adapter.PsuAdapter psuAdapter = new com.windriver.pcgate.adapter.PsuAdapter(psuList);
         psuRecyclerView.setAdapter(psuAdapter);
 
-        // Add to Cart button logic for PSUs
+
         com.windriver.pcgate.adapter.PsuAdapter.OnAddToCartClickListener addToCartClickListenerPsu = item -> {
             double price = 0.0;
             try {
@@ -997,7 +997,7 @@ public class HomeFragment extends Fragment
         };
         psuAdapter.setOnAddToCartClickListener(addToCartClickListenerPsu);
 
-        // Fetch all PSUs from Firebase, shuffle, pick 5 random, add 'View More' item
+
         DatabaseReference psuRef = FirebaseDatabase.getInstance().getReference().child("power-supply");
         psuRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

@@ -33,7 +33,7 @@ public class CartFragment extends Fragment
 
         final TextView textTotal = binding.textTotal;
         Button buttonCheckout = binding.buttonCheckout;
-        // buttonCheckout.setOnClickListener(v -> {/* TODO: implement checkout */});
+
 
         cartViewModel.getCartItems().observe(getViewLifecycleOwner(), items ->
             {

@@ -28,7 +28,7 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
     private final int layoutResId;
     private OnItemClickListener itemClickListener;
 
-    // Add a map to track cart quantities
+
     private java.util.Map<String, Integer> cartQuantities = new java.util.HashMap<>();
 
     public CaseAdapter(List<CaseItem> caseList)
@@ -82,7 +82,7 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
         this.itemClickListener = listener;
         }
 
-    // Call this when cart changes
+
     public void setCartQuantities(java.util.Map<String, Integer> cartQuantities)
         {
         this.cartQuantities = cartQuantities;
@@ -107,7 +107,7 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
         int layoutToUse = layoutResId;
         if (viewType == TYPE_VIEW_MORE)
         {
-            layoutToUse = layoutResId; // Always use the same layout for 'View More'
+            layoutToUse = layoutResId;
         }
         View view = LayoutInflater.from(parent.getContext()).inflate(layoutToUse, parent, false);
         if (viewType == TYPE_VIEW_MORE)
@@ -150,7 +150,7 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
             holder.price.setText(item.price);
             int quantity = cartQuantities.containsKey(item.name) ? cartQuantities.get(
                     item.name) : 0;
-            // Always reset visibility before animation logic
+
             if (quantity > 0)
             {
                 holder.addToCartButton.setVisibility(View.GONE);
@@ -161,14 +161,14 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
                 holder.addToCartButton.setVisibility(View.VISIBLE);
                 holder.layoutCartActions.setVisibility(View.GONE);
             }
-            // Animation logic
+
             boolean wasInCart = holder.layoutCartActions.getVisibility() == View.VISIBLE;
             boolean nowInCart = quantity > 0;
             if (nowInCart)
             {
                 holder.addToCartButton.setVisibility(View.GONE);
                 holder.layoutCartActions.setVisibility(View.VISIBLE);
-                // Set quantity text if present
+
                 TextView textQuantity = holder.itemView.findViewById(R.id.textQuantity);
                 if (textQuantity != null)
                 {
@@ -229,7 +229,7 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
         notifyDataSetChanged();
         }
 
-    // Add new interface for remove action
+
     public interface OnRemoveFromCartClickListener
         {
         void onRemoveFromCart(CaseItem item);

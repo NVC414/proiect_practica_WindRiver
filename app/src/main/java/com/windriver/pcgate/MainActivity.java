@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity
     private DatabaseReference mDatabase;
     private final Executor executor = Executors.newSingleThreadExecutor();
     private ActivityMainBinding binding;
-    private GenerativeModelFutures generativeModel; // Store the model if needed across methods
+    private GenerativeModelFutures generativeModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity
             return;
         }
 
-        // Initialize Firebase Database
+
         try
         {
             FirebaseDatabase.getInstance().setPersistenceEnabled(true);
@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity
         }
         catch (Exception e)
         {
-            // Error enabling Firebase persistence (already enabled or other issue)
+
             mDatabase = FirebaseDatabase.getInstance().getReference();
         }
 
@@ -126,16 +126,16 @@ public class MainActivity extends AppCompatActivity
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
 
-        // Hide BottomNavigationView when ChatFragment is visible
+
         navController.addOnDestinationChangedListener((controller, destination, arguments) ->
             {
                 if (destination.getId() == R.id.chatFragment)
                 {
-                    binding.navView.setVisibility(View.GONE); // Hide nav bar
+                    binding.navView.setVisibility(View.GONE);
                 }
                 else
                 {
-                    binding.navView.setVisibility(View.VISIBLE); // Show nav bar
+                    binding.navView.setVisibility(View.VISIBLE);
                 }
             });
         }
@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity
         {
             GenerativeModel ai = FirebaseAI.getInstance(
                     GenerativeBackend.googleAI()).generativeModel(
-                    "gemini-2.5-flash"); // Or "gemini-pro"
+                    "gemini-2.5-flash");
             this.generativeModel = GenerativeModelFutures.from(ai);
         }
         catch (Exception e)
@@ -155,17 +155,17 @@ public class MainActivity extends AppCompatActivity
         }
         }
 
-    // --- Methods related to data fetching and AI interaction ---
-    // These methods might be called from Fragments.
-    // Ensure the Views (textView2, userPrompt, aiPrompt) are correctly accessed
-    // from the Fragment that owns them, typically via View Binding in the Fragment.
+
+
+
+
 
     public void sendMessage(View view)
         {
-        // This method assumes R.id.textView2 is accessible.
-        // If R.id.textView2 is in a Fragment, this method should ideally be IN that Fragment,
-        // or the Fragment should pass its View elements to a method in the Activity,
-        // or this method should accept the TextView as a parameter.
+
+
+
+
 
         if (mDatabase == null)
         {
@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity
             return;
         }
 
-        TextView textView2 = findViewById(R.id.textView2); // CAUTION: See comment above
+        TextView textView2 = findViewById(R.id.textView2);
         if (textView2 == null)
         {
             Toast.makeText(this, "Output view (textView2) not found.", Toast.LENGTH_SHORT).show();
@@ -236,7 +236,7 @@ public class MainActivity extends AppCompatActivity
                 }
                 else
                 {
-                    completableFuture.complete(""); // Or handle as error
+                    completableFuture.complete("");
                 }
                 }
 
@@ -252,11 +252,11 @@ public class MainActivity extends AppCompatActivity
 
     public void requestData(View view)
         {
-        // This method assumes R.id.userPrompt and R.id.aiPrompt are accessible.
-        // Similar to sendMessage, these should ideally be handled within the Fragment that owns them.
 
-        EditText userPromptEditText = findViewById(R.id.userPrompt); // CAUTION
-        TextView aiPromptTextView = findViewById(R.id.aiPrompt);   // CAUTION
+
+
+        EditText userPromptEditText = findViewById(R.id.userPrompt);
+        TextView aiPromptTextView = findViewById(R.id.aiPrompt);
 
         if (userPromptEditText == null)
         {

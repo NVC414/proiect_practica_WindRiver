@@ -41,7 +41,7 @@ public class AllCpusDialog extends DialogFragment
                              @Nullable Bundle savedInstanceState)
         {
         View view = inflater.inflate(R.layout.dialog_all_cpus, container, false);
-        // Removed RecyclerView and adapter setup from here
+
         ImageButton backButton = view.findViewById(R.id.buttonBack);
         backButton.setOnClickListener(v -> dismiss());
         return view;
@@ -54,7 +54,7 @@ public class AllCpusDialog extends DialogFragment
         recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 3));
         CartViewModel cartViewModel = CartViewModel.getInstance();
         CpuAdapter adapter = new CpuAdapter(allCpus, R.layout.item_cpu_grid);
-        // Add/remove listeners
+
         adapter.setOnAddToCartClickListener(addToCartClickListener);
         adapter.setOnRemoveFromCartClickListener(item -> {
             java.util.List<CartItem> current = cartViewModel.getCartItems().getValue();
@@ -75,7 +75,7 @@ public class AllCpusDialog extends DialogFragment
         adapter.setOnAddMoreToCartClickListener(item -> {
             cartViewModel.addItem(new CartItem(item.name, item.price, 1));
         });
-        // Observe cart and sync quantities
+
         cartViewModel.getCartItems().observe(getViewLifecycleOwner(), items -> {
             java.util.Map<String, Integer> qtys = new java.util.HashMap<>();
             if (items != null) {

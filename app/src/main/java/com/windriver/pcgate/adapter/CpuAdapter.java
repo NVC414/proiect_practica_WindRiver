@@ -26,7 +26,7 @@ public class CpuAdapter extends RecyclerView.Adapter<CpuAdapter.CpuViewHolder>
     private OnViewMoreClickListener viewMoreClickListener;
     private final int layoutResId;
     private List<CpuItem> allCpus = new java.util.ArrayList<>();
-    // Add a map to track cart quantities
+
     private java.util.Map<String, Integer> cartQuantities = new java.util.HashMap<>();
     private OnRemoveFromCartClickListener removeFromCartClickListener;
     private OnAddMoreToCartClickListener addMoreToCartClickListener;
@@ -93,7 +93,7 @@ public class CpuAdapter extends RecyclerView.Adapter<CpuAdapter.CpuViewHolder>
         return new CpuViewHolder(view);
         }
 
-    // Call this when cart changes
+
     public void setCartQuantities(java.util.Map<String, Integer> cartQuantities) {
         this.cartQuantities = cartQuantities;
         notifyDataSetChanged();

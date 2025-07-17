@@ -9,7 +9,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class ChatHistoryManager
     {
@@ -36,21 +35,46 @@ public class ChatHistoryManager
                 obj.put("type", msg instanceof ChatMessage.UserMessage ? "user" : "ai");
             }
             catch (JSONException e)
-            { /* ignore */ }
+            {  }
             chatMessages.put(obj);
+        }
+        // TODO leaga UUID de ultimul UUID ca atunci cand se inchide app sa nu se duplicheze
+        String conversationHash = generateConversationHash(chatMessages);
+        for (int i = 0; i < chatsArray.length(); i++) {
+            JSONObject chatObj = chatsArray.optJSONObject(i);
+            if (chatObj != null && conversationHash.equals(chatObj.optString("hash"))) {
+                try {
+                    chatObj.put("timestamp", System.currentTimeMillis());
+                    chatObj.put("id", java.util.UUID.randomUUID().toString());
+                } catch (JSONException e) { }
+                try {
+                    chatsArray.put(i, chatObj);
+                } catch (Exception e) {
+                    try {
+                        chatsArray.remove(i);
+                        chatsArray.put(chatObj);
+                    } catch (Exception ignored) {}
+                }
+                prefs.edit().putString(KEY_CHATS, chatsArray.toString()).apply();
+                return;
+            }
         }
         JSONObject chatObj = new JSONObject();
         try
         {
             chatObj.put("timestamp", System.currentTimeMillis());
             chatObj.put("messages", chatMessages);
-            chatObj.put("id", UUID.randomUUID().toString()); // Add unique ID
+            chatObj.put("id", java.util.UUID.randomUUID().toString());
+            chatObj.put("hash", conversationHash);
         }
         catch (JSONException e)
-        { /* ignore */ }
+        {  }
         chatsArray.put(chatObj);
         prefs.edit().putString(KEY_CHATS, chatsArray.toString()).apply();
         }
+    private String generateConversationHash(JSONArray chatMessages) {
+        return String.valueOf(chatMessages.toString().hashCode());
+    }
 
     public void saveCurrentChat(List<ChatMessage> messages) {
         JSONArray chatMessages = new JSONArray();
@@ -59,7 +83,7 @@ public class ChatHistoryManager
             try {
                 obj.put("text", msg.getText());
                 obj.put("type", msg instanceof ChatMessage.UserMessage ? "user" : "ai");
-            } catch (JSONException e) { /* ignore */ }
+            } catch (JSONException e) {  }
             chatMessages.put(obj);
         }
         prefs.edit().putString(KEY_CURRENT_CHAT, chatMessages.toString()).apply();
@@ -83,7 +107,7 @@ public class ChatHistoryManager
                     }
                 }
             }
-        } catch (JSONException e) { /* ignore */ }
+        } catch (JSONException e) {  }
         return messages;
     }
 
@@ -159,17 +183,6 @@ public class ChatHistoryManager
         }
         }
 
-    public static class ChatHistoryItem
-        {
-        public final int index;
-        public final long timestamp;
-        public final String id;
-
-        public ChatHistoryItem(int index, long timestamp, String id)
-            {
-            this.index = index;
-            this.timestamp = timestamp;
-            this.id = id;
-            }
+        public record ChatHistoryItem(int index, long timestamp, String id) {
         }
     }

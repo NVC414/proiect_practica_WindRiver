@@ -65,7 +65,7 @@ public class CaseDetailsActivity extends AppCompatActivity
 
         CartViewModel cartViewModel = CartViewModel.getInstance();
 
-        // Helper to update UI based on cart
+
         Runnable updateCartUI = () ->
             {
                 java.util.List<CartItem> items = cartViewModel.getCartItems().getValue();
@@ -105,7 +105,7 @@ public class CaseDetailsActivity extends AppCompatActivity
                 }
             };
 
-        // Observe cart changes
+
         cartViewModel.getCartItems().observe(this, items -> updateCartUI.run());
 
         addToCartButton.setOnClickListener(v ->

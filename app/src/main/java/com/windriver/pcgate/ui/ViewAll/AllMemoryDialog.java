@@ -63,7 +63,7 @@ public class AllMemoryDialog extends DialogFragment
                 startActivity(intent);
             });
         recyclerView.setAdapter(adapter);
-        // Add back button
+
         View backButton = view.findViewById(R.id.buttonBack);
         if (backButton != null)
         {

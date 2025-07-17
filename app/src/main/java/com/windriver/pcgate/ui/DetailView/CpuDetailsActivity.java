@@ -57,7 +57,7 @@ public class CpuDetailsActivity extends AppCompatActivity
 
         CartViewModel cartViewModel = CartViewModel.getInstance();
 
-        // Helper to update UI based on cart
+
         Runnable updateCartUI = () -> {
             java.util.List<CartItem> items = cartViewModel.getCartItems().getValue();
             int quantity = 0;

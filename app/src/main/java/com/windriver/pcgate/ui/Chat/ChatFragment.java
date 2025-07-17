@@ -63,11 +63,11 @@ public class ChatFragment extends Fragment implements MenuProvider
     private ChatFutures chat;
     private final List<Content> history = new ArrayList<>();
     private final Executor executor = Executors.newSingleThreadExecutor();
-    // Add category-specific keywords
+
     private static final String[] KEYWORDS = {"case", "cpu", "laptop", "memory", "motherboard", "power-supply", "video-card"};
     private static final String[] CPU_KEYWORDS = {"Ryzen", "Intel"};
     private boolean keywordsAddedToContext = false;
-    // Use a list of strings for chat history
+
     private final List<String> chatHistory = new ArrayList<>();
     private ChatHistoryManager chatHistoryManager;
     private List<ChatMessage> currentMessages = new ArrayList<>();
@@ -83,8 +83,8 @@ public class ChatFragment extends Fragment implements MenuProvider
         sendButton = view.findViewById(R.id.sendButton);
         micButton = view.findViewById(R.id.micButton);
         bottomSpace = view.findViewById(R.id.bottomSpace);
-        // setHasOptionsMenu(true); // Removed deprecated call
-        // Enable back button in the action bar
+
+
         if (getActivity() instanceof AppCompatActivity)
         {
             AppCompatActivity activity = (AppCompatActivity) getActivity();
@@ -109,7 +109,7 @@ public class ChatFragment extends Fragment implements MenuProvider
         chatRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         chatRecyclerView.setAdapter(chatAdapter);
 
-        // Restore current chat if available
+
         List<ChatMessage> current = chatHistoryManager.loadCurrentChat();
         chatAdapter.clearMessages();
         currentMessages.clear();
@@ -118,9 +118,9 @@ public class ChatFragment extends Fragment implements MenuProvider
             for (ChatMessage msg : current)
                 chatAdapter.addMessage(msg);
         }
-        // If no current chat, start with an empty chat (do not load from history)
 
-        // Add keywords as context to Gemini (not shown to user)
+
+
         if (!keywordsAddedToContext)
         {
             String keywordsContext = "Store keywords: case, cpu, laptop, memory, motherboard, power-supply, video-card.";
@@ -130,10 +130,10 @@ public class ChatFragment extends Fragment implements MenuProvider
             keywordsAddedToContext = true;
         }
 
-        // Remove clearChatButton logic (moved to menu)
+
         view.findViewById(R.id.clearChatButton).setVisibility(View.GONE);
 
-        // Initialize Gemini AI chat
+
         GenerativeModel ai = FirebaseAI.getInstance(GenerativeBackend.googleAI()).generativeModel(
                 "gemini-2.5-flash");
         GenerativeModelFutures model = GenerativeModelFutures.from(ai);
@@ -169,9 +169,9 @@ public class ChatFragment extends Fragment implements MenuProvider
                         }
                         return false;
                     });
-        // TODO: Add micButton logic if needed
 
-        // Dynamically adjust bottomSpace height to match navigation bar insets
+
+
         Space bottomSpaceView = view.findViewById(R.id.bottomSpace);
         ViewCompat.setOnApplyWindowInsetsListener(view, (v, insets) ->
             {
@@ -190,17 +190,17 @@ public class ChatFragment extends Fragment implements MenuProvider
     @Override
     public void onStop() {
         super.onStop();
-        // Save current chat to temp storage (not history)
+
         if (chatHistoryManager != null) {
             chatHistoryManager.saveCurrentChat(currentMessages);
         }
     }
 
-    // Remove saving chat to history from onDestroy. Only keep temp save in onStop.
+
     @Override
     public void onDestroy() {
         super.onDestroy();
-        // No chat history save here!
+
     }
 
     @Override
@@ -217,7 +217,7 @@ public class ChatFragment extends Fragment implements MenuProvider
         }
         if (menuItem.getItemId() == R.id.action_new_chat)
         {
-            // Save current chat before clearing
+
             if (!currentMessages.isEmpty())
             {
                 chatHistoryManager.saveChat(currentMessages);
@@ -251,15 +251,15 @@ public class ChatFragment extends Fragment implements MenuProvider
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         for (int i = 0; i < history.size(); i++)
         {
-            String uuid = history.get(i).id;
+            String uuid = history.get(i).id();
             String shortUuid = uuid.length() > 8 ? uuid.substring(0, 8) : uuid;
-            items[i] = "Chat at " + sdf.format(history.get(i).timestamp) + "\nID: " + shortUuid;
+            items[i] = "Chat at " + sdf.format(history.get(i).timestamp()) + "\nID: " + shortUuid;
         }
         new AlertDialog.Builder(requireContext()).setTitle("Select a chat to load").setItems(items,
                 (dialog, which) ->
                     {
                         List<ChatMessage> chat = chatHistoryManager.loadChat(
-                                history.get(which).index);
+                                history.get(which).index());
                         chatAdapter.clearMessages();
                         currentMessages.clear();
                         currentMessages.addAll(chat);
@@ -275,7 +275,7 @@ public class ChatFragment extends Fragment implements MenuProvider
         currentMessages.add(userMsg);
         messageInput.setText("");
         chatHistory.add("User: " + text);
-        // Detect keyword
+
         String foundKeyword = null;
         for (String keyword : KEYWORDS)
         {
@@ -285,7 +285,7 @@ public class ChatFragment extends Fragment implements MenuProvider
                 break;
             }
         }
-        // Check for CPU sub-keywords if cpu is found
+
         List<String> contextToSend = new ArrayList<>();
         if (foundKeyword != null && foundKeyword.equals("cpu"))
         {
@@ -381,7 +381,7 @@ public class ChatFragment extends Fragment implements MenuProvider
                         else
                         {
                             chatAdapter.updateLastAiMessage(fullResponse.toString());
-                            // Update last AI message in currentMessages
+
                             for (int i = currentMessages.size() - 1; i >= 0; i--)
                             {
                                 if (currentMessages.get(i) instanceof ChatMessage.AiMessage)

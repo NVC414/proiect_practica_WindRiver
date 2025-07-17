@@ -50,7 +50,7 @@ public class AllCasesDialog extends DialogFragment
         recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 3));
         CartViewModel cartViewModel = CartViewModel.getInstance();
         CaseAdapter adapter = new CaseAdapter(allCases, R.layout.item_case_grid);
-        // Add/remove listeners
+
         adapter.setOnAddToCartClickListener(addToCartClickListener);
         adapter.setOnRemoveFromCartClickListener(item -> {
             double priceValue = 0.0;
@@ -70,7 +70,7 @@ public class AllCasesDialog extends DialogFragment
                 }
             }
         });
-        // Observe cart and sync quantities
+
         cartViewModel.getCartItems().observe(getViewLifecycleOwner(), items -> {
             java.util.Map<String, Integer> qtys = new java.util.HashMap<>();
             if (items != null) {

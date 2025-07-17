@@ -45,11 +45,11 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         holder.quantityView.setText(String.valueOf(item.getQuantity()));
 
         holder.addButton.setOnClickListener(v -> {
-            // Always add 1 to the cart for this item
+
             CartViewModel.getInstance().addItem(new CartItem(item.getName(), item.getPrice(), 1));
         });
         holder.removeButton.setOnClickListener(v -> {
-            // Always remove 1 from the cart for this item
+
             CartViewModel.getInstance().addItem(new CartItem(item.getName(), item.getPrice(), -1));
         });
         }

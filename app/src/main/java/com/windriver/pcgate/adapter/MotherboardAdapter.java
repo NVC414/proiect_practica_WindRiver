@@ -76,7 +76,7 @@ public class MotherboardAdapter extends RecyclerView.Adapter<MotherboardAdapter.
     @Override
     public void onBindViewHolder(@NonNull MotherboardViewHolder holder, int position) {
         if (position == motherboardList.size() - 1 && viewMoreClickListener != null) {
-            // Handle view more item
+
             holder.name = holder.itemView.findViewById(R.id.caseName);
             holder.name.setText(R.string.view_more);
             holder.price = holder.itemView.findViewById(R.id.casePrice);
@@ -91,7 +91,7 @@ public class MotherboardAdapter extends RecyclerView.Adapter<MotherboardAdapter.
             holder.itemView.setOnClickListener(v -> viewMoreClickListener.onViewMore());
         } else {
             MotherboardItem item = motherboardList.get(position);
-            // Use correct IDs for grid layout
+
             holder.name = holder.itemView.findViewById(R.id.caseName);
             holder.price = holder.itemView.findViewById(R.id.casePrice);
             holder.addToCartButton = holder.itemView.findViewById(R.id.buttonAddToCart);

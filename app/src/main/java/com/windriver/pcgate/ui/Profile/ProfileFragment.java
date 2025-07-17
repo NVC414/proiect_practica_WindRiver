@@ -20,7 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class ProfileFragment extends Fragment
     {
-    // userEmailTextView and logoutButton will be accessed via binding
+
     private FirebaseAuth mAuth;
     private FragmentProfileBinding binding;
 
@@ -31,22 +31,22 @@ public class ProfileFragment extends Fragment
         binding = FragmentProfileBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        // Initialize Firebase Auth
+
         mAuth = FirebaseAuth.getInstance();
 
-        // Assuming your IDs in fragment_profile.xml (accessed via binding) are:
-        // TextView: userEmailText (e.g., binding.userEmailText)
-        // Button:   logoutBtn (e.g., binding.logoutBtn)
-        // ImageButton: myOrdersButton (binding.myOrdersButton)
-        // ImageButton: callSupportButton (binding.callSupportButton)
 
-        // Setup for existing ImageButtons if they are part of the binding
+
+
+
+
+
+
         if (binding.myOrdersButton != null)
-        { // Check if the ID exists in your layout/binding
+        {
             setupButtonFeedback(binding.myOrdersButton);
         }
         if (binding.callSupportButton != null)
-        { // Check if the ID exists in your layout/binding
+        {
             setupButtonFeedback(binding.callSupportButton);
         }
 
@@ -60,25 +60,25 @@ public class ProfileFragment extends Fragment
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
-        // Display User Email using ViewBinding
+
         if (currentUser != null)
         {
             if (binding.userDetails != null)
-            { // Replace 'userEmailText' with your actual ID in the binding
+            {
                 binding.userDetails.setText(currentUser.getEmail());
             }
         }
         else
         {
             if (binding.userDetails != null)
-            { // Replace 'userEmailText'
+            {
                 binding.userDetails.setText("Not Logged In");
             }
         }
 
-        // Setup Logout Button using ViewBinding
+
         if (binding.logout != null)
-        { // Replace 'logoutBtn' with your actual ID in the binding
+        {
             binding.logout.setOnClickListener(v ->
                 {
                     mAuth.signOut();
@@ -103,12 +103,12 @@ public class ProfileFragment extends Fragment
                     case MotionEvent.ACTION_DOWN:
                         animateButton(v, 0.9f);
                         break;
-                    case MotionEvent.ACTION_UP: // Fall-through for ACTION_CANCEL
+                    case MotionEvent.ACTION_UP:
                     case MotionEvent.ACTION_CANCEL:
                         animateButton(v, 1.0f);
                         break;
                 }
-                return false; // Return false if you want other listeners to consume the event too
+                return false;
             });
         }
 
@@ -126,6 +126,6 @@ public class ProfileFragment extends Fragment
     public void onDestroyView()
         {
         super.onDestroyView();
-        binding = null; // Important to prevent memory leaks with ViewBinding
+        binding = null;
         }
     }
