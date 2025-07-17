@@ -5,13 +5,14 @@ plugins {
 
 android {
     namespace = "com.windriver.pcgate"
-    compileSdk = 35
+    compileSdk = 36
 
     packaging {
         resources {
             excludes += "/META-INF/DEPENDENCIES"
             excludes += "/META-INF/INDEX.LIST"
             excludes += "mozilla/public-suffix-list.txt"
+            excludes += "dump_syms/linux/dump_syms.bin"
         }
     }
     defaultConfig {
@@ -23,6 +24,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
     }
 
     buildTypes {

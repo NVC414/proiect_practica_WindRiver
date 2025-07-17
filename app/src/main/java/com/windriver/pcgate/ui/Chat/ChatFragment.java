@@ -18,9 +18,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.MenuHost;
+import androidx.core.view.MenuProvider;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -49,7 +52,7 @@ import java.util.Locale;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-public class ChatFragment extends Fragment
+public class ChatFragment extends Fragment implements MenuProvider
     {
     private ChatAdapter chatAdapter;
     private RecyclerView chatRecyclerView;
@@ -98,6 +101,10 @@ public class ChatFragment extends Fragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
         {
         super.onViewCreated(view, savedInstanceState);
+
+        MenuHost menuHost = requireActivity();
+        menuHost.addMenuProvider(this, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
+
         chatAdapter = new ChatAdapter();
         chatRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         chatRecyclerView.setAdapter(chatAdapter);
@@ -182,22 +189,26 @@ public class ChatFragment extends Fragment
         }
 
     @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater)
-        {
-        inflater.inflate(R.menu.menu_chat, menu);
-        // Remove programmatic addition of 'Load Chat' button
-        super.onCreateOptionsMenu(menu, inflater);
+    public void onStop() {
+        super.onStop();
+        if (chatHistoryManager != null && !currentMessages.isEmpty()) {
+            chatHistoryManager.saveChat(currentMessages);
         }
+    }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item)
+    public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+        menuInflater.inflate(R.menu.menu_chat, menu);
+    }
+
+    @Override
+    public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+        if (menuItem.getItemId() == android.R.id.home)
         {
-        if (item.getItemId() == android.R.id.home)
-        {
-            requireActivity().onBackPressed();
+            requireActivity().getOnBackPressedDispatcher().onBackPressed();
             return true;
         }
-        if (item.getItemId() == R.id.action_new_chat)
+        if (menuItem.getItemId() == R.id.action_new_chat)
         {
             // Save current chat before clearing
             if (!currentMessages.isEmpty())
@@ -212,13 +223,13 @@ public class ChatFragment extends Fragment
             }
             return true;
         }
-        if (item.getItemId() == R.id.action_load_chat)
+        if (menuItem.getItemId() == R.id.action_load_chat)
         {
             showChatHistoryDialog();
             return true;
         }
-        return super.onOptionsItemSelected(item);
-        }
+        return false;
+    }
 
     private void showChatHistoryDialog()
         {
@@ -329,7 +340,7 @@ public class ChatFragment extends Fragment
             contextBuilder.append(ctx).append("\n\n");
         }
         contextBuilder.append(
-                "Answer in a friendly and conversational tone. Keep your answer concise—no more than 4 short lengths paragraphs. Use newlines to separate ideas where appropriate, but avoid overly long paragraphs or dense blocks of text. Do not use markdown formatting or symbols like asterisks or hashtags.\n\nUser's prompt:\n").append(
+                "Answer in a friendly and conversational tone. Keep your answer concise—no more than 4 to 5 short lengths paragraphs. Use newlines to separate ideas where appropriate, but avoid overly long paragraphs or dense blocks of text. Do not use markdown formatting or symbols like asterisks or hashtags.\n\nUser's prompt:\n").append(
                 userInput);
         Content prompt = new Content.Builder().setRole("user").addText(
                 contextBuilder.toString()).build();
