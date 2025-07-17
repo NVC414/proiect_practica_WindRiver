@@ -1,105 +1,108 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="140dp"
-    android:layout_height="260dp"
-    android:orientation="vertical"
-    android:background="@color/surface"
-    android:layout_marginEnd="8dp"
+    android:layout_height="280dp"
     android:layout_marginStart="8dp"
     android:layout_marginTop="8dp"
+    android:layout_marginEnd="8dp"
     android:layout_marginBottom="8dp"
+    android:background="@color/surface"
     android:padding="6dp">
 
-    <ImageView
-        android:id="@+id/caseImage"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1.5"
-        android:layout_gravity="center_horizontal"
-        android:contentDescription="@string/case_image"
-        android:scaleType="fitCenter"
-        android:background="@color/surface" />
-
-    <TextView
-        android:id="@+id/caseName"
+    <LinearLayout
+        android:id="@+id/contentLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/item_case_name"
-        android:textStyle="bold"
-        android:textSize="15sp"
-        android:gravity="center_horizontal"
-        android:ellipsize="end"
-        android:maxLines="2"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="2dp"
-        android:textColor="@color/on_surface" />
+        android:layout_alignParentTop="true"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/casePrice"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/pret"
-        android:textSize="13sp"
-        android:textColor="@color/on_surface"
-        android:gravity="center_horizontal"
-        android:layout_marginTop="2dp"
-        android:layout_marginBottom="2dp" />
+        <ImageView
+            android:id="@+id/caseImage"
+            android:layout_width="match_parent"
+            android:layout_height="135dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1.5"
+            android:background="@color/surface"
+            android:contentDescription="@string/case_image"
+            android:padding="8dp"
+            android:scaleType="fitCenter" />
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.2" />
-    <!-- Add to Cart Button always at bottom -->
+        <TextView
+            android:id="@+id/caseName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="2dp"
+            android:ellipsize="end"
+            android:gravity="center_horizontal"
+            android:maxLines="2"
+            android:text="@string/item_case_name"
+            android:textColor="@color/on_surface"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/casePrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:gravity="center_horizontal"
+            android:text="@string/pret"
+            android:textColor="@color/on_surface"
+            android:textSize="13sp" />
+    </LinearLayout>
+
     <Button
         android:id="@+id/buttonAddToCart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/add_to_cart"
-        android:textSize="13sp"
-        android:layout_gravity="bottom"
-        android:visibility="visible"
+        android:layout_alignParentBottom="true"
         android:background="@color/primary"
-        android:textColor="@color/on_primary" />
+        android:text="@string/add_to_cart"
+        android:textColor="@color/on_primary"
+        android:textSize="13sp"
+        android:visibility="visible" />
 
     <LinearLayout
         android:id="@+id/layoutCartActions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
         android:gravity="center"
+        android:orientation="horizontal"
         android:visibility="gone">
 
-        <Button
+        <ImageButton
             android:id="@+id/buttonRemoveFromCart"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/remove"
-            android:textSize="13sp"
-            android:layout_marginBottom="4dp"
-            android:background="@color/primary"
-            android:textColor="@color/on_primary" />
-
-        <Button
-            android:id="@+id/buttonAddMoreToCart"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/add"
-            android:textSize="13sp"
-            android:layout_marginTop="4dp"
-            android:background="@color/primary"
-            android:textColor="@color/on_primary" />
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/rounded_button"
+            android:contentDescription="@string/remove"
+            android:src="@drawable/ic_remove_button"
+            app:tint="@color/on_primary" />
 
         <TextView
             android:id="@+id/textQuantity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="1"
-            android:textSize="13sp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             android:gravity="center"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-            android:textColor="@color/on_surface" />
-    </LinearLayout>
+            android:text="1"
+            android:textColor="@color/on_surface"
+            android:textSize="13sp" />
 
-</LinearLayout>
+        <ImageButton
+            android:id="@+id/buttonAddMoreToCart"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/rounded_button"
+            android:contentDescription="@string/add"
+            android:src="@drawable/ic_add_button"
+            app:tint="@color/on_primary" />
+    </LinearLayout>
+</RelativeLayout>

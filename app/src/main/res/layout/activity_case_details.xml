@@ -1,149 +1,173 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/background"
     android:padding="24dp">
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="87dp" />
-
-    <ImageButton
-        android:id="@+id/buttonBack"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_gravity="start"
-        android:background="@color/surface"
-        android:contentDescription="@string/back"
-        android:src="@android:drawable/ic_menu_revert"
-        android:tint="@color/on_surface"
-        tools:ignore="TouchTargetSizeCheck" />
-
-    <ImageView
-        android:id="@+id/caseImage"
-        android:layout_width="180dp"
-        android:layout_height="180dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="16dp"
-        android:background="@color/surface"
-        android:scaleType="centerCrop"
-        android:contentDescription="@string/case_image" />
-
-    <TextView
-        android:id="@+id/caseName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:textSize="20sp"
-        android:gravity="center_horizontal"
-        android:layout_marginBottom="8dp"
-        android:textColor="@color/on_background" />
-
-    <TextView
-        android:id="@+id/casePrice"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:textColor="@color/on_surface"
-        android:gravity="center_horizontal"
-        android:layout_marginBottom="8dp" />
-
-    <TextView
-        android:id="@+id/caseType"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:textColor="@color/on_surface" />
-
-    <TextView
-        android:id="@+id/caseColor"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:textColor="@color/on_surface" />
-
-    <TextView
-        android:id="@+id/caseSidePanel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:textColor="@color/on_surface" />
-
-    <TextView
-        android:id="@+id/casePSU"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:textColor="@color/on_surface" />
-
-    <TextView
-        android:id="@+id/caseInternal35Bays"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:textColor="@color/on_surface" />
-
-    <TextView
-        android:id="@+id/caseExternalVolume"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:textColor="@color/on_surface" />
-
-    <Button
-        android:id="@+id/buttonAddToCart"
-        android:layout_width="260dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/add_to_cart"
-        android:textSize="16sp"
-        android:backgroundTint="@color/primary"
-        android:textColor="@color/on_primary"
-        android:layout_marginTop="24dp" />
-
     <LinearLayout
-        android:id="@+id/layoutCartActions"
-        android:layout_width="260dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:visibility="gone"
-        android:layout_marginTop="24dp">
+        android:orientation="vertical">
 
-        <Button
-            android:id="@+id/buttonRemoveFromCart"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/remove"
-            android:textSize="16sp"
-            android:backgroundTint="@color/primary"
-            android:textColor="@color/on_primary" />
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="95dp" />
+
+        <ImageButton
+            android:id="@+id/buttonBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="start"
+            android:background="@drawable/roundedcorners"
+            android:contentDescription="@string/back"
+            android:src="@android:drawable/ic_menu_revert"
+            app:tint="@color/on_surface"
+            android:layout_marginBottom="16dp"
+            tools:ignore="TouchTargetSizeCheck" />
+
+        <ImageView
+            android:id="@+id/caseImage"
+            android:layout_width="180dp"
+            android:layout_height="180dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="16dp"
+            android:background="@color/surface"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/case_image" />
 
         <TextView
-            android:id="@+id/textQuantity"
-            android:layout_width="wrap_content"
+            android:id="@+id/caseName"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="1"
-            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textSize="20sp"
             android:gravity="center"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp"
-            android:textColor="@color/on_surface" />
+            android:textColor="@color/on_background"
+            android:layout_marginBottom="4dp" />
 
-        <Button
-            android:id="@+id/buttonAddMoreToCart"
-            android:layout_width="0dp"
+        <TextView
+            android:id="@+id/casePrice"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/add"
             android:textSize="16sp"
-            android:backgroundTint="@color/primary"
-            android:textColor="@color/on_primary" />
-    </LinearLayout>
+            android:textColor="@color/on_surface"
+            android:gravity="center"
+            android:layout_marginBottom="16dp" />
 
-</LinearLayout>
+        <!-- Grouped specs in clean container -->
+        <LinearLayout
+            android:id="@+id/specsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/surface"
+            android:padding="16dp"
+            android:layout_marginBottom="24dp"
+            android:elevation="2dp">
+
+            <TextView
+                android:id="@+id/caseType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/on_surface"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:id="@+id/caseColor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/on_surface"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:id="@+id/caseSidePanel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/on_surface"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:id="@+id/casePSU"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/on_surface"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:id="@+id/caseInternal35Bays"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/on_surface"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:id="@+id/caseExternalVolume"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/on_surface" />
+        </LinearLayout>
+
+        <!-- Bottom cart area (Button or Quantity Controller) -->
+        <FrameLayout
+            android:id="@+id/cartContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal">
+
+            <Button
+                android:id="@+id/buttonAddToCart"
+                android:layout_width="260dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/add_to_cart"
+                android:textSize="16sp"
+                android:backgroundTint="@color/primary"
+                android:textColor="@color/on_primary"
+                android:visibility="visible" />
+
+            <LinearLayout
+                android:id="@+id/layoutCartActions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:visibility="gone">
+
+                <ImageButton
+                    android:id="@+id/buttonRemoveFromCart"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/rounded_button"
+                    android:src="@drawable/ic_remove_button"
+                    android:contentDescription="@string/remove"
+                    android:layout_marginEnd="8dp"
+                    app:tint="@color/on_primary" />
+
+                <TextView
+                    android:id="@+id/textQuantity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1"
+                    android:textSize="16sp"
+                    android:gravity="center"
+                    android:textColor="@color/on_surface"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp" />
+
+                <ImageButton
+                    android:id="@+id/buttonAddMoreToCart"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/rounded_button"
+                    android:src="@drawable/ic_add_button"
+                    android:contentDescription="@string/add"
+                    android:layout_marginStart="8dp"
+                    app:tint="@color/on_primary" />
+            </LinearLayout>
+        </FrameLayout>
+
+    </LinearLayout>
+</ScrollView>

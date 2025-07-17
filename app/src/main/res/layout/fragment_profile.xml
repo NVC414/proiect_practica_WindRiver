@@ -49,7 +49,7 @@
             android:textSize="18sp"
             android:textStyle="italic"
             android:textColor="@color/on_background"
-            app:drawableStartCompat="@drawable/guest_icon" />
+            app:drawableStartCompat="@drawable/ic_guest" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/linearLayout2"
@@ -70,7 +70,7 @@
                 android:contentDescription="@string/my_orders"
                 android:focusable="true"
                 android:scaleType="centerInside"
-                android:src="@drawable/three_bars"
+                android:src="@drawable/ic_three_bars"
                 app:tint="@color/on_primary"
                 app:layout_constraintBottom_toBottomOf="@+id/callSupportButton"
                 app:layout_constraintEnd_toStartOf="@+id/callSupportButton"
@@ -89,7 +89,7 @@
                 android:contentDescription="@string/call_support"
                 android:focusable="true"
                 android:scaleType="centerInside"
-                android:src="@drawable/phone_icon"
+                android:src="@drawable/ic_phone"
                 app:tint="@color/on_primary"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/myOrdersButton"

@@ -17,7 +17,7 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_gravity="start"
-        android:background="@color/surface"
+        android:background="@drawable/roundedcorners"
         android:contentDescription="@string/back"
         android:src="@android:drawable/ic_menu_revert"
         app:tint="@color/on_surface"

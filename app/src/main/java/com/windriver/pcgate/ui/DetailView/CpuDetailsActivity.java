@@ -50,7 +50,7 @@ public class CpuDetailsActivity extends AppCompatActivity
         ImageButton backButton = findViewById(R.id.buttonBack);
 
         Glide.with(this).load(imageUrl).placeholder(
-                R.drawable.ic_image_placeholder).centerCrop().into(cpuImage);
+                R.drawable.ic_cpu_placeholder).centerCrop().into(cpuImage);
 
         cpuName.setText(name);
         cpuPrice.setText(String.format("$%.2f", price));

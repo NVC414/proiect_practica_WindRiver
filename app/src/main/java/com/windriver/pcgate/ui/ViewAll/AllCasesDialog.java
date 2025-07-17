@@ -1,7 +1,6 @@
 package com.windriver.pcgate.ui.ViewAll;
 
 import android.app.Dialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +19,8 @@ import com.windriver.pcgate.R;
 import com.windriver.pcgate.adapter.CaseAdapter;
 import com.windriver.pcgate.adapter.CaseAdapter.OnAddToCartClickListener;
 import com.windriver.pcgate.model.CaseItem;
-import com.windriver.pcgate.ui.DetailView.CaseDetailsActivity;
+import com.windriver.pcgate.ui.Cart.CartItem;
+import com.windriver.pcgate.ui.Cart.CartViewModel;
 
 import java.util.List;
 
@@ -40,34 +40,50 @@ public class AllCasesDialog extends DialogFragment
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState)
         {
-        View view = inflater.inflate(R.layout.dialog_all_cases, container, false);
+        return inflater.inflate(R.layout.dialog_all_cases, container, false);
+        }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         RecyclerView recyclerView = view.findViewById(R.id.allCasesRecyclerView);
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 3));
+        CartViewModel cartViewModel = CartViewModel.getInstance();
         CaseAdapter adapter = new CaseAdapter(allCases, R.layout.item_case_grid);
+        // Add/remove listeners
         adapter.setOnAddToCartClickListener(addToCartClickListener);
-        adapter.setOnItemClickListener(item ->
-            {
-                if ("__VIEW_MORE__".equals(item.name))
-                {
-                    return;
+        adapter.setOnRemoveFromCartClickListener(item -> {
+            double priceValue = 0.0;
+            try { priceValue = Double.parseDouble(item.price.replaceAll("[^0-9.]", "")); } catch (Exception ignored) {}
+            java.util.List<CartItem> current = cartViewModel.getCartItems().getValue();
+            if (current != null) {
+                for (CartItem ci : current) {
+                    if (ci.getName().equals(item.name)) {
+                        int newQty = ci.getQuantity() - 1;
+                        if (newQty > 0) {
+                            cartViewModel.addItem(new CartItem(item.name, priceValue, -1));
+                        } else {
+                            cartViewModel.addItem(new CartItem(item.name, priceValue, -ci.getQuantity()));
+                        }
+                        break;
+                    }
                 }
-                Intent intent = new Intent(getContext(), CaseDetailsActivity.class);
-                intent.putExtra("name", item.name);
-                intent.putExtra("price", item.price);
-                intent.putExtra("imageUrl", item.imageUrl);
-                intent.putExtra("color", item.color != null ? item.color : "");
-                intent.putExtra("type", item.type != null ? item.type : "");
-                intent.putExtra("side_panel", item.side_panel != null ? item.side_panel : "");
-                intent.putExtra("psu", item.psu != null ? item.psu : "");
-                intent.putExtra("internal_35_bays", item.internal_35_bays);
-                intent.putExtra("external_volume", item.external_volume);
-                startActivity(intent);
-            });
+            }
+        });
+        // Observe cart and sync quantities
+        cartViewModel.getCartItems().observe(getViewLifecycleOwner(), items -> {
+            java.util.Map<String, Integer> qtys = new java.util.HashMap<>();
+            if (items != null) {
+                for (CartItem ci : items) {
+                    qtys.put(ci.getName(), ci.getQuantity());
+                }
+            }
+            adapter.setCartQuantities(qtys);
+        });
         recyclerView.setAdapter(adapter);
         ImageButton backButton = view.findViewById(R.id.buttonBack);
         backButton.setOnClickListener(v -> dismiss());
-        return view;
-        }
+    }
 
     @Override
     public void onStart()

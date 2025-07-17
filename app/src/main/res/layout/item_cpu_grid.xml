@@ -11,22 +11,21 @@
     android:padding="6dp">
 
     <ImageView
-        android:id="@+id/gpuImage"
+        android:id="@+id/cpuImage"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1.5"
+        android:layout_weight="1.3"
         android:layout_gravity="center_horizontal"
-        android:contentDescription="@string/gpu_image"
+        android:contentDescription="@string/cpu_image"
         android:scaleType="fitCenter"
         android:background="@color/surface" />
 
     <TextView
-        android:id="@+id/gpuName"
+        android:id="@+id/cpuName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/item_gpu_name"
         android:textStyle="bold"
-        android:textSize="15sp"
+        android:textSize="14sp"
         android:gravity="center_horizontal"
         android:ellipsize="end"
         android:maxLines="2"
@@ -35,29 +34,30 @@
         android:textColor="@color/on_surface" />
 
     <TextView
-        android:id="@+id/gpuPrice"
+        android:id="@+id/cpuPrice"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/pret"
-        android:textSize="13sp"
+        android:textSize="12sp"
         android:textColor="@color/on_surface"
         android:gravity="center_horizontal"
         android:layout_marginTop="2dp"
         android:layout_marginBottom="2dp" />
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.2" />
-
     <Button
-        android:id="@+id/buttonAddToCartGpu"
+        android:id="@+id/buttonAddToCartCpu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/add_to_cart"
-        android:textSize="13sp"
-        android:layout_gravity="bottom"
-        android:background="@color/primary"
-        android:textColor="@color/on_primary" />
+        android:textSize="12sp"
+        android:background="@drawable/rounded_button_bg"
+        android:backgroundTint="@color/primary"
+        android:textColor="@color/on_primary"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="2dp" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.1" />
 
 </LinearLayout>

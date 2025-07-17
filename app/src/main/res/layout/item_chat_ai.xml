@@ -10,7 +10,7 @@
         android:id="@+id/aiIcon"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        android:src="@drawable/gemini_chat_icon"
+        android:src="@drawable/ic_gemini_chat"
         android:layout_marginEnd="8dp"
         android:visibility="gone" />
 

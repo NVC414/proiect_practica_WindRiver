@@ -42,7 +42,7 @@ public class AllCpusDialog extends DialogFragment
         View view = inflater.inflate(R.layout.dialog_all_cpus, container, false);
         RecyclerView recyclerView = view.findViewById(R.id.allCpusRecyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
-        CpuAdapter adapter = new CpuAdapter(allCpus, R.layout.item_cpu);
+        CpuAdapter adapter = new CpuAdapter(allCpus, R.layout.item_cpu_grid);
         adapter.setOnAddToCartClickListener(addToCartClickListener);
         adapter.setOnItemClickListener(item ->
             {

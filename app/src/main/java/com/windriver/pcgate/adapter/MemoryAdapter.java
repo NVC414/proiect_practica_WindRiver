@@ -152,7 +152,7 @@ public class MemoryAdapter extends RecyclerView.Adapter<MemoryAdapter.MemoryView
             {
                 String url = item.imageUrl != null ? item.imageUrl : "";
                 Glide.with(holder.itemView.getContext()).load(url).placeholder(
-                        R.drawable.ic_image_placeholder).centerCrop().into(holder.memoryImage);
+                        R.drawable.ic_memory_placeholder).centerCrop().into(holder.memoryImage);
             }
         }
         }
