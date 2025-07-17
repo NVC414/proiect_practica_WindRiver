@@ -47,8 +47,8 @@ public class CaseDetailsActivity extends AppCompatActivity
         Button addToCartButton = findViewById(R.id.buttonAddToCart);
             ImageButton backButton = findViewById(R.id.buttonBack);
         android.view.View layoutCartActions = findViewById(R.id.layoutCartActions);
-        Button buttonRemoveFromCart = findViewById(R.id.buttonRemoveFromCart);
-        Button buttonAddMoreToCart = findViewById(R.id.buttonAddMoreToCart);
+        ImageButton buttonRemoveFromCart = findViewById(R.id.buttonRemoveFromCart);
+        ImageButton buttonAddMoreToCart = findViewById(R.id.buttonAddMoreToCart);
         TextView textQuantity = findViewById(R.id.textQuantity);
 
         Glide.with(this).load(imageUrl).placeholder(
