@@ -10,7 +10,6 @@ import android.widget.ProgressBar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -81,8 +80,7 @@ public class HomeFragment extends Fragment
         caseRecyclerView.setAdapter(caseAdapter);
 
         // CartViewModel for cart operations
-        CartViewModel cartViewModel = new ViewModelProvider(requireActivity()).get(
-                CartViewModel.class);
+        CartViewModel cartViewModel = CartViewModel.getInstance();
 
         // Add to Cart button logic
         CaseAdapter.OnAddToCartClickListener addToCartClickListener = item ->

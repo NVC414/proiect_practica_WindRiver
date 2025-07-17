@@ -2,9 +2,8 @@ package com.windriver.pcgate.ui.DetailView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -13,7 +12,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
-import com.google.android.material.button.MaterialButton;
 import com.windriver.pcgate.R;
 import com.windriver.pcgate.ui.Cart.CartItem;
 import com.windriver.pcgate.ui.Cart.CartViewModel;
@@ -47,14 +45,14 @@ public class CaseDetailsActivity extends AppCompatActivity
         TextView caseInternal35Bays = findViewById(R.id.caseInternal35Bays);
         TextView caseExternalVolume = findViewById(R.id.caseExternalVolume);
         Button addToCartButton = findViewById(R.id.buttonAddToCart);
-            MaterialButton backButton = findViewById(R.id.buttonBack);
+            ImageButton backButton = findViewById(R.id.buttonBack);
         android.view.View layoutCartActions = findViewById(R.id.layoutCartActions);
         Button buttonRemoveFromCart = findViewById(R.id.buttonRemoveFromCart);
         Button buttonAddMoreToCart = findViewById(R.id.buttonAddMoreToCart);
         TextView textQuantity = findViewById(R.id.textQuantity);
 
         Glide.with(this).load(imageUrl).placeholder(
-                R.drawable.ic_image_placeholder).centerCrop().into(caseImage);
+                R.drawable.ic_case_placeholder).centerCrop().into(caseImage);
 
         caseName.setText(name);
         casePrice.setText(price);
@@ -96,88 +94,14 @@ public class CaseDetailsActivity extends AppCompatActivity
                 boolean nowInCart = quantity > 0;
                 if (nowInCart)
                 {
-                    if (!wasInCart)
-                    {
-                        addToCartButton.clearAnimation();
-                        layoutCartActions.clearAnimation();
-                        Animation splitOut = AnimationUtils.loadAnimation(this,
-                                R.anim.button_split_out);
-                        Animation splitIn = AnimationUtils.loadAnimation(this,
-                                R.anim.button_split_in);
-                        splitOut.setAnimationListener(
-                                new android.view.animation.Animation.AnimationListener()
-                                    {
-                                    @Override
-                                    public void onAnimationStart(
-                                            android.view.animation.Animation animation)
-                                        {
-                                        }
-
-                                    @Override
-                                    public void onAnimationRepeat(
-                                            android.view.animation.Animation animation)
-                                        {
-                                        }
-
-                                    @Override
-                                    public void onAnimationEnd(
-                                            android.view.animation.Animation animation)
-                                        {
-                                        addToCartButton.setVisibility(android.view.View.GONE);
-                                        layoutCartActions.setVisibility(android.view.View.VISIBLE);
-                                        layoutCartActions.startAnimation(splitIn);
-                                        }
-                                    });
-                        addToCartButton.startAnimation(splitOut);
-                    }
-                    else
-                    {
-                        addToCartButton.setVisibility(android.view.View.GONE);
-                        layoutCartActions.setVisibility(android.view.View.VISIBLE);
-                    }
+                    addToCartButton.setVisibility(android.view.View.GONE);
+                    layoutCartActions.setVisibility(android.view.View.VISIBLE);
                     textQuantity.setText(String.valueOf(quantity));
                 }
                 else
                 {
-                    if (wasInCart)
-                    {
-                        addToCartButton.clearAnimation();
-                        layoutCartActions.clearAnimation();
-                        Animation splitOut = AnimationUtils.loadAnimation(this,
-                                R.anim.button_split_out);
-                        Animation splitIn = AnimationUtils.loadAnimation(this,
-                                R.anim.button_split_in);
-                        splitOut.setAnimationListener(
-                                new android.view.animation.Animation.AnimationListener()
-                                    {
-                                    @Override
-                                    public void onAnimationStart(
-                                            android.view.animation.Animation animation)
-                                        {
-                                        }
-
-                                    @Override
-                                    public void onAnimationRepeat(
-                                            android.view.animation.Animation animation)
-                                        {
-                                        }
-
-                                    @Override
-                                    public void onAnimationEnd(
-                                            android.view.animation.Animation animation)
-                                        {
-                                        layoutCartActions.setVisibility(android.view.View.GONE);
-                                        addToCartButton.setVisibility(android.view.View.VISIBLE);
-                                        addToCartButton.startAnimation(splitIn);
-                                        }
-                                    });
-                        layoutCartActions.startAnimation(splitOut);
-                    }
-                    else
-                    {
-                        addToCartButton.setVisibility(android.view.View.VISIBLE);
-                        layoutCartActions.setVisibility(android.view.View.GONE);
-                    }
+                    addToCartButton.setVisibility(android.view.View.VISIBLE);
+                    layoutCartActions.setVisibility(android.view.View.GONE);
                 }
             };
 

@@ -134,7 +134,7 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
             if (viewMoreHolder.caseImage != null)
             {
                 viewMoreHolder.caseImage.setVisibility(View.VISIBLE);
-                viewMoreHolder.caseImage.setImageResource(R.drawable.ic_image_placeholder);
+                viewMoreHolder.caseImage.setImageResource(R.drawable.ic_case_placeholder);
             }
             viewMoreHolder.itemView.setOnClickListener(v ->
                 {
@@ -287,7 +287,7 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
             {
                 String url = item.imageUrl != null ? item.imageUrl : "";
                 Glide.with(holder.itemView.getContext()).load(url).placeholder(
-                        R.drawable.ic_image_placeholder).centerCrop().into(holder.caseImage);
+                        R.drawable.ic_case_placeholder).centerCrop().into(holder.caseImage);
             }
         }
         }

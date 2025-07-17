@@ -20,7 +20,7 @@
         android:id="@+id/userIcon"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        android:src="@drawable/user_chat_icon"
+        android:src="@drawable/ic_user_chat"
         android:layout_marginStart="8dp"
         android:visibility="gone" />
 </LinearLayout>
