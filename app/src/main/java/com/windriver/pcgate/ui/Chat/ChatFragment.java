@@ -109,6 +109,17 @@ public class ChatFragment extends Fragment implements MenuProvider
         chatRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         chatRecyclerView.setAdapter(chatAdapter);
 
+        // Restore current chat if available
+        List<ChatMessage> current = chatHistoryManager.loadCurrentChat();
+        chatAdapter.clearMessages();
+        currentMessages.clear();
+        if (!current.isEmpty()) {
+            currentMessages.addAll(current);
+            for (ChatMessage msg : current)
+                chatAdapter.addMessage(msg);
+        }
+        // If no current chat, start with an empty chat (do not load from history)
+
         // Add keywords as context to Gemini (not shown to user)
         if (!keywordsAddedToContext)
         {
@@ -135,18 +146,6 @@ public class ChatFragment extends Fragment implements MenuProvider
             keywordsAddedToContext = true;
         }
         chat = model.startChat(history);
-
-        // Load the most recent chat on start
-        List<ChatHistoryManager.ChatHistoryItem> history = chatHistoryManager.getChatHistory();
-        if (!history.isEmpty())
-        {
-            List<ChatMessage> lastChat = chatHistoryManager.loadChat(
-                    history.get(history.size() - 1).index);
-            currentMessages.clear();
-            currentMessages.addAll(lastChat);
-            for (ChatMessage msg : lastChat)
-                chatAdapter.addMessage(msg);
-        }
 
         sendButton.setOnClickListener(v ->
             {
@@ -191,9 +190,17 @@ public class ChatFragment extends Fragment implements MenuProvider
     @Override
     public void onStop() {
         super.onStop();
-        if (chatHistoryManager != null && !currentMessages.isEmpty()) {
-            chatHistoryManager.saveChat(currentMessages);
+        // Save current chat to temp storage (not history)
+        if (chatHistoryManager != null) {
+            chatHistoryManager.saveCurrentChat(currentMessages);
         }
+    }
+
+    // Remove saving chat to history from onDestroy. Only keep temp save in onStop.
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        // No chat history save here!
     }
 
     @Override
@@ -244,7 +251,9 @@ public class ChatFragment extends Fragment implements MenuProvider
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         for (int i = 0; i < history.size(); i++)
         {
-            items[i] = "Chat at " + sdf.format(history.get(i).timestamp);
+            String uuid = history.get(i).id;
+            String shortUuid = uuid.length() > 8 ? uuid.substring(0, 8) : uuid;
+            items[i] = "Chat at " + sdf.format(history.get(i).timestamp) + "\nID: " + shortUuid;
         }
         new AlertDialog.Builder(requireContext()).setTitle("Select a chat to load").setItems(items,
                 (dialog, which) ->
