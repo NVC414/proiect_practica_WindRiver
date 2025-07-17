@@ -1,63 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="220dp"
-    android:orientation="vertical"
-    android:background="@color/surface"
-    android:layout_marginEnd="8dp"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="140dp"
+    android:layout_height="280dp"
     android:layout_marginStart="8dp"
     android:layout_marginTop="8dp"
+    android:layout_marginEnd="8dp"
     android:layout_marginBottom="8dp"
+    android:background="@color/surface"
     android:padding="6dp">
 
-    <ImageView
-        android:id="@+id/cpuImage"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1.3"
-        android:layout_gravity="center_horizontal"
-        android:contentDescription="@string/cpu_image"
-        android:scaleType="fitCenter"
-        android:background="@color/surface" />
-
-    <TextView
-        android:id="@+id/cpuName"
+    <LinearLayout
+        android:id="@+id/contentLayoutCpu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:textSize="14sp"
-        android:gravity="center_horizontal"
-        android:ellipsize="end"
-        android:maxLines="2"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="2dp"
-        android:textColor="@color/on_surface" />
+        android:layout_above="@+id/cartContainerCpu"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/cpuPrice"
+        <ImageView
+            android:id="@+id/cpuImage"
+            android:layout_width="match_parent"
+            android:layout_height="135dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@color/surface"
+            android:contentDescription="@string/cpu_image"
+            android:padding="8dp"
+            android:scaleType="fitCenter" />
+
+        <TextView
+            android:id="@+id/cpuName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="2dp"
+            android:ellipsize="end"
+            android:gravity="center_horizontal"
+            android:maxLines="2"
+            android:textColor="@color/on_surface"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/cpuPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:gravity="center_horizontal"
+            android:textColor="@color/on_surface"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/cartContainerCpu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="12sp"
-        android:textColor="@color/on_surface"
-        android:gravity="center_horizontal"
-        android:layout_marginTop="2dp"
-        android:layout_marginBottom="2dp" />
+        android:layout_alignParentBottom="true">
 
-    <Button
-        android:id="@+id/buttonAddToCartCpu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/add_to_cart"
-        android:textSize="12sp"
-        android:background="@drawable/rounded_button_bg"
-        android:backgroundTint="@color/primary"
-        android:textColor="@color/on_primary"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="2dp" />
+        <Button
+            android:id="@+id/buttonAddToCartCpu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/primary"
+            android:text="@string/add_to_cart"
+            android:textColor="@color/on_primary"
+            android:textSize="12sp"
+            android:visibility="visible" />
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.1" />
+        <LinearLayout
+            android:id="@+id/layoutCartActionsCpu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="gone">
 
-</LinearLayout>
+            <ImageButton
+                android:id="@+id/buttonRemoveFromCartCpu"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/rounded_button"
+                android:contentDescription="@string/remove"
+                android:src="@drawable/ic_remove_button"
+                app:tint="@color/on_primary" />
+
+            <TextView
+                android:id="@+id/textQuantityCpu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:gravity="center"
+                android:text="1"
+                android:textColor="@color/on_surface"
+                android:textSize="12sp" />
+
+            <ImageButton
+                android:id="@+id/buttonAddMoreToCartCpu"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/rounded_button"
+                android:contentDescription="@string/add"
+                android:src="@drawable/ic_add_button"
+                app:tint="@color/on_primary" />
+        </LinearLayout>
+    </FrameLayout>
+</RelativeLayout>

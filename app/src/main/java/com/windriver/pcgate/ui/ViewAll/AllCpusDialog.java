@@ -18,7 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.windriver.pcgate.R;
 import com.windriver.pcgate.adapter.CpuAdapter;
 import com.windriver.pcgate.model.CpuItem;
-import com.windriver.pcgate.ui.DetailView.CpuDetailsActivity;
+import com.windriver.pcgate.ui.Cart.CartItem;
+import com.windriver.pcgate.ui.Cart.CartViewModel;
 
 import java.util.List;
 
@@ -40,31 +41,52 @@ public class AllCpusDialog extends DialogFragment
                              @Nullable Bundle savedInstanceState)
         {
         View view = inflater.inflate(R.layout.dialog_all_cpus, container, false);
-        RecyclerView recyclerView = view.findViewById(R.id.allCpusRecyclerView);
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
-        CpuAdapter adapter = new CpuAdapter(allCpus, R.layout.item_cpu_grid);
-        adapter.setOnAddToCartClickListener(addToCartClickListener);
-        adapter.setOnItemClickListener(item ->
-            {
-                android.content.Intent intent = new android.content.Intent(getContext(),
-                        CpuDetailsActivity.class);
-                intent.putExtra("name", item.name);
-                intent.putExtra("price", item.price);
-                intent.putExtra("imageUrl", item.imageUrl);
-                intent.putExtra("boost_clock", item.boost_clock);
-                intent.putExtra("core_clock", item.core_clock);
-                intent.putExtra("core_count", item.core_count);
-                intent.putExtra("graphics", item.graphics);
-                intent.putExtra("smt", item.smt);
-                intent.putExtra("socket", item.socket);
-                intent.putExtra("tdp", item.tdp);
-                startActivity(intent);
-            });
-        recyclerView.setAdapter(adapter);
+        // Removed RecyclerView and adapter setup from here
         ImageButton backButton = view.findViewById(R.id.buttonBack);
         backButton.setOnClickListener(v -> dismiss());
         return view;
         }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        RecyclerView recyclerView = view.findViewById(R.id.allCpusRecyclerView);
+        recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 3));
+        CartViewModel cartViewModel = CartViewModel.getInstance();
+        CpuAdapter adapter = new CpuAdapter(allCpus, R.layout.item_cpu_grid);
+        // Add/remove listeners
+        adapter.setOnAddToCartClickListener(addToCartClickListener);
+        adapter.setOnRemoveFromCartClickListener(item -> {
+            java.util.List<CartItem> current = cartViewModel.getCartItems().getValue();
+            if (current != null) {
+                for (CartItem ci : current) {
+                    if (ci.getName().equals(item.name)) {
+                        int newQty = ci.getQuantity() - 1;
+                        if (newQty > 0) {
+                            cartViewModel.addItem(new CartItem(item.name, item.price, -1));
+                        } else {
+                            cartViewModel.addItem(new CartItem(item.name, item.price, -ci.getQuantity()));
+                        }
+                        break;
+                    }
+                }
+            }
+        });
+        adapter.setOnAddMoreToCartClickListener(item -> {
+            cartViewModel.addItem(new CartItem(item.name, item.price, 1));
+        });
+        // Observe cart and sync quantities
+        cartViewModel.getCartItems().observe(getViewLifecycleOwner(), items -> {
+            java.util.Map<String, Integer> qtys = new java.util.HashMap<>();
+            if (items != null) {
+                for (CartItem ci : items) {
+                    qtys.put(ci.getName(), ci.getQuantity());
+                }
+            }
+            adapter.setCartQuantities(qtys);
+        });
+        recyclerView.setAdapter(adapter);
+    }
 
     @Override
     public void onStart()

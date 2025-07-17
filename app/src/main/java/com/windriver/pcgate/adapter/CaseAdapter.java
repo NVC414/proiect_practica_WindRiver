@@ -3,8 +3,6 @@ package com.windriver.pcgate.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -168,45 +166,8 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
             boolean nowInCart = quantity > 0;
             if (nowInCart)
             {
-                if (!wasInCart)
-                {
-                    holder.addToCartButton.clearAnimation();
-                    holder.layoutCartActions.clearAnimation();
-                    Animation splitOut = AnimationUtils.loadAnimation(holder.itemView.getContext(),
-                            R.anim.button_split_out);
-                    Animation splitIn = AnimationUtils.loadAnimation(holder.itemView.getContext(),
-                            R.anim.button_split_in);
-                    splitOut.setAnimationListener(
-                            new android.view.animation.Animation.AnimationListener()
-                                {
-                                @Override
-                                public void onAnimationStart(
-                                        android.view.animation.Animation animation)
-                                    {
-                                    }
-
-                                @Override
-                                public void onAnimationRepeat(
-                                        android.view.animation.Animation animation)
-                                    {
-                                    }
-
-                                @Override
-                                public void onAnimationEnd(
-                                        android.view.animation.Animation animation)
-                                    {
-                                    holder.addToCartButton.setVisibility(View.GONE);
-                                    holder.layoutCartActions.setVisibility(View.VISIBLE);
-                                    holder.layoutCartActions.startAnimation(splitIn);
-                                    }
-                                });
-                    holder.addToCartButton.startAnimation(splitOut);
-                }
-                else
-                {
-                    holder.addToCartButton.setVisibility(View.GONE);
-                    holder.layoutCartActions.setVisibility(View.VISIBLE);
-                }
+                holder.addToCartButton.setVisibility(View.GONE);
+                holder.layoutCartActions.setVisibility(View.VISIBLE);
                 // Set quantity text if present
                 TextView textQuantity = holder.itemView.findViewById(R.id.textQuantity);
                 if (textQuantity != null)
@@ -216,45 +177,8 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
             }
             else
             {
-                if (wasInCart)
-                {
-                    holder.addToCartButton.clearAnimation();
-                    holder.layoutCartActions.clearAnimation();
-                    Animation splitOut = AnimationUtils.loadAnimation(holder.itemView.getContext(),
-                            R.anim.button_split_out);
-                    Animation splitIn = AnimationUtils.loadAnimation(holder.itemView.getContext(),
-                            R.anim.button_split_in);
-                    splitOut.setAnimationListener(
-                            new android.view.animation.Animation.AnimationListener()
-                                {
-                                @Override
-                                public void onAnimationStart(
-                                        android.view.animation.Animation animation)
-                                    {
-                                    }
-
-                                @Override
-                                public void onAnimationRepeat(
-                                        android.view.animation.Animation animation)
-                                    {
-                                    }
-
-                                @Override
-                                public void onAnimationEnd(
-                                        android.view.animation.Animation animation)
-                                    {
-                                    holder.layoutCartActions.setVisibility(View.GONE);
-                                    holder.addToCartButton.setVisibility(View.VISIBLE);
-                                    holder.addToCartButton.startAnimation(splitIn);
-                                    }
-                                });
-                    holder.layoutCartActions.startAnimation(splitOut);
-                }
-                else
-                {
-                    holder.addToCartButton.setVisibility(View.VISIBLE);
-                    holder.layoutCartActions.setVisibility(View.GONE);
-                }
+                holder.addToCartButton.setVisibility(View.VISIBLE);
+                holder.layoutCartActions.setVisibility(View.GONE);
             }
             holder.addToCartButton.setOnClickListener(v ->
                 {

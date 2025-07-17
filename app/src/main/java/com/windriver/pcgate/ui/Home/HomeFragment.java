@@ -301,6 +301,42 @@ public class HomeFragment extends Fragment
             };
         cpuAdapter.setOnAddToCartClickListener(addToCartClickListenerCpu);
 
+        // Add Remove from Cart logic for CPUs
+        com.windriver.pcgate.adapter.CpuAdapter.OnRemoveFromCartClickListener removeFromCartClickListenerCpu = item -> {
+            List<CartItem> currentCart = cartViewModel.getCartItems().getValue();
+            if (currentCart != null) {
+                for (CartItem cartItem : currentCart) {
+                    if (cartItem.getName().equals(item.name)) {
+                        int newQty = cartItem.getQuantity() - 1;
+                        if (newQty > 0) {
+                            cartViewModel.addItem(new CartItem(item.name, cartItem.getPrice(), -1));
+                        } else {
+                            cartViewModel.addItem(new CartItem(item.name, cartItem.getPrice(), -cartItem.getQuantity()));
+                        }
+                        break;
+                    }
+                }
+            }
+        };
+        cpuAdapter.setOnRemoveFromCartClickListener(removeFromCartClickListenerCpu);
+
+        // Add AddMoreToCart logic for CPUs
+        com.windriver.pcgate.adapter.CpuAdapter.OnAddMoreToCartClickListener addMoreToCartClickListenerCpu = item -> {
+            cartViewModel.addItem(new CartItem(item.name, item.price, 1));
+        };
+        cpuAdapter.setOnAddMoreToCartClickListener(addMoreToCartClickListenerCpu);
+
+        // Observe cart and update CPU adapter with quantities
+        cartViewModel.getCartItems().observe(getViewLifecycleOwner(), items -> {
+            java.util.Map<String, Integer> quantities = new java.util.HashMap<>();
+            if (items != null) {
+                for (CartItem cartItem : items) {
+                    quantities.put(cartItem.getName(), cartItem.getQuantity());
+                }
+            }
+            cpuAdapter.setCartQuantities(quantities);
+        });
+
         // Fetch all CPUs from Firebase, shuffle, pick 5 random, add 'View More' item
         DatabaseReference cpuRef = FirebaseDatabase.getInstance().getReference().child("cpu");
         cpuRef.addListenerForSingleValueEvent(new ValueEventListener()

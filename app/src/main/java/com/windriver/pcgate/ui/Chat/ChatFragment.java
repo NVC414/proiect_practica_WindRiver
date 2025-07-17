@@ -83,7 +83,7 @@ public class ChatFragment extends Fragment implements MenuProvider
         sendButton = view.findViewById(R.id.sendButton);
         micButton = view.findViewById(R.id.micButton);
         bottomSpace = view.findViewById(R.id.bottomSpace);
-        setHasOptionsMenu(true);
+        // setHasOptionsMenu(true); // Removed deprecated call
         // Enable back button in the action bar
         if (getActivity() instanceof AppCompatActivity)
         {

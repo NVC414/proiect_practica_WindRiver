@@ -4,7 +4,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -24,6 +26,10 @@ public class CpuAdapter extends RecyclerView.Adapter<CpuAdapter.CpuViewHolder>
     private OnViewMoreClickListener viewMoreClickListener;
     private final int layoutResId;
     private List<CpuItem> allCpus = new java.util.ArrayList<>();
+    // Add a map to track cart quantities
+    private java.util.Map<String, Integer> cartQuantities = new java.util.HashMap<>();
+    private OnRemoveFromCartClickListener removeFromCartClickListener;
+    private OnAddMoreToCartClickListener addMoreToCartClickListener;
 
     public CpuAdapter(List<CpuItem> cpuList)
         {
@@ -66,6 +72,19 @@ public class CpuAdapter extends RecyclerView.Adapter<CpuAdapter.CpuViewHolder>
         this.viewMoreClickListener = listener;
         }
 
+    public interface OnRemoveFromCartClickListener {
+        void onRemoveFromCart(CpuItem item);
+    }
+    public void setOnRemoveFromCartClickListener(OnRemoveFromCartClickListener listener) {
+        this.removeFromCartClickListener = listener;
+    }
+    public interface OnAddMoreToCartClickListener {
+        void onAddMoreToCart(CpuItem item);
+    }
+    public void setOnAddMoreToCartClickListener(OnAddMoreToCartClickListener listener) {
+        this.addMoreToCartClickListener = listener;
+    }
+
     @NonNull
     @Override
     public CpuViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
@@ -73,6 +92,12 @@ public class CpuAdapter extends RecyclerView.Adapter<CpuAdapter.CpuViewHolder>
         View view = LayoutInflater.from(parent.getContext()).inflate(layoutResId, parent, false);
         return new CpuViewHolder(view);
         }
+
+    // Call this when cart changes
+    public void setCartQuantities(java.util.Map<String, Integer> cartQuantities) {
+        this.cartQuantities = cartQuantities;
+        notifyDataSetChanged();
+    }
 
     @Override
     public void onBindViewHolder(@NonNull CpuViewHolder holder, int position)
@@ -83,16 +108,8 @@ public class CpuAdapter extends RecyclerView.Adapter<CpuAdapter.CpuViewHolder>
             holder.name.setText("View More");
             holder.price.setText("");
             holder.addToCartButton.setVisibility(View.GONE);
+            holder.layoutCartActionsCpu.setVisibility(View.GONE);
             holder.image.setImageResource(R.drawable.ic_cpu_placeholder);
-            // Set layout params to match other items
-            ViewGroup.LayoutParams params = holder.itemView.getLayoutParams();
-            if (params != null)
-            {
-                params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
-                params.height = holder.itemView.getResources().getDimensionPixelSize(
-                        R.dimen.cpu_item_height);
-                holder.itemView.setLayoutParams(params);
-            }
             holder.itemView.setOnClickListener(v ->
                 {
                     if (viewMoreClickListener != null)
@@ -107,7 +124,15 @@ public class CpuAdapter extends RecyclerView.Adapter<CpuAdapter.CpuViewHolder>
             holder.price.setText(String.format("$%.2f", item.price));
             Glide.with(holder.itemView.getContext()).load(item.imageUrl).placeholder(
                     R.drawable.ic_cpu_placeholder).centerCrop().into(holder.image);
-            holder.addToCartButton.setVisibility(View.VISIBLE);
+            int quantity = cartQuantities.containsKey(item.name) ? cartQuantities.get(item.name) : 0;
+            if (quantity > 0) {
+                holder.addToCartButton.setVisibility(View.GONE);
+                holder.layoutCartActionsCpu.setVisibility(View.VISIBLE);
+                holder.textQuantityCpu.setText(String.valueOf(quantity));
+            } else {
+                holder.addToCartButton.setVisibility(View.VISIBLE);
+                holder.layoutCartActionsCpu.setVisibility(View.GONE);
+            }
             holder.addToCartButton.setOnClickListener(v ->
                 {
                     if (addToCartClickListener != null)
@@ -115,6 +140,16 @@ public class CpuAdapter extends RecyclerView.Adapter<CpuAdapter.CpuViewHolder>
                         addToCartClickListener.onAddToCart(item);
                     }
                 });
+            holder.buttonAddMoreToCartCpu.setOnClickListener(v -> {
+                if (addMoreToCartClickListener != null) {
+                    addMoreToCartClickListener.onAddMoreToCart(item);
+                }
+            });
+            holder.buttonRemoveFromCartCpu.setOnClickListener(v -> {
+                if (removeFromCartClickListener != null) {
+                    removeFromCartClickListener.onRemoveFromCart(item);
+                }
+            });
             holder.itemView.setOnClickListener(v ->
                 {
                     if (itemClickListener != null)
@@ -149,10 +184,11 @@ public class CpuAdapter extends RecyclerView.Adapter<CpuAdapter.CpuViewHolder>
 
     static class CpuViewHolder extends RecyclerView.ViewHolder
         {
-        TextView name, price;
+        TextView name, price, textQuantityCpu;
         ImageView image;
         Button addToCartButton;
-
+        LinearLayout layoutCartActionsCpu;
+        ImageButton buttonRemoveFromCartCpu, buttonAddMoreToCartCpu;
         public CpuViewHolder(@NonNull View itemView)
             {
             super(itemView);
@@ -160,6 +196,10 @@ public class CpuAdapter extends RecyclerView.Adapter<CpuAdapter.CpuViewHolder>
             price = itemView.findViewById(R.id.cpuPrice);
             image = itemView.findViewById(R.id.cpuImage);
             addToCartButton = itemView.findViewById(R.id.buttonAddToCartCpu);
+            layoutCartActionsCpu = itemView.findViewById(R.id.layoutCartActionsCpu);
+            textQuantityCpu = itemView.findViewById(R.id.textQuantityCpu);
+            buttonRemoveFromCartCpu = itemView.findViewById(R.id.buttonRemoveFromCartCpu);
+            buttonAddMoreToCartCpu = itemView.findViewById(R.id.buttonAddMoreToCartCpu);
             }
         }
     }
