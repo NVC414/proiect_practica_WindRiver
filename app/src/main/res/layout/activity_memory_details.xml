@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@android:color/white"
+    android:background="@color/background"
     android:padding="24dp">
 
     <Space
@@ -16,9 +16,10 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_gravity="start"
-        android:background="@android:color/transparent"
+        android:background="@color/surface"
         android:contentDescription="@string/back"
         android:src="@android:drawable/ic_menu_revert"
+        android:tint="@color/on_surface"
         tools:ignore="TouchTargetSizeCheck" />
 
     <ImageView
@@ -27,7 +28,7 @@
         android:layout_height="180dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="16dp"
-        android:background="@drawable/rounded_square_bg"
+        android:background="@color/surface"
         android:scaleType="centerCrop"
         android:contentDescription="@string/memory_image" />
 
@@ -38,14 +39,15 @@
         android:textStyle="bold"
         android:textSize="20sp"
         android:gravity="center_horizontal"
-        android:layout_marginBottom="8dp" />
+        android:layout_marginBottom="8dp"
+        android:textColor="@color/on_background" />
 
     <TextView
         android:id="@+id/memoryPrice"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="16sp"
-        android:textColor="#888"
+        android:textColor="@color/on_surface"
         android:gravity="center_horizontal"
         android:layout_marginBottom="8dp" />
 
@@ -53,37 +55,43 @@
         android:id="@+id/memoryType"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp" />
+        android:layout_marginBottom="4dp"
+        android:textColor="@color/on_surface" />
 
     <TextView
         android:id="@+id/memoryColor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp" />
+        android:layout_marginBottom="4dp"
+        android:textColor="@color/on_surface" />
 
     <TextView
         android:id="@+id/memoryCasLatency"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp" />
+        android:layout_marginBottom="4dp"
+        android:textColor="@color/on_surface" />
 
     <TextView
         android:id="@+id/memoryFirstWordLatency"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp" />
+        android:layout_marginBottom="4dp"
+        android:textColor="@color/on_surface" />
 
     <TextView
         android:id="@+id/memoryModules"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp" />
+        android:layout_marginBottom="4dp"
+        android:textColor="@color/on_surface" />
 
     <TextView
         android:id="@+id/memorySpeed"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="16dp"
+        android:textColor="@color/on_surface" />
 
     <Button
         android:id="@+id/buttonAddToCart"
@@ -93,7 +101,8 @@
         android:text="@string/add_to_cart"
         android:textSize="16sp"
         android:background="@drawable/rounded_button_bg"
-        android:textColor="@android:color/white"
+        android:backgroundTint="@color/primary"
+        android:textColor="@color/on_primary"
         android:layout_marginTop="24dp" />
 
 </LinearLayout>

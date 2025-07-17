@@ -3,7 +3,7 @@
     android:layout_width="140dp"
     android:layout_height="260dp"
     android:orientation="vertical"
-    android:background="@drawable/case_item_bg"
+    android:background="@color/surface"
     android:layout_marginEnd="8dp"
     android:layout_marginStart="8dp"
     android:layout_marginTop="8dp"
@@ -18,7 +18,7 @@
         android:layout_gravity="center_horizontal"
         android:contentDescription="@string/laptop_image"
         android:scaleType="fitCenter"
-        android:background="#EEE" />
+        android:background="@color/surface" />
 
     <TextView
         android:id="@+id/laptopModel"
@@ -31,7 +31,8 @@
         android:ellipsize="end"
         android:maxLines="2"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="2dp" />
+        android:layout_marginBottom="2dp"
+        android:textColor="@color/on_surface" />
 
     <TextView
         android:id="@+id/laptopPrice"
@@ -39,7 +40,7 @@
         android:layout_height="wrap_content"
         android:text="@string/pret"
         android:textSize="13sp"
-        android:textColor="#888"
+        android:textColor="@color/on_surface"
         android:gravity="center_horizontal"
         android:layout_marginTop="2dp"
         android:layout_marginBottom="2dp" />
@@ -55,7 +56,8 @@
         android:layout_height="wrap_content"
         android:text="@string/add_to_cart"
         android:textSize="13sp"
-        android:layout_gravity="bottom" />
+        android:layout_gravity="bottom"
+        android:background="@color/primary"
+        android:textColor="@color/on_primary" />
 
 </LinearLayout>
-

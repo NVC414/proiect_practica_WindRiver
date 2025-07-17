@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@android:color/white"
+    android:background="@color/background"
     android:padding="24dp">
 
     <Space
@@ -15,7 +15,8 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_gravity="start"
-        android:background="@android:color/transparent"
+        android:background="@color/surface"
+        android:tint="@color/on_surface"
         android:src="@android:drawable/ic_menu_revert"
         android:contentDescription="@string/back" />
 
@@ -25,7 +26,7 @@
         android:layout_height="180dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="16dp"
-        android:background="@drawable/rounded_square_bg"
+        android:background="@color/surface"
         android:scaleType="centerCrop"
         android:contentDescription="@string/cpu_image" />
 
@@ -36,14 +37,15 @@
         android:textStyle="bold"
         android:textSize="20sp"
         android:gravity="center_horizontal"
-        android:layout_marginBottom="8dp" />
+        android:layout_marginBottom="8dp"
+        android:textColor="@color/on_background" />
 
     <TextView
         android:id="@+id/cpuPrice"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="16sp"
-        android:textColor="#888"
+        android:textColor="@color/on_surface"
         android:gravity="center_horizontal"
         android:layout_marginBottom="8dp" />
 
@@ -51,43 +53,50 @@
         android:id="@+id/cpuBoostClock"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp" />
+        android:layout_marginBottom="4dp"
+        android:textColor="@color/on_surface" />
 
     <TextView
         android:id="@+id/cpuCoreClock"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp" />
+        android:layout_marginBottom="4dp"
+        android:textColor="@color/on_surface" />
 
     <TextView
         android:id="@+id/cpuCoreCount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp" />
+        android:layout_marginBottom="4dp"
+        android:textColor="@color/on_surface" />
 
     <TextView
         android:id="@+id/cpuGraphics"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp" />
+        android:layout_marginBottom="4dp"
+        android:textColor="@color/on_surface" />
 
     <TextView
         android:id="@+id/cpuSMT"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp" />
+        android:layout_marginBottom="4dp"
+        android:textColor="@color/on_surface" />
 
     <TextView
         android:id="@+id/cpuSocket"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp" />
+        android:layout_marginBottom="4dp"
+        android:textColor="@color/on_surface" />
 
     <TextView
         android:id="@+id/cpuTDP"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="16dp"
+        android:textColor="@color/on_surface" />
 
     <Button
         android:id="@+id/buttonAddToCartCpu"
@@ -97,8 +106,8 @@
         android:text="@string/add_to_cart"
         android:textSize="16sp"
         android:background="@drawable/rounded_button_bg"
-        android:textColor="@android:color/white"
+        android:backgroundTint="@color/primary"
+        android:textColor="@color/on_primary"
         android:layout_marginTop="24dp" />
 
 </LinearLayout>
-

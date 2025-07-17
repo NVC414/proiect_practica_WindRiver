@@ -7,7 +7,7 @@
     android:layout_marginBottom="8dp"
     card_view:cardCornerRadius="16dp"
     card_view:cardElevation="2dp"
-    card_view:cardBackgroundColor="#EEEEEE">
+    card_view:cardBackgroundColor="@color/surface">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,7 +23,7 @@
             android:layout_weight="1"
             android:text="@string/item_name"
             android:textSize="16sp"
-            android:textColor="#222" />
+            android:textColor="@color/on_surface" />
 
         <TextView
             android:id="@+id/text_cart_item_price"
@@ -31,9 +31,8 @@
             android:layout_height="wrap_content"
             android:text="@string/dol_0_00_"
             android:textSize="16sp"
-            android:textColor="#222"
+            android:textColor="@color/on_surface"
             android:layout_marginStart="16dp" />
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>
-

@@ -21,7 +21,9 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="8dp" />
+        android:layout_marginTop="8dp"
+        android:background="@color/primary"
+        android:textColor="@color/on_primary" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chatRecyclerView"
@@ -39,7 +41,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="8dp"
-        android:background="@color/white"
+        android:background="@color/surface"
         app:layout_constraintBottom_toTopOf="@id/bottomSpace"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -48,8 +50,9 @@
             android:id="@+id/micButton"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:background="@android:color/transparent"
+            android:background="@color/primary"
             android:src="@android:drawable/ic_btn_speak_now"
+            app:tint="@color/on_primary"
             android:contentDescription="Microphone" />
 
         <EditText
@@ -60,14 +63,17 @@
             android:hint="Type a message..."
             android:background="@drawable/chat_input_bg"
             android:padding="8dp"
-            android:maxLines="4" />
+            android:maxLines="4"
+            android:textColor="@color/black"
+            android:textColorHint="@color/on_surface" />
 
         <ImageButton
             android:id="@+id/sendButton"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:background="@android:color/transparent"
+            android:background="@color/primary"
             android:src="@android:drawable/ic_menu_send"
+            app:tint="@color/on_primary"
             android:contentDescription="Send" />
     </LinearLayout>
 

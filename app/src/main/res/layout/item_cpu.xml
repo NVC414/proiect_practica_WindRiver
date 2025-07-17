@@ -3,7 +3,7 @@
     android:layout_width="140dp"
     android:layout_height="220dp"
     android:orientation="vertical"
-    android:background="@drawable/case_item_bg"
+    android:background="@color/surface"
     android:layout_marginEnd="8dp"
     android:layout_marginStart="8dp"
     android:layout_marginTop="8dp"
@@ -18,7 +18,7 @@
         android:layout_gravity="center_horizontal"
         android:scaleType="fitCenter"
         android:contentDescription="@string/cpu_image"
-        android:background="#EEE" />
+        android:background="@color/surface" />
 
     <TextView
         android:id="@+id/cpuName"
@@ -30,14 +30,15 @@
         android:ellipsize="end"
         android:maxLines="2"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="2dp" />
+        android:layout_marginBottom="2dp"
+        android:textColor="@color/on_surface" />
 
     <TextView
         android:id="@+id/cpuPrice"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="12sp"
-        android:textColor="#888"
+        android:textColor="@color/on_surface"
         android:gravity="center_horizontal"
         android:layout_marginTop="2dp"
         android:layout_marginBottom="2dp" />
@@ -53,6 +54,8 @@
         android:layout_height="wrap_content"
         android:text="@string/add_to_cart"
         android:textSize="12sp"
-        android:layout_gravity="bottom" />
+        android:layout_gravity="bottom"
+        android:background="@color/primary"
+        android:textColor="@color/on_primary" />
 
 </LinearLayout>

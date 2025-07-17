@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="32dp"
         android:layout_marginTop="16dp"
-        android:background="#F5F5F5"
+        android:background="@color/surface"
         android:clipChildren="false"
         android:clipToPadding="false"
         android:elevation="4dp"
@@ -43,7 +43,8 @@
             android:layout_weight="1"
             android:text="@string/total_0_00_ron"
             android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textColor="@color/on_background" />
 
         <Button
             android:id="@+id/button_checkout"
@@ -51,7 +52,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:text="@string/checkout"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            android:background="@color/primary"
+            android:textColor="@color/on_primary" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

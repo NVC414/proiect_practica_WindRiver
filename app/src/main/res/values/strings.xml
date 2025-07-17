@@ -57,4 +57,5 @@
     <string name="all_laptops">All Laptops</string>
     <string name="remove">Remove</string>
     <string name="add">Add</string>
+    <string name="chat_with_gemini_ai">Chat with Gemini AI</string>
 </resources>

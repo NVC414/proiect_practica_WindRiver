@@ -9,10 +9,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.windriver.pcgate" />
+                  <option name="mobileSdkAppId" value="1:49456315324:android:35965e4e35ddec8cb909b9" />
+                  <option name="projectId" value="projectwindriver25" />
+                  <option name="projectNumber" value="49456315324" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
