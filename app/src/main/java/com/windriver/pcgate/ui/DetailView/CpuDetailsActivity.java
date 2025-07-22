@@ -1,5 +1,6 @@
 package com.windriver.pcgate.ui.DetailView;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -20,6 +21,7 @@ import com.windriver.pcgate.ui.Cart.CartViewModel;
 
 public class CpuDetailsActivity extends AppCompatActivity
     {
+    @SuppressLint({"SetTextI18n", "DefaultLocale"})
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
         {
@@ -61,7 +63,6 @@ public class CpuDetailsActivity extends AppCompatActivity
         Runnable updateCartUI = () -> {
             java.util.List<CartItem> items = cartViewModel.getCartItems().getValue();
             int quantity = 0;
-            double priceValue = price;
             if (items != null) {
                 for (CartItem item : items) {
                     if (item.getName().equals(name)) {

@@ -1,5 +1,6 @@
 package com.windriver.pcgate.ui.Home;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -67,9 +68,7 @@ public class HomeFragment extends Fragment
         viewPager.setAdapter(adapter);
 
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) ->
-            {
-                tab.setCustomView(R.layout.custom_tab);
-            }).attach();
+                tab.setCustomView(R.layout.custom_tab)).attach();
 
 
         RecyclerView caseRecyclerView = view.findViewById(R.id.caseRecyclerView);
@@ -88,12 +87,12 @@ public class HomeFragment extends Fragment
                 double price = 0.0;
                 try
                 {
-                    price = Double.parseDouble(item.price.replaceAll("[^0-9.]", ""));
+                    price = Double.parseDouble(item.getPrice().replaceAll("[^0-9.]", ""));
                 }
                 catch (Exception ignored)
                 {
                 }
-                CartItem cartItem = new CartItem(item.name, price, 1);
+                CartItem cartItem = new CartItem(item.getName(), price, 1);
                 cartViewModel.addItem(cartItem);
                 android.widget.Toast.makeText(getContext(), "Added to cart",
                         android.widget.Toast.LENGTH_SHORT).show();
@@ -108,17 +107,17 @@ public class HomeFragment extends Fragment
             {
                 for (CartItem cartItem : currentCart)
                 {
-                    if (cartItem.getName().equals(item.name))
+                    if (cartItem.getName().equals(item.getName()))
                     {
                         int newQty = cartItem.getQuantity() - 1;
                         if (newQty > 0)
                         {
-                            cartViewModel.addItem(new CartItem(item.name, cartItem.getPrice(), -1));
+                            cartViewModel.addItem(new CartItem(item.getName(), cartItem.getPrice(), -1));
                         }
                         else
                         {
 
-                            cartViewModel.addItem(new CartItem(item.name, cartItem.getPrice(),
+                            cartViewModel.addItem(new CartItem(item.getName(), cartItem.getPrice(),
                                     -cartItem.getQuantity()));
                         }
                         break;
@@ -255,26 +254,26 @@ public class HomeFragment extends Fragment
 
         caseAdapter.setOnItemClickListener(item ->
             {
-                if ("__VIEW_MORE__".equals(item.name))
+                if ("__VIEW_MORE__".equals(item.getName()))
                 {
                     return;
                 }
                 Intent intent = new Intent(getContext(), CaseDetailsActivity.class);
-                intent.putExtra("name", item.name);
-                intent.putExtra("price", item.price);
-                intent.putExtra("imageUrl", item.imageUrl);
+                intent.putExtra("name", item.getName());
+                intent.putExtra("price", item.getPrice());
+                intent.putExtra("imageUrl", item.getImageUrl());
 
 
                 for (CaseItem c : caseAdapter.getAllCases())
                 {
-                    if (c.name.equals(item.name))
+                    if (c.getName().equals(item.getName()))
                     {
-                        intent.putExtra("color", c.color != null ? c.color : "");
-                        intent.putExtra("type", c.type != null ? c.type : "");
-                        intent.putExtra("side_panel", c.side_panel != null ? c.side_panel : "");
-                        intent.putExtra("psu", c.psu != null ? c.psu : "");
-                        intent.putExtra("internal_35_bays", c.internal_35_bays);
-                        intent.putExtra("external_volume", c.external_volume);
+                        intent.putExtra("color", c.getColor() != null ? c.getColor() : "");
+                        intent.putExtra("type", c.getType() != null ? c.getType() : "");
+                        intent.putExtra("side_panel", c.getSidePanel() != null ? c.getSidePanel() : "");
+                        intent.putExtra("psu", c.getPsu() != null ? c.getPsu() : "");
+                        intent.putExtra("internal_35_bays", c.getInternal35Bays());
+                        intent.putExtra("external_volume", c.getExternalVolume());
                         break;
                     }
                 }
@@ -293,8 +292,8 @@ public class HomeFragment extends Fragment
 
         com.windriver.pcgate.adapter.CpuAdapter.OnAddToCartClickListener addToCartClickListenerCpu = item ->
             {
-                double price = item.price;
-                CartItem cartItem = new CartItem(item.name, price, 1);
+                double price = item.getPrice();
+                CartItem cartItem = new CartItem(item.getName(), price, 1);
                 cartViewModel.addItem(cartItem);
                 android.widget.Toast.makeText(getContext(), "Added to cart",
                         android.widget.Toast.LENGTH_SHORT).show();
@@ -306,12 +305,12 @@ public class HomeFragment extends Fragment
             List<CartItem> currentCart = cartViewModel.getCartItems().getValue();
             if (currentCart != null) {
                 for (CartItem cartItem : currentCart) {
-                    if (cartItem.getName().equals(item.name)) {
+                    if (cartItem.getName().equals(item.getName())) {
                         int newQty = cartItem.getQuantity() - 1;
                         if (newQty > 0) {
-                            cartViewModel.addItem(new CartItem(item.name, cartItem.getPrice(), -1));
+                            cartViewModel.addItem(new CartItem(item.getName(), cartItem.getPrice(), -1));
                         } else {
-                            cartViewModel.addItem(new CartItem(item.name, cartItem.getPrice(), -cartItem.getQuantity()));
+                            cartViewModel.addItem(new CartItem(item.getName(), cartItem.getPrice(), -cartItem.getQuantity()));
                         }
                         break;
                     }
@@ -321,9 +320,7 @@ public class HomeFragment extends Fragment
         cpuAdapter.setOnRemoveFromCartClickListener(removeFromCartClickListenerCpu);
 
 
-        com.windriver.pcgate.adapter.CpuAdapter.OnAddMoreToCartClickListener addMoreToCartClickListenerCpu = item -> {
-            cartViewModel.addItem(new CartItem(item.name, item.price, 1));
-        };
+        com.windriver.pcgate.adapter.CpuAdapter.OnAddMoreToCartClickListener addMoreToCartClickListenerCpu = item -> cartViewModel.addItem(new CartItem(item.getName(), item.getPrice(), 1));
         cpuAdapter.setOnAddMoreToCartClickListener(addMoreToCartClickListenerCpu);
 
 
@@ -406,21 +403,21 @@ public class HomeFragment extends Fragment
 
         cpuAdapter.setOnItemClickListener(item ->
             {
-                if ("__VIEW_MORE__".equals(item.name))
+                if ("__VIEW_MORE__".equals(item.getName()))
                 {
                     return;
                 }
                 Intent intent = new Intent(getContext(), CpuDetailsActivity.class);
-                intent.putExtra("name", item.name);
-                intent.putExtra("price", item.price);
-                intent.putExtra("imageUrl", item.imageUrl);
-                intent.putExtra("boost_clock", item.boost_clock);
-                intent.putExtra("core_clock", item.core_clock);
-                intent.putExtra("core_count", item.core_count);
-                intent.putExtra("graphics", item.graphics);
-                intent.putExtra("smt", item.smt);
-                intent.putExtra("socket", item.socket);
-                intent.putExtra("tdp", item.tdp);
+                intent.putExtra("name", item.getName());
+                intent.putExtra("price", item.getPrice());
+                intent.putExtra("imageUrl", item.getImageUrl());
+                intent.putExtra("boost_clock", item.getBoostClock());
+                intent.putExtra("core_clock", item.getCoreClock());
+                intent.putExtra("core_count", item.getCoreCount());
+                intent.putExtra("graphics", item.getGraphics());
+                intent.putExtra("smt", item.isSmt());
+                intent.putExtra("socket", item.getSocket());
+                intent.putExtra("tdp", item.getTdp());
                 startActivity(intent);
             });
 
@@ -444,12 +441,12 @@ public class HomeFragment extends Fragment
             double price = 0.0;
             try
             {
-                price = Double.parseDouble(item.price.replaceAll("[^0-9.]", ""));
+                price = Double.parseDouble(item.getPrice().replaceAll("[^0-9.]", ""));
             }
             catch (Exception ignored)
             {
             }
-            CartItem cartItem = new CartItem(item.model, price, 1);
+            CartItem cartItem = new CartItem(item.getModel(), price, 1);
             cartViewModel.addItem(cartItem);
             android.widget.Toast.makeText(getContext(), "Added to cart",
                     android.widget.Toast.LENGTH_SHORT).show();
@@ -568,22 +565,22 @@ public class HomeFragment extends Fragment
 
     laptopAdapter.setOnItemClickListener(item ->
         {
-            if ("__VIEW_MORE__".equals(item.model))
+            if ("__VIEW_MORE__".equals(item.getModel()))
             {
                 return;
             }
             Intent intent = new Intent(getContext(),
                     com.windriver.pcgate.ui.DetailView.LaptopDetailsActivity.class);
-            intent.putExtra("brand", item.brand);
-            intent.putExtra("model", item.model);
-            intent.putExtra("price", item.price);
-            intent.putExtra("imageUrl", item.imageUrl);
-            intent.putExtra("processor", item.processor);
-            intent.putExtra("ram_gb", item.ram_gb);
-            intent.putExtra("ram_type", item.ram_type);
-            intent.putExtra("graphic_card_gb", item.graphic_card_gb);
-            intent.putExtra("hdd", item.hdd);
-            intent.putExtra("ssd", item.ssd);
+            intent.putExtra("brand", item.getBrand());
+            intent.putExtra("model", item.getModel());
+            intent.putExtra("price", item.getPrice());
+            intent.putExtra("imageUrl", item.getImageUrl());
+            intent.putExtra("processor", item.getProcessor());
+            intent.putExtra("ram_gb", item.getRamGb());
+            intent.putExtra("ram_type", item.getRamType());
+            intent.putExtra("graphic_card_gb", item.getGraphicCardGb());
+            intent.putExtra("hdd", item.getHdd());
+            intent.putExtra("ssd", item.getSsd());
             startActivity(intent);
         });
 
@@ -599,8 +596,8 @@ public class HomeFragment extends Fragment
 
         com.windriver.pcgate.adapter.MemoryAdapter.OnAddToCartClickListener addToCartClickListenerMemory = item ->
             {
-                double price = item.price;
-                CartItem cartItem = new CartItem(item.name, price, 1);
+                double price = item.getPrice();
+                CartItem cartItem = new CartItem(item.getName(), price, 1);
                 cartViewModel.addItem(cartItem);
                 android.widget.Toast.makeText(getContext(), "Added to cart",
                         android.widget.Toast.LENGTH_SHORT).show();
@@ -688,21 +685,21 @@ public class HomeFragment extends Fragment
 
         memoryAdapter.setOnItemClickListener(item ->
             {
-                if ("__VIEW_MORE__".equals(item.name))
+                if ("__VIEW_MORE__".equals(item.getName()))
                 {
                     return;
                 }
                 Intent intent = new Intent(getContext(),
                         com.windriver.pcgate.ui.DetailView.MemoryDetailsActivity.class);
-                intent.putExtra("name", item.name);
-                intent.putExtra("price", item.price);
-                intent.putExtra("imageUrl", item.imageUrl);
-                intent.putExtra("ddr_type", item.ddr_type);
-                intent.putExtra("color", item.color);
-                intent.putExtra("cas_latency", item.cas_latency);
-                intent.putExtra("first_word_latency", item.first_word_latency);
-                intent.putIntegerArrayListExtra("modules", new java.util.ArrayList<>(item.modules));
-                intent.putIntegerArrayListExtra("speed", new java.util.ArrayList<>(item.speed));
+                intent.putExtra("name", item.getName());
+                intent.putExtra("price", item.getPrice());
+                intent.putExtra("imageUrl", item.getImageUrl());
+                intent.putExtra("ddr_type", item.getDdrType());
+                intent.putExtra("color", item.getColor());
+                intent.putExtra("cas_latency", item.getCasLatency());
+                intent.putExtra("first_word_latency", item.getFirstWordLatency());
+                intent.putIntegerArrayListExtra("modules", new java.util.ArrayList<>(item.getModules()));
+                intent.putIntegerArrayListExtra("speed", new java.util.ArrayList<>(item.getSpeed()));
                 startActivity(intent);
             });
 
@@ -718,9 +715,9 @@ public class HomeFragment extends Fragment
         com.windriver.pcgate.adapter.MotherboardAdapter.OnAddToCartClickListener addToCartClickListenerMotherboard = item -> {
             double price = 0.0;
             try {
-                price = Double.parseDouble(item.price.replaceAll("[^0-9.]", ""));
+                price = Double.parseDouble(item.getPrice().replaceAll("[^0-9.]", ""));
             } catch (Exception ignored) {}
-            CartItem cartItem = new CartItem(item.name, price, 1);
+            CartItem cartItem = new CartItem(item.getName(), price, 1);
             cartViewModel.addItem(cartItem);
             android.widget.Toast.makeText(getContext(), "Added to cart", android.widget.Toast.LENGTH_SHORT).show();
         };
@@ -803,19 +800,19 @@ public class HomeFragment extends Fragment
         });
 
         motherboardAdapter.setOnItemClickListener(item -> {
-            if ("__VIEW_MORE__".equals(item.name)) {
+            if ("__VIEW_MORE__".equals(item.getName())) {
                 return;
             }
             Intent intent = new Intent(getContext(), com.windriver.pcgate.ui.DetailView.MotherboardDetailsActivity.class);
-            intent.putExtra("name", item.name);
-            intent.putExtra("price", item.price);
-            intent.putExtra("imageUrl", item.imageUrl);
-            intent.putExtra("color", item.color);
-            intent.putExtra("ddr_type", item.ddrType);
-            intent.putExtra("form_factor", item.formFactor);
-            intent.putExtra("socket", item.socket);
-            intent.putExtra("max_memory", item.maxMemory);
-            intent.putExtra("memory_slots", item.memorySlots);
+            intent.putExtra("name", item.getName());
+            intent.putExtra("price", item.getPrice());
+            intent.putExtra("imageUrl", item.getImageUrl());
+            intent.putExtra("color", item.getColor());
+            intent.putExtra("ddr_type", item.getDdrType());
+            intent.putExtra("form_factor", item.getFormFactor());
+            intent.putExtra("socket", item.getSocket());
+            intent.putExtra("max_memory", item.getMaxMemory());
+            intent.putExtra("memory_slots", item.getMemorySlots());
             startActivity(intent);
         });
 
@@ -833,9 +830,9 @@ public class HomeFragment extends Fragment
         com.windriver.pcgate.adapter.GpuAdapter.OnAddToCartClickListener addToCartClickListenerGpu = item -> {
             double price = 0.0;
             try {
-                price = Double.parseDouble(item.price.replaceAll("[^0-9.]", ""));
+                price = Double.parseDouble(item.getPrice().replaceAll("[^0-9.]", ""));
             } catch (Exception ignored) {}
-            CartItem cartItem = new CartItem(item.name, price, 1);
+            CartItem cartItem = new CartItem(item.getName(), price, 1);
             cartViewModel.addItem(cartItem);
             android.widget.Toast.makeText(getContext(), "Added to cart", android.widget.Toast.LENGTH_SHORT).show();
         };
@@ -854,6 +851,7 @@ public class HomeFragment extends Fragment
 
         DatabaseReference gpuRef = FirebaseDatabase.getInstance().getReference("video-card");
         gpuRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @SuppressLint("DefaultLocale")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<com.windriver.pcgate.model.GpuItem> allGpus = new ArrayList<>();
@@ -961,19 +959,19 @@ public class HomeFragment extends Fragment
         });
 
         gpuAdapter.setOnItemClickListener(item -> {
-            if ("__VIEW_MORE__".equals(item.name)) {
+            if ("__VIEW_MORE__".equals(item.getName())) {
                 return;
             }
             Intent intent = new Intent(getContext(), com.windriver.pcgate.ui.DetailView.GpuDetailsActivity.class);
-            intent.putExtra("name", item.name);
-            intent.putExtra("price", item.price);
-            intent.putExtra("imageUrl", item.imageUrl);
-            intent.putExtra("color", item.color);
-            intent.putExtra("chipset", item.chipset);
-            intent.putExtra("core_clock", item.core_clock);
-            intent.putExtra("boost_clock", item.boost_clock);
-            intent.putExtra("memory", item.memory);
-            intent.putExtra("length", item.length);
+            intent.putExtra("name", item.getName());
+            intent.putExtra("price", item.getPrice());
+            intent.putExtra("imageUrl", item.getImageUrl());
+            intent.putExtra("color", item.getColor());
+            intent.putExtra("chipset", item.getChipset());
+            intent.putExtra("core_clock", item.getCoreClock());
+            intent.putExtra("boost_clock", item.getBoostClock());
+            intent.putExtra("memory", item.getMemory());
+            intent.putExtra("length", item.getLength());
             startActivity(intent);
         });
 
@@ -989,9 +987,9 @@ public class HomeFragment extends Fragment
         com.windriver.pcgate.adapter.PsuAdapter.OnAddToCartClickListener addToCartClickListenerPsu = item -> {
             double price = 0.0;
             try {
-                price = Double.parseDouble(item.price.replaceAll("[^0-9.]", ""));
+                price = Double.parseDouble(item.getPrice().replaceAll("[^0-9.]", ""));
             } catch (Exception ignored) {}
-            CartItem cartItem = new CartItem(item.name, price, 1);
+            CartItem cartItem = new CartItem(item.getName(), price, 1);
             cartViewModel.addItem(cartItem);
             android.widget.Toast.makeText(getContext(), "Added to cart", android.widget.Toast.LENGTH_SHORT).show();
         };
@@ -1000,6 +998,7 @@ public class HomeFragment extends Fragment
 
         DatabaseReference psuRef = FirebaseDatabase.getInstance().getReference().child("power-supply");
         psuRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @SuppressLint("DefaultLocale")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<com.windriver.pcgate.model.PsuItem> allPsus = new ArrayList<>();
@@ -1084,26 +1083,24 @@ public class HomeFragment extends Fragment
         });
 
         psuAdapter.setOnItemClickListener(item -> {
-            if ("__VIEW_MORE__".equals(item.name)) {
+            if ("__VIEW_MORE__".equals(item.getName())) {
                 return;
             }
             Intent intent = new Intent(getContext(), com.windriver.pcgate.ui.DetailView.PsuDetailsActivity.class);
-            intent.putExtra("name", item.name);
-            intent.putExtra("price", item.price);
-            intent.putExtra("imageUrl", item.imageUrl);
-            intent.putExtra("color", item.color);
-            intent.putExtra("efficiency", item.efficiency);
-            intent.putExtra("modular", item.modular);
-            intent.putExtra("type", item.type);
-            intent.putExtra("wattage", item.wattage);
+            intent.putExtra("name", item.getName());
+            intent.putExtra("price", item.getPrice());
+            intent.putExtra("imageUrl", item.getImageUrl());
+            intent.putExtra("color", item.getColor());
+            intent.putExtra("efficiency", item.getEfficiency());
+            intent.putExtra("modular", item.getModular());
+            intent.putExtra("type", item.getType());
+            intent.putExtra("wattage", item.getWattage());
             startActivity(intent);
         });
 
     com.google.android.material.floatingactionbutton.FloatingActionButton fabChat = view.findViewById(
             R.id.fabChat);
     fabChat.setOnClickListener(v ->
-        {
-            Navigation.findNavController(view).navigate(R.id.chatFragment);
-        });
+            Navigation.findNavController(view).navigate(R.id.chatFragment));
         }
     }

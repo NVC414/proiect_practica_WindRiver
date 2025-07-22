@@ -16,12 +16,17 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class GpuAdapter extends RecyclerView.Adapter<GpuAdapter.GpuViewHolder> {
     private List<GpuItem> gpuList;
     private OnAddToCartClickListener addToCartClickListener;
     private static final int TYPE_GPU = 0;
     private static final int TYPE_VIEW_MORE = 1;
     private OnViewMoreClickListener viewMoreClickListener;
+    @Getter
+    @Setter
     private List<GpuItem> allGpus = new java.util.ArrayList<>();
     private final int layoutResId;
     private OnItemClickListener itemClickListener;
@@ -51,14 +56,6 @@ public class GpuAdapter extends RecyclerView.Adapter<GpuAdapter.GpuViewHolder> {
         this.viewMoreClickListener = listener;
     }
 
-    public void setAllGpus(List<GpuItem> allGpus) {
-        this.allGpus = allGpus;
-    }
-
-    public List<GpuItem> getAllGpus() {
-        return allGpus;
-    }
-
     public interface OnItemClickListener {
         void onItemClick(GpuItem item);
     }
@@ -70,7 +67,7 @@ public class GpuAdapter extends RecyclerView.Adapter<GpuAdapter.GpuViewHolder> {
     @Override
     public int getItemViewType(int position) {
         GpuItem item = gpuList.get(position);
-        if ("__VIEW_MORE__".equals(item.name)) {
+        if ("__VIEW_MORE__".equals(item.getName())) {
             return TYPE_VIEW_MORE;
         }
         return TYPE_GPU;
@@ -79,8 +76,7 @@ public class GpuAdapter extends RecyclerView.Adapter<GpuAdapter.GpuViewHolder> {
     @NonNull
     @Override
     public GpuViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        int layoutToUse = layoutResId;
-        View view = LayoutInflater.from(parent.getContext()).inflate(layoutToUse, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(layoutResId, parent, false);
         if (viewType == TYPE_VIEW_MORE) {
             return new ViewMoreViewHolder(view);
         } else {
@@ -110,8 +106,8 @@ public class GpuAdapter extends RecyclerView.Adapter<GpuAdapter.GpuViewHolder> {
             });
         } else {
             GpuItem item = gpuList.get(position);
-            holder.name.setText(item.name);
-            holder.price.setText(item.price);
+            holder.name.setText(item.getName());
+            holder.price.setText(item.getPrice());
             holder.addToCartButton.setVisibility(View.VISIBLE);
             holder.addToCartButton.setOnClickListener(v -> {
                 if (addToCartClickListener != null) {
@@ -124,7 +120,7 @@ public class GpuAdapter extends RecyclerView.Adapter<GpuAdapter.GpuViewHolder> {
                 }
             });
             if (holder.gpuImage != null) {
-                String url = item.imageUrl != null ? item.imageUrl : "";
+                String url = item.getImageUrl() != null ? item.getImageUrl() : "";
                 holder.gpuImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                 holder.gpuImage.setBackgroundColor(android.graphics.Color.WHITE);
                 holder.gpuImage.setPadding(8, 8, 8, 8);

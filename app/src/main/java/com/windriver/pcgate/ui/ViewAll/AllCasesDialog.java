@@ -54,23 +54,35 @@ public class AllCasesDialog extends DialogFragment
         adapter.setOnAddToCartClickListener(addToCartClickListener);
         adapter.setOnRemoveFromCartClickListener(item -> {
             double priceValue = 0.0;
-            try { priceValue = Double.parseDouble(item.price.replaceAll("[^0-9.]", "")); } catch (Exception ignored) {}
+            try { priceValue = Double.parseDouble(item.getPrice().replaceAll("[^0-9.]", "")); } catch (Exception ignored) {}
             java.util.List<CartItem> current = cartViewModel.getCartItems().getValue();
             if (current != null) {
                 for (CartItem ci : current) {
-                    if (ci.getName().equals(item.name)) {
+                    if (ci.getName().equals(item.getName())) {
                         int newQty = ci.getQuantity() - 1;
                         if (newQty > 0) {
-                            cartViewModel.addItem(new CartItem(item.name, priceValue, -1));
+                            cartViewModel.addItem(new CartItem(item.getName(), priceValue, -1));
                         } else {
-                            cartViewModel.addItem(new CartItem(item.name, priceValue, -ci.getQuantity()));
+                            cartViewModel.addItem(new CartItem(item.getName(), priceValue, -ci.getQuantity()));
                         }
                         break;
                     }
                 }
             }
         });
-
+        adapter.setOnItemClickListener(item -> {
+            android.content.Intent intent = new android.content.Intent(requireContext(), com.windriver.pcgate.ui.DetailView.CaseDetailsActivity.class);
+            intent.putExtra("name", item.getName());
+            intent.putExtra("price", item.getPrice());
+            intent.putExtra("imageUrl", item.getImageUrl());
+            intent.putExtra("type", item.getType());
+            intent.putExtra("color", item.getColor());
+            intent.putExtra("side_panel", item.getSidePanel());
+            intent.putExtra("psu", item.getPsu());
+            intent.putExtra("internal_35_bays", item.getInternal35Bays());
+            intent.putExtra("external_volume", item.getExternalVolume());
+            startActivity(intent);
+        });
         cartViewModel.getCartItems().observe(getViewLifecycleOwner(), items -> {
             java.util.Map<String, Integer> qtys = new java.util.HashMap<>();
             if (items != null) {
@@ -99,6 +111,7 @@ public class AllCasesDialog extends DialogFragment
         }
         }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
         {

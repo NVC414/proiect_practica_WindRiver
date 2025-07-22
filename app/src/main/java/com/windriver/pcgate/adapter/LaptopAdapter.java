@@ -16,6 +16,9 @@ import com.windriver.pcgate.model.LaptopItem;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class LaptopAdapter extends RecyclerView.Adapter<LaptopAdapter.LaptopViewHolder>
     {
     private List<LaptopItem> laptopList;
@@ -23,6 +26,8 @@ public class LaptopAdapter extends RecyclerView.Adapter<LaptopAdapter.LaptopView
     private static final int TYPE_LAPTOP = 0;
     private static final int TYPE_VIEW_MORE = 1;
     private OnViewMoreClickListener viewMoreClickListener;
+    @Getter
+    @Setter
     private List<LaptopItem> allLaptops = new java.util.ArrayList<>();
     private final int layoutResId;
     private OnItemClickListener itemClickListener;
@@ -58,17 +63,8 @@ public class LaptopAdapter extends RecyclerView.Adapter<LaptopAdapter.LaptopView
         this.viewMoreClickListener = listener;
         }
 
-    public void setAllLaptops(List<LaptopItem> allLaptops)
-        {
-        this.allLaptops = allLaptops;
-        }
 
-    public List<LaptopItem> getAllLaptops()
-        {
-        return allLaptops;
-        }
-
-    public interface OnItemClickListener
+        public interface OnItemClickListener
         {
         void onItemClick(LaptopItem item);
         }
@@ -82,7 +78,7 @@ public class LaptopAdapter extends RecyclerView.Adapter<LaptopAdapter.LaptopView
     public int getItemViewType(int position)
         {
         LaptopItem item = laptopList.get(position);
-        if ("__VIEW_MORE__".equals(item.model))
+        if ("__VIEW_MORE__".equals(item.getModel()))
         {
             return TYPE_VIEW_MORE;
         }
@@ -93,8 +89,7 @@ public class LaptopAdapter extends RecyclerView.Adapter<LaptopAdapter.LaptopView
     @Override
     public LaptopViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
         {
-        int layoutToUse = layoutResId;
-        View view = LayoutInflater.from(parent.getContext()).inflate(layoutToUse, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(layoutResId, parent, false);
         if (viewType == TYPE_VIEW_MORE)
         {
             return new ViewMoreViewHolder(view);
@@ -131,8 +126,8 @@ public class LaptopAdapter extends RecyclerView.Adapter<LaptopAdapter.LaptopView
         else
         {
             LaptopItem item = laptopList.get(position);
-            holder.model.setText(item.model);
-            holder.price.setText(item.price);
+            holder.model.setText(item.getModel());
+            holder.price.setText(item.getPrice());
             holder.addToCartButton.setVisibility(View.VISIBLE);
             holder.addToCartButton.setOnClickListener(v ->
                 {
@@ -150,7 +145,7 @@ public class LaptopAdapter extends RecyclerView.Adapter<LaptopAdapter.LaptopView
                 });
             if (holder.laptopImage != null)
             {
-                String url = item.imageUrl != null ? item.imageUrl : "";
+                String url = item.getImageUrl() != null ? item.getImageUrl() : "";
                 Glide.with(holder.itemView.getContext()).load(url).placeholder(
                         R.drawable.ic_laptop_placeholder).centerCrop().into(holder.laptopImage);
             }

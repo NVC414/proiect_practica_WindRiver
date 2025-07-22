@@ -1,5 +1,6 @@
 package com.windriver.pcgate.ui.DetailView;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -18,6 +19,7 @@ import com.windriver.pcgate.ui.Cart.CartViewModel;
 
 public class CaseDetailsActivity extends AppCompatActivity
     {
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
         {
@@ -55,7 +57,7 @@ public class CaseDetailsActivity extends AppCompatActivity
                 R.drawable.ic_case_placeholder).centerCrop().into(caseImage);
 
         caseName.setText(name);
-        casePrice.setText(price);
+        casePrice.setText("$" + price);
         caseType.setText("Type: " + type);
         caseColor.setText("Color: " + color);
         caseSidePanel.setText("Side Panel: " + sidePanel);
@@ -70,11 +72,12 @@ public class CaseDetailsActivity extends AppCompatActivity
             {
                 java.util.List<CartItem> items = cartViewModel.getCartItems().getValue();
                 int quantity = 0;
-                double priceValue = 0.0;
                 try
                 {
-                    priceValue = price != null ? Double.parseDouble(
-                            price.replaceAll("[^0-9.]", "")) : 0.0;
+                    if (price != null) {
+                        Double.parseDouble(
+                                price.replaceAll("[^0-9.]", ""));
+                    }
                 }
                 catch (Exception ignored)
                 {
@@ -90,7 +93,6 @@ public class CaseDetailsActivity extends AppCompatActivity
                         }
                     }
                 }
-                boolean wasInCart = layoutCartActions.getVisibility() == android.view.View.VISIBLE;
                 boolean nowInCart = quantity > 0;
                 if (nowInCart)
                 {

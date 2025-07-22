@@ -42,19 +42,19 @@ public class AllGpuDialog extends DialogFragment {
         GpuAdapter adapter = new GpuAdapter(allGpus, R.layout.item_gpu_grid);
         adapter.setOnAddToCartClickListener(addToCartClickListener);
         adapter.setOnItemClickListener(item -> {
-            if ("__VIEW_MORE__".equals(item.name)) {
+            if ("__VIEW_MORE__".equals(item.getName())) {
                 return;
             }
             Intent intent = new Intent(getContext(), GpuDetailsActivity.class);
-            intent.putExtra("name", item.name);
-            intent.putExtra("price", item.price);
-            intent.putExtra("imageUrl", item.imageUrl);
-            intent.putExtra("color", item.color != null ? item.color : "");
-            intent.putExtra("chipset", item.chipset != null ? item.chipset : "");
-            intent.putExtra("core_clock", item.core_clock != null ? item.core_clock : "");
-            intent.putExtra("boost_clock", item.boost_clock != null ? item.boost_clock : "");
-            intent.putExtra("memory", item.memory);
-            intent.putExtra("length", item.length);
+            intent.putExtra("name", item.getName());
+            intent.putExtra("price", item.getPrice());
+            intent.putExtra("imageUrl", item.getImageUrl());
+            intent.putExtra("color", item.getColor() != null ? item.getColor() : "");
+            intent.putExtra("chipset", item.getChipset() != null ? item.getChipset() : "");
+            intent.putExtra("core_clock", item.getCoreClock() != null ? item.getCoreClock() : "");
+            intent.putExtra("boost_clock", item.getBoostClock() != null ? item.getBoostClock() : "");
+            intent.putExtra("memory", item.getMemory());
+            intent.putExtra("length", item.getLength());
             startActivity(intent);
         });
         recyclerView.setAdapter(adapter);
@@ -75,6 +75,7 @@ public class AllGpuDialog extends DialogFragment {
         }
     }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Dialog dialog = super.onCreateDialog(savedInstanceState);

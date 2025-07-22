@@ -46,22 +46,22 @@ public class AllLaptopsDialog extends DialogFragment
         adapter.setOnAddToCartClickListener(addToCartClickListener);
         adapter.setOnItemClickListener(item ->
             {
-                if ("__VIEW_MORE__".equals(item.model))
+                if ("__VIEW_MORE__".equals(item.getModel()))
                 {
                     return;
                 }
                 android.content.Intent intent = new android.content.Intent(getContext(),
                         com.windriver.pcgate.ui.DetailView.LaptopDetailsActivity.class);
-                intent.putExtra("brand", item.brand);
-                intent.putExtra("model", item.model);
-                intent.putExtra("price", item.price);
-                intent.putExtra("imageUrl", item.imageUrl);
-                intent.putExtra("processor", item.processor);
-                intent.putExtra("ram_gb", item.ram_gb);
-                intent.putExtra("ram_type", item.ram_type);
-                intent.putExtra("graphic_card_gb", item.graphic_card_gb);
-                intent.putExtra("hdd", item.hdd);
-                intent.putExtra("ssd", item.ssd);
+                intent.putExtra("brand", item.getBrand());
+                intent.putExtra("model", item.getModel());
+                intent.putExtra("price", item.getPrice());
+                intent.putExtra("imageUrl", item.getImageUrl());
+                intent.putExtra("processor", item.getProcessor());
+                intent.putExtra("ram_gb", item.getRamGb());
+                intent.putExtra("ram_type", item.getRamType());
+                intent.putExtra("graphic_card_gb", item.getGraphicCardGb());
+                intent.putExtra("hdd", item.getHdd());
+                intent.putExtra("ssd", item.getSsd());
                 startActivity(intent);
             });
         recyclerView.setAdapter(adapter);
@@ -84,6 +84,7 @@ public class AllLaptopsDialog extends DialogFragment
         }
         }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
         {

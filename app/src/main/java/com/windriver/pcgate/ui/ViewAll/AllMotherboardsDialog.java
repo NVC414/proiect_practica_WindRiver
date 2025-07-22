@@ -43,19 +43,19 @@ public class AllMotherboardsDialog extends DialogFragment {
         MotherboardAdapter adapter = new MotherboardAdapter(allMotherboards, R.layout.item_case_grid);
         adapter.setOnAddToCartClickListener(addToCartClickListener);
         adapter.setOnItemClickListener(item -> {
-            if ("__VIEW_MORE__".equals(item.name)) {
+            if ("__VIEW_MORE__".equals(item.getName())) {
                 return;
             }
             Intent intent = new Intent(getContext(), MotherboardDetailsActivity.class);
-            intent.putExtra("name", item.name);
-            intent.putExtra("price", item.price);
-            intent.putExtra("imageUrl", item.imageUrl);
-            intent.putExtra("color", item.color != null ? item.color : "");
-            intent.putExtra("ddr_type", item.ddrType != null ? item.ddrType : "");
-            intent.putExtra("form_factor", item.formFactor != null ? item.formFactor : "");
-            intent.putExtra("socket", item.socket != null ? item.socket : "");
-            intent.putExtra("max_memory", item.maxMemory);
-            intent.putExtra("memory_slots", item.memorySlots);
+            intent.putExtra("name", item.getName());
+            intent.putExtra("price", item.getPrice());
+            intent.putExtra("imageUrl", item.getImageUrl());
+            intent.putExtra("color", item.getColor() != null ? item.getColor() : "");
+            intent.putExtra("ddr_type", item.getDdrType() != null ? item.getDdrType() : "");
+            intent.putExtra("form_factor", item.getFormFactor() != null ? item.getFormFactor() : "");
+            intent.putExtra("socket", item.getSocket() != null ? item.getSocket() : "");
+            intent.putExtra("max_memory", item.getMaxMemory());
+            intent.putExtra("memory_slots", item.getMemorySlots());
             startActivity(intent);
         });
         recyclerView.setAdapter(adapter);

@@ -2,6 +2,26 @@ package com.windriver.pcgate.model;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class MemoryItem {
+    private String name;
+    private double price;
+    private String imageUrl;
+    private String color;
+    private String ddrType;
+    private int casLatency;
+    private int firstWordLatency;
+    private List<Integer> modules;
+    private List<Integer> speed;
+}
+
+/*
 public class MemoryItem
     {
     public String name;
@@ -34,3 +54,4 @@ public class MemoryItem
         }
     }
 
+*/

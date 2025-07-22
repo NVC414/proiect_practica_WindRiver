@@ -13,6 +13,7 @@ android {
             excludes += "/META-INF/INDEX.LIST"
             excludes += "mozilla/public-suffix-list.txt"
             excludes += "dump_syms/linux/dump_syms.bin"
+            excludes += "/META-INF/gradle/incremental.annotation.processors"
         }
     }
     defaultConfig {
@@ -48,6 +49,7 @@ android {
 }
 
 dependencies {
+
     // Retrofit for networking
     implementation(libs.retrofit) // Use the latest version
     implementation(libs.converter.gson) // Or another converter like Moshi
@@ -82,4 +84,11 @@ dependencies {
     implementation(libs.glide)
     annotationProcessor(libs.compiler)
     implementation(libs.reactive.streams)
+    implementation(libs.lombok)
+    annotationProcessor(libs.lombok.v11832)
+}
+
+// Enable annotation processing
+tasks.withType<JavaCompile> {
+    options.annotationProcessorPath = configurations.annotationProcessor.get()
 }

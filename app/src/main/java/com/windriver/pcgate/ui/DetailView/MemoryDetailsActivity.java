@@ -1,5 +1,6 @@
 package com.windriver.pcgate.ui.DetailView;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 
 public class MemoryDetailsActivity extends AppCompatActivity
     {
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
         {

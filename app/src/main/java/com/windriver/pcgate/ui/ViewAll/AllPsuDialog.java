@@ -43,18 +43,18 @@ public class AllPsuDialog extends DialogFragment {
         PsuAdapter adapter = new PsuAdapter(allPsus, R.layout.item_psu_grid);
         adapter.setOnAddToCartClickListener(addToCartClickListener);
         adapter.setOnItemClickListener(item -> {
-            if ("__VIEW_MORE__".equals(item.name)) {
+            if ("__VIEW_MORE__".equals(item.getName())) {
                 return;
             }
             Intent intent = new Intent(getContext(), PsuDetailsActivity.class);
-            intent.putExtra("name", item.name);
-            intent.putExtra("price", item.price);
-            intent.putExtra("imageUrl", item.imageUrl);
-            intent.putExtra("color", item.color != null ? item.color : "");
-            intent.putExtra("efficiency", item.efficiency != null ? item.efficiency : "");
-            intent.putExtra("modular", item.modular != null ? item.modular : "");
-            intent.putExtra("type", item.type != null ? item.type : "");
-            intent.putExtra("wattage", item.wattage);
+            intent.putExtra("name", item.getName());
+            intent.putExtra("price", item.getPrice());
+            intent.putExtra("imageUrl", item.getImageUrl());
+            intent.putExtra("color", item.getColor() != null ? item.getColor() : "");
+            intent.putExtra("efficiency", item.getEfficiency() != null ? item.getEfficiency() : "");
+            intent.putExtra("modular", item.getModular() != null ? item.getModular() : "");
+            intent.putExtra("type", item.getType() != null ? item.getType() : "");
+            intent.putExtra("wattage", item.getWattage());
             startActivity(intent);
         });
         recyclerView.setAdapter(adapter);
@@ -75,6 +75,7 @@ public class AllPsuDialog extends DialogFragment {
         }
     }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Dialog dialog = super.onCreateDialog(savedInstanceState);

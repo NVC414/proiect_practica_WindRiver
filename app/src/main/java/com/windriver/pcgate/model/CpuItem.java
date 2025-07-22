@@ -1,11 +1,33 @@
 package com.windriver.pcgate.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class CpuItem{
+    private String name;
+    private double price;
+    private String imageUrl;
+    private double boostClock;
+    private double coreClock;
+    private int coreCount;
+    private String graphics;
+    private boolean smt;
+    private String socket;
+    private int tdp;
+}
+
+
+/*
 public class CpuItem
     {
     public String name;
     public double price;
     public String imageUrl;
-    public double boost_clock;
+    public double boostClock;
     public double core_clock;
     public int core_count;
     public String graphics;
@@ -17,14 +39,14 @@ public class CpuItem
         {
         }
 
-    public CpuItem(String name, double price, String imageUrl, double boost_clock,
+    public CpuItem(String name, double price, String imageUrl, double boostClock,
                    double core_clock, int core_count, String graphics, boolean smt, String socket,
                    int tdp)
         {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
-        this.boost_clock = boost_clock;
+        this.boostClock = boostClock;
         this.core_clock = core_clock;
         this.core_count = core_count;
         this.graphics = graphics;
@@ -33,4 +55,5 @@ public class CpuItem
         this.tdp = tdp;
         }
     }
+*/
 

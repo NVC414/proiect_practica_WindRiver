@@ -45,21 +45,21 @@ public class AllMemoryDialog extends DialogFragment
         adapter.setOnAddToCartClickListener(addToCartClickListener);
         adapter.setOnItemClickListener(item ->
             {
-                if ("__VIEW_MORE__".equals(item.name))
+                if ("__VIEW_MORE__".equals(item.getName()))
                 {
                     return;
                 }
                 android.content.Intent intent = new android.content.Intent(getContext(),
                         com.windriver.pcgate.ui.DetailView.MemoryDetailsActivity.class);
-                intent.putExtra("name", item.name);
-                intent.putExtra("price", item.price);
-                intent.putExtra("imageUrl", item.imageUrl);
-                intent.putExtra("ddr_type", item.ddr_type);
-                intent.putExtra("color", item.color);
-                intent.putExtra("cas_latency", item.cas_latency);
-                intent.putExtra("first_word_latency", item.first_word_latency);
-                intent.putIntegerArrayListExtra("modules", new java.util.ArrayList<>(item.modules));
-                intent.putIntegerArrayListExtra("speed", new java.util.ArrayList<>(item.speed));
+                intent.putExtra("name", item.getName());
+                intent.putExtra("price", item.getPrice());
+                intent.putExtra("imageUrl", item.getImageUrl());
+                intent.putExtra("ddr_type", item.getDdrType());
+                intent.putExtra("color", item.getColor());
+                intent.putExtra("cas_latency", item.getCasLatency());
+                intent.putExtra("first_word_latency", item.getFirstWordLatency());
+                intent.putIntegerArrayListExtra("modules", new java.util.ArrayList<>(item.getModules()));
+                intent.putIntegerArrayListExtra("speed", new java.util.ArrayList<>(item.getSpeed()));
                 startActivity(intent);
             });
         recyclerView.setAdapter(adapter);

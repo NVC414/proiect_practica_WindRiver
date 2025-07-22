@@ -1,5 +1,6 @@
 package com.windriver.pcgate.ui.DetailView;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -17,6 +18,7 @@ import com.windriver.pcgate.ui.Cart.CartViewModel;
 import com.bumptech.glide.Glide;
 
 public class MotherboardDetailsActivity extends AppCompatActivity {
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

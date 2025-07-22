@@ -1,5 +1,25 @@
 package com.windriver.pcgate.model;
 
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class PsuItem {
+    private String name;
+    private String price;
+    private String imageUrl;
+    private String color;
+    private String efficiency;
+    private String modular;
+    private String type;
+    private int wattage;
+}
+
+/*
 public class PsuItem {
     public String name;
     public String price;
@@ -23,4 +43,5 @@ public class PsuItem {
         this.wattage = wattage;
     }
 }
+*/
 

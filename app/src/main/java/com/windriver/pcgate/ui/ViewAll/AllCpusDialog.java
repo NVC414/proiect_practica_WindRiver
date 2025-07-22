@@ -60,22 +60,33 @@ public class AllCpusDialog extends DialogFragment
             java.util.List<CartItem> current = cartViewModel.getCartItems().getValue();
             if (current != null) {
                 for (CartItem ci : current) {
-                    if (ci.getName().equals(item.name)) {
+                    if (ci.getName().equals(item.getName())) {
                         int newQty = ci.getQuantity() - 1;
                         if (newQty > 0) {
-                            cartViewModel.addItem(new CartItem(item.name, item.price, -1));
+                            cartViewModel.addItem(new CartItem(item.getName(), item.getPrice(), -1));
                         } else {
-                            cartViewModel.addItem(new CartItem(item.name, item.price, -ci.getQuantity()));
+                            cartViewModel.addItem(new CartItem(item.getName(), item.getPrice(), -ci.getQuantity()));
                         }
                         break;
                     }
                 }
             }
         });
-        adapter.setOnAddMoreToCartClickListener(item -> {
-            cartViewModel.addItem(new CartItem(item.name, item.price, 1));
+        adapter.setOnAddMoreToCartClickListener(item -> cartViewModel.addItem(new CartItem(item.getName(), item.getPrice(), 1)));
+        adapter.setOnItemClickListener(item -> {
+            android.content.Intent intent = new android.content.Intent(requireContext(), com.windriver.pcgate.ui.DetailView.CpuDetailsActivity.class);
+            intent.putExtra("name", item.getName());
+            intent.putExtra("price", item.getPrice());
+            intent.putExtra("imageUrl", item.getImageUrl());
+            intent.putExtra("boostClock", item.getBoostClock());
+            intent.putExtra("coreClock", item.getCoreClock());
+            intent.putExtra("coreCount", item.getCoreCount());
+            intent.putExtra("graphics", item.getGraphics());
+            intent.putExtra("smt", item.isSmt());
+            intent.putExtra("socket", item.getSocket());
+            intent.putExtra("tdp", item.getTdp());
+            startActivity(intent);
         });
-
         cartViewModel.getCartItems().observe(getViewLifecycleOwner(), items -> {
             java.util.Map<String, Integer> qtys = new java.util.HashMap<>();
             if (items != null) {
@@ -102,6 +113,7 @@ public class AllCpusDialog extends DialogFragment
         }
         }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
         {

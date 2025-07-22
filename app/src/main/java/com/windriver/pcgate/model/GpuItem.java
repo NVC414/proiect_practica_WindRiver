@@ -1,5 +1,25 @@
 package com.windriver.pcgate.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class GpuItem {
+    private String name;
+    private String price;
+    private String imageUrl;
+    private String color;
+    private String chipset;
+    private String coreClock;
+    private String boostClock;
+    private int memory;
+    private int length;
+}
+
+/*
 public class GpuItem {
     public String name;
     public String price;
@@ -26,4 +46,5 @@ public class GpuItem {
         this.length = length;
     }
 }
+*/
 

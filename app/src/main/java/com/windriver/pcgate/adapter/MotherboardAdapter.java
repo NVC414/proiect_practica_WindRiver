@@ -16,11 +16,16 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class MotherboardAdapter extends RecyclerView.Adapter<MotherboardAdapter.MotherboardViewHolder> {
     private List<MotherboardItem> motherboardList;
     private OnAddToCartClickListener addToCartClickListener;
     private OnItemClickListener itemClickListener;
     private final int layoutResId;
+    @Getter
+    @Setter
     private List<MotherboardItem> allMotherboards;
 
     public MotherboardAdapter(List<MotherboardItem> motherboardList) {
@@ -46,14 +51,6 @@ public class MotherboardAdapter extends RecyclerView.Adapter<MotherboardAdapter.
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.itemClickListener = listener;
-    }
-
-    public void setAllMotherboards(List<MotherboardItem> allMotherboards) {
-        this.allMotherboards = allMotherboards;
-    }
-
-    public List<MotherboardItem> getAllMotherboards() {
-        return allMotherboards;
     }
 
     public interface OnViewMoreClickListener {
@@ -96,8 +93,8 @@ public class MotherboardAdapter extends RecyclerView.Adapter<MotherboardAdapter.
             holder.price = holder.itemView.findViewById(R.id.casePrice);
             holder.addToCartButton = holder.itemView.findViewById(R.id.buttonAddToCart);
             holder.motherboardImage = holder.itemView.findViewById(R.id.caseImage);
-            holder.name.setText(item.name);
-            holder.price.setText(item.price);
+            holder.name.setText(item.getName());
+            holder.price.setText(item.getPrice());
             holder.addToCartButton.setVisibility(View.VISIBLE);
             holder.addToCartButton.setOnClickListener(v -> {
                 if (addToCartClickListener != null) {
@@ -110,7 +107,7 @@ public class MotherboardAdapter extends RecyclerView.Adapter<MotherboardAdapter.
                 }
             });
             if (holder.motherboardImage != null) {
-                String url = item.imageUrl != null ? item.imageUrl : "";
+                String url = item.getImageUrl() != null ? item.getImageUrl() : "";
                 Glide.with(holder.itemView.getContext()).load(url).placeholder(
                         R.drawable.ic_motherboard_placeholder).centerCrop().into(holder.motherboardImage);
             }

@@ -1,5 +1,24 @@
 package com.windriver.pcgate.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class MotherboardItem {
+    private String name;
+    private String price;
+    private String imageUrl;
+    private String color;
+    private String ddrType;
+    private String formFactor;
+    private String socket;
+    private int maxMemory;
+    private int memorySlots;
+}
+/*
 public class MotherboardItem {
     public String name;
     public String price;
@@ -26,4 +45,5 @@ public class MotherboardItem {
         this.memorySlots = memorySlots;
     }
 }
+*/
 

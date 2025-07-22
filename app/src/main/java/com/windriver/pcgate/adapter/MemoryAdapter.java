@@ -16,6 +16,9 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class MemoryAdapter extends RecyclerView.Adapter<MemoryAdapter.MemoryViewHolder>
     {
     private List<MemoryItem> memoryList;
@@ -23,6 +26,8 @@ public class MemoryAdapter extends RecyclerView.Adapter<MemoryAdapter.MemoryView
     private static final int TYPE_MEMORY = 0;
     private static final int TYPE_VIEW_MORE = 1;
     private OnViewMoreClickListener viewMoreClickListener;
+    @Getter
+    @Setter
     private List<MemoryItem> allMemory = new java.util.ArrayList<>();
     private final int layoutResId;
     private OnItemClickListener itemClickListener;
@@ -58,17 +63,7 @@ public class MemoryAdapter extends RecyclerView.Adapter<MemoryAdapter.MemoryView
         this.viewMoreClickListener = listener;
         }
 
-    public void setAllMemory(List<MemoryItem> allMemory)
-        {
-        this.allMemory = allMemory;
-        }
-
-    public List<MemoryItem> getAllMemory()
-        {
-        return allMemory;
-        }
-
-    public interface OnItemClickListener
+        public interface OnItemClickListener
         {
         void onItemClick(MemoryItem item);
         }
@@ -82,7 +77,7 @@ public class MemoryAdapter extends RecyclerView.Adapter<MemoryAdapter.MemoryView
     public int getItemViewType(int position)
         {
         MemoryItem item = memoryList.get(position);
-        if ("__VIEW_MORE__".equals(item.name))
+        if ("__VIEW_MORE__".equals(item.getName()))
         {
             return TYPE_VIEW_MORE;
         }
@@ -93,8 +88,7 @@ public class MemoryAdapter extends RecyclerView.Adapter<MemoryAdapter.MemoryView
     @Override
     public MemoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
         {
-        int layoutToUse = layoutResId;
-        View view = LayoutInflater.from(parent.getContext()).inflate(layoutToUse, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(layoutResId, parent, false);
         if (viewType == TYPE_VIEW_MORE)
         {
             return new ViewMoreViewHolder(view);
@@ -131,8 +125,8 @@ public class MemoryAdapter extends RecyclerView.Adapter<MemoryAdapter.MemoryView
         else
         {
             MemoryItem item = memoryList.get(position);
-            holder.name.setText(item.name);
-            holder.price.setText("$%s".formatted(item.price));
+            holder.name.setText(item.getName());
+            holder.price.setText("$%s".formatted(item.getPrice()));
             holder.addToCartButton.setVisibility(View.VISIBLE);
             holder.addToCartButton.setOnClickListener(v ->
                 {
@@ -150,7 +144,7 @@ public class MemoryAdapter extends RecyclerView.Adapter<MemoryAdapter.MemoryView
                 });
             if (holder.memoryImage != null)
             {
-                String url = item.imageUrl != null ? item.imageUrl : "";
+                String url = item.getImageUrl() != null ? item.getImageUrl() : "";
                 Glide.with(holder.itemView.getContext()).load(url).placeholder(
                         R.drawable.ic_memory_placeholder).centerCrop().into(holder.memoryImage);
             }

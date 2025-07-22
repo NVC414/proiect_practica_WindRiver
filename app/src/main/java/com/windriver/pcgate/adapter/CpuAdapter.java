@@ -18,6 +18,9 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class CpuAdapter extends RecyclerView.Adapter<CpuAdapter.CpuViewHolder>
     {
     private List<CpuItem> cpuList;
@@ -25,6 +28,8 @@ public class CpuAdapter extends RecyclerView.Adapter<CpuAdapter.CpuViewHolder>
     private OnItemClickListener itemClickListener;
     private OnViewMoreClickListener viewMoreClickListener;
     private final int layoutResId;
+    @Getter
+    @Setter
     private List<CpuItem> allCpus = new java.util.ArrayList<>();
 
     private java.util.Map<String, Integer> cartQuantities = new java.util.HashMap<>();
@@ -103,7 +108,7 @@ public class CpuAdapter extends RecyclerView.Adapter<CpuAdapter.CpuViewHolder>
     public void onBindViewHolder(@NonNull CpuViewHolder holder, int position)
         {
         CpuItem item = cpuList.get(position);
-        if ("__VIEW_MORE__".equals(item.name))
+        if ("__VIEW_MORE__".equals(item.getName()))
         {
             holder.name.setText("View More");
             holder.price.setText("");
@@ -120,11 +125,11 @@ public class CpuAdapter extends RecyclerView.Adapter<CpuAdapter.CpuViewHolder>
         }
         else
         {
-            holder.name.setText(item.name);
-            holder.price.setText(String.format("$%.2f", item.price));
-            Glide.with(holder.itemView.getContext()).load(item.imageUrl).placeholder(
+            holder.name.setText(item.getName());
+            holder.price.setText(String.format("$%.2f", item.getPrice()));
+            Glide.with(holder.itemView.getContext()).load(item.getImageUrl()).placeholder(
                     R.drawable.ic_cpu_placeholder).centerCrop().into(holder.image);
-            int quantity = cartQuantities.containsKey(item.name) ? cartQuantities.get(item.name) : 0;
+            int quantity = cartQuantities.containsKey(item.getName()) ? cartQuantities.get(item.getName()) : 0;
             if (quantity > 0) {
                 holder.addToCartButton.setVisibility(View.GONE);
                 holder.layoutCartActionsCpu.setVisibility(View.VISIBLE);
@@ -172,17 +177,7 @@ public class CpuAdapter extends RecyclerView.Adapter<CpuAdapter.CpuViewHolder>
         notifyDataSetChanged();
         }
 
-    public void setAllCpus(List<CpuItem> allCpus)
-        {
-        this.allCpus = allCpus;
-        }
-
-    public List<CpuItem> getAllCpus()
-        {
-        return allCpus;
-        }
-
-    static class CpuViewHolder extends RecyclerView.ViewHolder
+        static class CpuViewHolder extends RecyclerView.ViewHolder
         {
         TextView name, price, textQuantityCpu;
         ImageView image;

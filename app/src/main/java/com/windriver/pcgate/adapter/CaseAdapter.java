@@ -1,5 +1,6 @@
 package com.windriver.pcgate.adapter;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,9 @@ import com.windriver.pcgate.model.CaseItem;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder>
     {
     private List<CaseItem> caseList;
@@ -24,6 +28,8 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
     private static final int TYPE_CASE = 0;
     private static final int TYPE_VIEW_MORE = 1;
     private OnViewMoreClickListener viewMoreClickListener;
+    @Getter
+    @Setter
     private List<CaseItem> allCases = new java.util.ArrayList<>();
     private final int layoutResId;
     private OnItemClickListener itemClickListener;
@@ -62,17 +68,7 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
         this.viewMoreClickListener = listener;
         }
 
-    public void setAllCases(List<CaseItem> allCases)
-        {
-        this.allCases = allCases;
-        }
-
-    public List<CaseItem> getAllCases()
-        {
-        return allCases;
-        }
-
-    public interface OnItemClickListener
+        public interface OnItemClickListener
         {
         void onItemClick(CaseItem item);
         }
@@ -93,7 +89,7 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
     public int getItemViewType(int position)
         {
         CaseItem item = caseList.get(position);
-        if ("__VIEW_MORE__".equals(item.name))
+        if ("__VIEW_MORE__".equals(item.getName()))
         {
             return TYPE_VIEW_MORE;
         }
@@ -104,12 +100,7 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
     @Override
     public CaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
         {
-        int layoutToUse = layoutResId;
-        if (viewType == TYPE_VIEW_MORE)
-        {
-            layoutToUse = layoutResId;
-        }
-        View view = LayoutInflater.from(parent.getContext()).inflate(layoutToUse, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(layoutResId, parent, false);
         if (viewType == TYPE_VIEW_MORE)
         {
             return new ViewMoreViewHolder(view);
@@ -120,6 +111,7 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
         }
         }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull CaseViewHolder holder, int position)
         {
@@ -146,10 +138,9 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
         else
         {
             CaseItem item = caseList.get(position);
-            holder.name.setText(item.name);
-            holder.price.setText(item.price);
-            int quantity = cartQuantities.containsKey(item.name) ? cartQuantities.get(
-                    item.name) : 0;
+            holder.name.setText(item.getName());
+            holder.price.setText("$" + item.getPrice());
+            int quantity = cartQuantities.getOrDefault(item.getName(), 0);
 
             if (quantity > 0)
             {
@@ -162,7 +153,7 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
                 holder.layoutCartActions.setVisibility(View.GONE);
             }
 
-            boolean wasInCart = holder.layoutCartActions.getVisibility() == View.VISIBLE;
+            holder.layoutCartActions.getVisibility();
             boolean nowInCart = quantity > 0;
             if (nowInCart)
             {
@@ -210,7 +201,7 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
                 });
             if (holder.caseImage != null)
             {
-                String url = item.imageUrl != null ? item.imageUrl : "";
+                String url = item.getImageUrl() != null ? item.getImageUrl() : "";
                 Glide.with(holder.itemView.getContext()).load(url).placeholder(
                         R.drawable.ic_case_placeholder).centerCrop().into(holder.caseImage);
             }
