@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -12,25 +11,25 @@
     android:padding="6dp">
 
     <LinearLayout
-        android:id="@+id/contentLayoutCpu"
+        android:id="@+id/contentLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/cartContainerCpu"
+        android:layout_above="@+id/cartContainerMotherboard"
         android:layout_alignParentTop="true"
         android:orientation="vertical">
 
         <ImageView
-            android:id="@+id/cpuImage"
+            android:id="@+id/motherboardImage"
             android:layout_width="match_parent"
             android:layout_height="135dp"
             android:layout_gravity="center_horizontal"
             android:background="@color/surface"
-            android:contentDescription="@string/cpu_image"
+            android:contentDescription="@string/motherboard_image"
             android:padding="8dp"
             android:scaleType="fitCenter" />
 
         <TextView
-            android:id="@+id/cpuName"
+            android:id="@+id/motherboardName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -38,29 +37,31 @@
             android:ellipsize="end"
             android:gravity="center_horizontal"
             android:maxLines="2"
+            android:text="@string/motherboard_name"
             android:textColor="@color/on_surface"
             android:textSize="14sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/cpuPrice"
+            android:id="@+id/motherboardPrice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:layout_marginBottom="2dp"
             android:gravity="center_horizontal"
+            android:text="@string/price"
             android:textColor="@color/on_surface"
             android:textSize="12sp" />
     </LinearLayout>
 
     <FrameLayout
-        android:id="@+id/cartContainerCpu"
+        android:id="@+id/cartContainerMotherboard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true">
 
         <Button
-            android:id="@+id/buttonAddToCartCpu"
+            android:id="@+id/buttonAddToCartMotherboard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/primary"
@@ -70,7 +71,7 @@
             android:visibility="visible" />
 
         <LinearLayout
-            android:id="@+id/layoutCartActionsCpu"
+            android:id="@+id/layoutCartActionsMotherboard"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -79,7 +80,7 @@
             android:visibility="gone">
 
             <ImageButton
-                android:id="@+id/buttonRemoveFromCartCpu"
+                android:id="@+id/buttonRemoveFromCartMotherboard"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:layout_marginEnd="8dp"
@@ -89,7 +90,7 @@
                 app:tint="@color/on_primary" />
 
             <TextView
-                android:id="@+id/textQuantityCpu"
+                android:id="@+id/textQuantityMotherboard"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -101,7 +102,7 @@
                 tools:ignore="HardcodedText" />
 
             <ImageButton
-                android:id="@+id/buttonAddMoreToCartCpu"
+                android:id="@+id/buttonAddMoreToCartMotherboard"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:layout_marginStart="8dp"
@@ -112,3 +113,4 @@
         </LinearLayout>
     </FrameLayout>
 </RelativeLayout>
+

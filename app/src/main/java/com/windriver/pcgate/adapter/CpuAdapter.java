@@ -1,5 +1,6 @@
 package com.windriver.pcgate.adapter;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -104,6 +105,7 @@ public class CpuAdapter extends RecyclerView.Adapter<CpuAdapter.CpuViewHolder>
         notifyDataSetChanged();
     }
 
+    @SuppressLint({"DefaultLocale", "SetTextI18n"})
     @Override
     public void onBindViewHolder(@NonNull CpuViewHolder holder, int position)
         {

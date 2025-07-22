@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,6 +32,8 @@ public class MemoryAdapter extends RecyclerView.Adapter<MemoryAdapter.MemoryView
     private List<MemoryItem> allMemory = new java.util.ArrayList<>();
     private final int layoutResId;
     private OnItemClickListener itemClickListener;
+    private java.util.Map<String, Integer> cartQuantities = new java.util.HashMap<>();
+    private OnRemoveFromCartClickListener removeFromCartClickListener;
 
     public MemoryAdapter(List<MemoryItem> memoryList)
         {
@@ -72,6 +75,19 @@ public class MemoryAdapter extends RecyclerView.Adapter<MemoryAdapter.MemoryView
         {
         this.itemClickListener = listener;
         }
+
+    public void setCartQuantities(java.util.Map<String, Integer> cartQuantities) {
+        this.cartQuantities = cartQuantities;
+        notifyDataSetChanged();
+    }
+
+    public interface OnRemoveFromCartClickListener {
+        void onRemoveFromCart(MemoryItem item);
+    }
+
+    public void setOnRemoveFromCartClickListener(OnRemoveFromCartClickListener listener) {
+        this.removeFromCartClickListener = listener;
+    }
 
     @Override
     public int getItemViewType(int position)
@@ -127,14 +143,30 @@ public class MemoryAdapter extends RecyclerView.Adapter<MemoryAdapter.MemoryView
             MemoryItem item = memoryList.get(position);
             holder.name.setText(item.getName());
             holder.price.setText("$%s".formatted(item.getPrice()));
-            holder.addToCartButton.setVisibility(View.VISIBLE);
-            holder.addToCartButton.setOnClickListener(v ->
-                {
-                    if (addToCartClickListener != null)
-                    {
-                        addToCartClickListener.onAddToCart(item);
-                    }
-                });
+            int quantity = cartQuantities.getOrDefault(item.getName(), 0);
+            if (quantity > 0) {
+                holder.addToCartButton.setVisibility(View.GONE);
+                holder.layoutCartActions.setVisibility(View.VISIBLE);
+                holder.textQuantity.setText(String.valueOf(quantity));
+            } else {
+                holder.addToCartButton.setVisibility(View.VISIBLE);
+                holder.layoutCartActions.setVisibility(View.GONE);
+            }
+            holder.addToCartButton.setOnClickListener(v -> {
+                if (addToCartClickListener != null) {
+                    addToCartClickListener.onAddToCart(item);
+                }
+            });
+            holder.buttonAddMoreToCart.setOnClickListener(v -> {
+                if (addToCartClickListener != null) {
+                    addToCartClickListener.onAddToCart(item);
+                }
+            });
+            holder.buttonRemoveFromCart.setOnClickListener(v -> {
+                if (removeFromCartClickListener != null) {
+                    removeFromCartClickListener.onRemoveFromCart(item);
+                }
+            });
             holder.itemView.setOnClickListener(v ->
                 {
                     if (itemClickListener != null)
@@ -167,6 +199,10 @@ public class MemoryAdapter extends RecyclerView.Adapter<MemoryAdapter.MemoryView
         {
         TextView name, price;
         Button addToCartButton;
+        ImageButton buttonRemoveFromCart;
+        ImageButton buttonAddMoreToCart;
+        View layoutCartActions;
+        TextView textQuantity;
         ImageView memoryImage;
 
         public MemoryViewHolder(@NonNull View itemView)
@@ -175,6 +211,10 @@ public class MemoryAdapter extends RecyclerView.Adapter<MemoryAdapter.MemoryView
             name = itemView.findViewById(R.id.memoryName);
             price = itemView.findViewById(R.id.memoryPrice);
             addToCartButton = itemView.findViewById(R.id.buttonAddToCart);
+            buttonRemoveFromCart = itemView.findViewById(R.id.buttonRemoveFromCartMemory);
+            buttonAddMoreToCart = itemView.findViewById(R.id.buttonAddMoreToCartMemory);
+            layoutCartActions = itemView.findViewById(R.id.layoutCartActionsMemory);
+            textQuantity = itemView.findViewById(R.id.textQuantityMemory);
             memoryImage = itemView.findViewById(R.id.memoryImage);
             }
         }

@@ -1,63 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="140dp"
-    android:layout_height="260dp"
-    android:orientation="vertical"
-    android:background="@color/surface"
-    android:layout_marginEnd="8dp"
+    android:layout_height="280dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginStart="8dp"
     android:layout_marginTop="8dp"
+    android:layout_marginEnd="8dp"
     android:layout_marginBottom="8dp"
+    android:background="@color/surface"
     android:padding="6dp">
 
-    <ImageView
-        android:id="@+id/laptopImage"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1.5"
-        android:layout_gravity="center_horizontal"
-        android:contentDescription="@string/laptop_image"
-        android:scaleType="fitCenter"
-        android:background="@color/surface" />
-
-    <TextView
-        android:id="@+id/laptopModel"
+    <LinearLayout
+        android:id="@+id/contentLayoutLaptop"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/item_laptop_model"
-        android:textStyle="bold"
-        android:textSize="15sp"
-        android:gravity="center_horizontal"
-        android:ellipsize="end"
-        android:maxLines="2"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="2dp"
-        android:textColor="@color/on_surface" />
+        android:layout_alignParentTop="true"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/laptopPrice"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/pret"
-        android:textSize="13sp"
-        android:textColor="@color/on_surface"
-        android:gravity="center_horizontal"
-        android:layout_marginTop="2dp"
-        android:layout_marginBottom="2dp" />
+        <ImageView
+            android:id="@+id/laptopImage"
+            android:layout_width="match_parent"
+            android:layout_height="135dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1.5"
+            android:background="@color/surface"
+            android:contentDescription="@string/laptop_image"
+            android:scaleType="fitCenter" />
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.2" />
-    <!-- Add to Cart Button always at bottom -->
+        <TextView
+            android:id="@+id/laptopModel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="2dp"
+            android:ellipsize="end"
+            android:gravity="center_horizontal"
+            android:maxLines="2"
+            android:text="@string/item_laptop_model"
+            android:textColor="@color/on_surface"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/laptopPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:gravity="center_horizontal"
+            android:text="@string/pret"
+            android:textColor="@color/on_surface"
+            android:textSize="13sp" />
+    </LinearLayout>
+
     <Button
         android:id="@+id/buttonAddToCart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/add_to_cart"
-        android:textSize="13sp"
-        android:layout_gravity="bottom"
+        android:layout_alignParentBottom="true"
         android:background="@color/primary"
-        android:textColor="@color/on_primary" />
+        android:text="@string/add_to_cart"
+        android:textColor="@color/on_primary"
+        android:textSize="13sp"
+        android:visibility="visible" />
 
-</LinearLayout>
+    <LinearLayout
+        android:id="@+id/layoutCartActionsLaptop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <ImageButton
+            android:id="@+id/buttonRemoveFromCartLaptop"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/add_or_remove_button_rounded"
+            android:contentDescription="@string/remove"
+            android:src="@drawable/ic_remove_button"
+            app:tint="@color/on_primary" />
+
+        <TextView
+            android:id="@+id/textQuantityLaptop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:gravity="center"
+            android:text="1"
+            android:textColor="@color/on_surface"
+            android:textSize="13sp"
+            tools:ignore="HardcodedText" />
+
+        <ImageButton
+            android:id="@+id/buttonAddMoreToCartLaptop"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/add_or_remove_button_rounded"
+            android:contentDescription="@string/add"
+            android:src="@drawable/ic_add_button"
+            app:tint="@color/on_primary" />
+    </LinearLayout>
+</RelativeLayout>

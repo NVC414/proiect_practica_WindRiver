@@ -42,8 +42,12 @@ public class PsuDetailsActivity extends AppCompatActivity {
         TextView psuEfficiency = findViewById(R.id.psuEfficiency);
         TextView psuModular = findViewById(R.id.psuModular);
         TextView psuWattage = findViewById(R.id.psuWattage);
-        Button addToCartButton = findViewById(R.id.buttonAddToCart);
+        Button addToCartButton = findViewById(R.id.buttonAddToCartPsu);
         ImageButton backButton = findViewById(R.id.buttonBack);
+        android.view.View layoutCartActions = findViewById(R.id.layoutCartActionsPsu);
+        ImageButton buttonRemoveFromCart = findViewById(R.id.buttonRemoveFromCartPsu);
+        ImageButton buttonAddMoreToCart = findViewById(R.id.buttonAddMoreToCartPsu);
+        TextView textQuantity = findViewById(R.id.textQuantityPsu);
 
         Glide.with(this).load(imageUrl).placeholder(
                 R.drawable.ic_psu_placeholder).centerCrop().into(psuImage);
@@ -57,6 +61,30 @@ public class PsuDetailsActivity extends AppCompatActivity {
         psuWattage.setText("Wattage: " + wattage + " W");
 
         CartViewModel cartViewModel = CartViewModel.getInstance();
+
+        Runnable updateCartUI = () -> {
+            java.util.List<CartItem> items = cartViewModel.getCartItems().getValue();
+            int quantity = 0;
+            if (items != null) {
+                for (CartItem item : items) {
+                    if (item.getName().equals(name)) {
+                        quantity = item.getQuantity();
+                        break;
+                    }
+                }
+            }
+            if (quantity > 0) {
+                addToCartButton.setVisibility(android.view.View.GONE);
+                layoutCartActions.setVisibility(android.view.View.VISIBLE);
+                textQuantity.setText(String.valueOf(quantity));
+            } else {
+                addToCartButton.setVisibility(android.view.View.VISIBLE);
+                layoutCartActions.setVisibility(android.view.View.GONE);
+            }
+        };
+        cartViewModel.getCartItems().observe(this, items -> updateCartUI.run());
+        updateCartUI.run();
+
         addToCartButton.setOnClickListener(v -> {
             double priceValue = 0.0;
             try {
@@ -67,7 +95,36 @@ public class PsuDetailsActivity extends AppCompatActivity {
             cartViewModel.addItem(cartItem);
             Toast.makeText(this, "Added to cart", Toast.LENGTH_SHORT).show();
         });
-
+        buttonAddMoreToCart.setOnClickListener(v -> {
+            double priceValue = 0.0;
+            try {
+                priceValue = price != null ? Double.parseDouble(
+                        price.replaceAll("[^0-9.]", "")) : 0.0;
+            } catch (Exception ignored) {}
+            CartItem cartItem = new CartItem(name, priceValue, 1);
+            cartViewModel.addItem(cartItem);
+        });
+        buttonRemoveFromCart.setOnClickListener(v -> {
+            java.util.List<CartItem> items = cartViewModel.getCartItems().getValue();
+            double priceValue = 0.0;
+            try {
+                priceValue = price != null ? Double.parseDouble(
+                        price.replaceAll("[^0-9.]", "")) : 0.0;
+            } catch (Exception ignored) {}
+            if (items != null) {
+                for (CartItem item : items) {
+                    if (item.getName().equals(name)) {
+                        int newQty = item.getQuantity() - 1;
+                        if (newQty > 0) {
+                            cartViewModel.addItem(new CartItem(name, priceValue, -1));
+                        } else {
+                            cartViewModel.addItem(new CartItem(name, priceValue, -item.getQuantity()));
+                        }
+                        break;
+                    }
+                }
+            }
+        });
         backButton.setOnClickListener(v -> finish());
     }
 }

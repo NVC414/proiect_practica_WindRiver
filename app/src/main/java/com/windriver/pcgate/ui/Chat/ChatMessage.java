@@ -1,5 +1,8 @@
 package com.windriver.pcgate.ui.Chat;
 
+import lombok.Getter;
+
+@Getter
 public abstract class ChatMessage
     {
     private final String text;
@@ -9,12 +12,7 @@ public abstract class ChatMessage
         this.text = text;
         }
 
-    public String getText()
-        {
-        return text;
-        }
-
-    public static class UserMessage extends ChatMessage
+        public static class UserMessage extends ChatMessage
         {
         public UserMessage(String text)
             {

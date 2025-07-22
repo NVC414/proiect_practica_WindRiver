@@ -1,25 +1,28 @@
 package com.windriver.pcgate.adapter;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.windriver.pcgate.R;
 import com.windriver.pcgate.model.PsuItem;
-import com.bumptech.glide.Glide;
 
 import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
 
-public class PsuAdapter extends RecyclerView.Adapter<PsuAdapter.PsuViewHolder> {
+public class PsuAdapter extends RecyclerView.Adapter<PsuAdapter.PsuViewHolder>
+{
     private List<PsuItem> psuList;
     private OnAddToCartClickListener addToCartClickListener;
     private static final int TYPE_PSU = 0;
@@ -30,6 +33,7 @@ public class PsuAdapter extends RecyclerView.Adapter<PsuAdapter.PsuViewHolder> {
     private List<PsuItem> allPsus = new java.util.ArrayList<>();
     private final int layoutResId;
     private OnItemClickListener itemClickListener;
+    private java.util.Map<String, Integer> cartQuantities = new java.util.HashMap<>();
 
     public PsuAdapter(List<PsuItem> psuList) {
         this(psuList, R.layout.item_psu);
@@ -64,6 +68,11 @@ public class PsuAdapter extends RecyclerView.Adapter<PsuAdapter.PsuViewHolder> {
         this.itemClickListener = listener;
     }
 
+    public void setCartQuantities(java.util.Map<String, Integer> cartQuantities) {
+        this.cartQuantities = cartQuantities;
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getItemViewType(int position) {
         PsuItem item = psuList.get(position);
@@ -84,6 +93,17 @@ public class PsuAdapter extends RecyclerView.Adapter<PsuAdapter.PsuViewHolder> {
         }
     }
 
+    public interface OnRemoveFromCartClickListener {
+        void onRemoveFromCart(PsuItem item);
+    }
+
+    private OnRemoveFromCartClickListener removeFromCartClickListener;
+
+    public void setOnRemoveFromCartClickListener(OnRemoveFromCartClickListener listener) {
+        this.removeFromCartClickListener = listener;
+    }
+
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull PsuViewHolder holder, int position) {
         int viewType = getItemViewType(position);
@@ -104,13 +124,53 @@ public class PsuAdapter extends RecyclerView.Adapter<PsuAdapter.PsuViewHolder> {
         } else {
             PsuItem item = psuList.get(position);
             holder.name.setText(item.getName());
-            holder.price.setText(item.getPrice());
-            holder.addToCartButton.setVisibility(View.VISIBLE);
-            holder.addToCartButton.setOnClickListener(v -> {
-                if (addToCartClickListener != null) {
-                    addToCartClickListener.onAddToCart(item);
+            holder.price.setText("$" + item.getPrice());
+            int quantity = cartQuantities.getOrDefault(item.getName(), 0);
+
+            // Use correct IDs for cart actions and quantity (for both list and grid layouts)
+            View layoutCartActions = holder.itemView.findViewById(R.id.layoutCartActionsPsu) != null ?
+                holder.itemView.findViewById(R.id.layoutCartActionsPsu) : holder.itemView.findViewById(R.id.layoutCartActions);
+            Button addToCartButton = holder.itemView.findViewById(R.id.buttonAddToCart);
+            ImageButton buttonAddMoreToCart = holder.itemView.findViewById(R.id.buttonAddMoreToCartPsu) != null ?
+                holder.itemView.findViewById(R.id.buttonAddMoreToCartPsu) : holder.itemView.findViewById(R.id.buttonAddMoreToCart);
+            ImageButton buttonRemoveFromCart = holder.itemView.findViewById(R.id.buttonRemoveFromCartPsu) != null ?
+                holder.itemView.findViewById(R.id.buttonRemoveFromCartPsu) : holder.itemView.findViewById(R.id.buttonRemoveFromCart);
+            TextView textQuantity = holder.itemView.findViewById(R.id.textQuantityPsu) != null ?
+                holder.itemView.findViewById(R.id.textQuantityPsu) : holder.itemView.findViewById(R.id.textQuantity);
+
+            if (addToCartButton != null && layoutCartActions != null) {
+                if (quantity > 0) {
+                    addToCartButton.setVisibility(View.GONE);
+                    layoutCartActions.setVisibility(View.VISIBLE);
+                } else {
+                    addToCartButton.setVisibility(View.VISIBLE);
+                    layoutCartActions.setVisibility(View.GONE);
                 }
-            });
+            }
+            if (textQuantity != null) {
+                textQuantity.setText(String.valueOf(quantity));
+            }
+            if (addToCartButton != null) {
+                addToCartButton.setOnClickListener(v -> {
+                    if (addToCartClickListener != null) {
+                        addToCartClickListener.onAddToCart(item);
+                    }
+                });
+            }
+            if (buttonAddMoreToCart != null) {
+                buttonAddMoreToCart.setOnClickListener(v -> {
+                    if (addToCartClickListener != null) {
+                        addToCartClickListener.onAddToCart(item);
+                    }
+                });
+            }
+            if (buttonRemoveFromCart != null) {
+                buttonRemoveFromCart.setOnClickListener(v -> {
+                    if (removeFromCartClickListener != null) {
+                        removeFromCartClickListener.onRemoveFromCart(item);
+                    }
+                });
+            }
             holder.itemView.setOnClickListener(v -> {
                 if (itemClickListener != null) {
                     itemClickListener.onItemClick(item);
@@ -137,6 +197,9 @@ public class PsuAdapter extends RecyclerView.Adapter<PsuAdapter.PsuViewHolder> {
     static class PsuViewHolder extends RecyclerView.ViewHolder {
         TextView name, price;
         Button addToCartButton;
+        ImageButton buttonRemoveFromCart;
+        ImageButton buttonAddMoreToCart;
+        View layoutCartActions;
         ImageView psuImage;
 
         public PsuViewHolder(@NonNull View itemView) {
@@ -144,6 +207,9 @@ public class PsuAdapter extends RecyclerView.Adapter<PsuAdapter.PsuViewHolder> {
             name = itemView.findViewById(R.id.psuName);
             price = itemView.findViewById(R.id.psuPrice);
             addToCartButton = itemView.findViewById(R.id.buttonAddToCart);
+            buttonRemoveFromCart = itemView.findViewById(R.id.buttonRemoveFromCart);
+            buttonAddMoreToCart = itemView.findViewById(R.id.buttonAddMoreToCart);
+            layoutCartActions = itemView.findViewById(R.id.layoutCartActions);
             psuImage = itemView.findViewById(R.id.psuImage);
         }
     }
@@ -154,4 +220,3 @@ public class PsuAdapter extends RecyclerView.Adapter<PsuAdapter.PsuViewHolder> {
         }
     }
 }
-

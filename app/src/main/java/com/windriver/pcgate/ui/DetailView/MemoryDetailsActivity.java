@@ -48,8 +48,12 @@ public class MemoryDetailsActivity extends AppCompatActivity
         TextView memoryFirstWordLatency = findViewById(R.id.memoryFirstWordLatency);
         TextView memoryModules = findViewById(R.id.memoryModules);
         TextView memorySpeed = findViewById(R.id.memorySpeed);
-        Button addToCartButton = findViewById(R.id.buttonAddToCart);
+        Button addToCartButton = findViewById(R.id.buttonAddToCartMemory);
         ImageButton backButton = findViewById(R.id.buttonBack);
+        android.view.View layoutCartActions = findViewById(R.id.layoutCartActionsMemory);
+        ImageButton buttonRemoveFromCart = findViewById(R.id.buttonRemoveFromCartMemory);
+        ImageButton buttonAddMoreToCart = findViewById(R.id.buttonAddMoreToCartMemory);
+        TextView textQuantity = findViewById(R.id.textQuantityMemory);
 
         Glide.with(this).load(imageUrl).placeholder(
                 R.drawable.ic_memory_placeholder).centerCrop().into(memoryImage);
@@ -64,14 +68,57 @@ public class MemoryDetailsActivity extends AppCompatActivity
         memorySpeed.setText("Speed: " + (speed != null ? speed.toString() : "-"));
 
         CartViewModel cartViewModel = CartViewModel.getInstance();
-        addToCartButton.setOnClickListener(v ->
-            {
-                CartItem cartItem = new CartItem(name, price, 1);
-                cartViewModel.addItem(cartItem);
-                Toast.makeText(this, "Added to cart", Toast.LENGTH_SHORT).show();
-            });
 
+        Runnable updateCartUI = () -> {
+            java.util.List<CartItem> items = cartViewModel.getCartItems().getValue();
+            int quantity = 0;
+            if (items != null) {
+                for (CartItem item : items) {
+                    if (item.getName().equals(name)) {
+                        quantity = item.getQuantity();
+                        break;
+                    }
+                }
+            }
+            boolean nowInCart = quantity > 0;
+            if (nowInCart) {
+                addToCartButton.setVisibility(android.view.View.GONE);
+                layoutCartActions.setVisibility(android.view.View.VISIBLE);
+                textQuantity.setText(String.valueOf(quantity));
+            } else {
+                addToCartButton.setVisibility(android.view.View.VISIBLE);
+                layoutCartActions.setVisibility(android.view.View.GONE);
+            }
+        };
+
+        cartViewModel.getCartItems().observe(this, items -> updateCartUI.run());
+
+        addToCartButton.setOnClickListener(v -> {
+            CartItem cartItem = new CartItem(name, price, 1);
+            cartViewModel.addItem(cartItem);
+            Toast.makeText(this, "Added to cart", Toast.LENGTH_SHORT).show();
+        });
+        buttonAddMoreToCart.setOnClickListener(v -> {
+            CartItem cartItem = new CartItem(name, price, 1);
+            cartViewModel.addItem(cartItem);
+        });
+        buttonRemoveFromCart.setOnClickListener(v -> {
+            java.util.List<CartItem> items = cartViewModel.getCartItems().getValue();
+            if (items != null) {
+                for (CartItem item : items) {
+                    if (item.getName().equals(name)) {
+                        int newQty = item.getQuantity() - 1;
+                        if (newQty > 0) {
+                            cartViewModel.addItem(new CartItem(name, price, -1));
+                        } else {
+                            cartViewModel.addItem(new CartItem(name, price, -item.getQuantity()));
+                        }
+                        break;
+                    }
+                }
+            }
+        });
         backButton.setOnClickListener(v -> finish());
+        updateCartUI.run();
         }
     }
-

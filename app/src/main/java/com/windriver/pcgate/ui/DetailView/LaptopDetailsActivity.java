@@ -47,8 +47,12 @@ public class LaptopDetailsActivity extends AppCompatActivity
         TextView laptopGraphics = findViewById(R.id.laptopGraphics);
         TextView laptopHdd = findViewById(R.id.laptopHdd);
         TextView laptopSsd = findViewById(R.id.laptopSsd);
-        Button addToCartButton = findViewById(R.id.buttonAddToCart);
+        Button addToCartButton = findViewById(R.id.buttonAddToCartLaptop);
         ImageButton backButton = findViewById(R.id.buttonBack);
+        android.view.View layoutCartActions = findViewById(R.id.layoutCartActionsLaptop);
+        ImageButton buttonRemoveFromCart = findViewById(R.id.buttonRemoveFromCartLaptop);
+        ImageButton buttonAddMoreToCart = findViewById(R.id.buttonAddMoreToCartLaptop);
+        TextView textQuantity = findViewById(R.id.textQuantityLaptop);
 
         Glide.with(this).load(imageUrl).placeholder(
                 R.drawable.ic_laptop_placeholder).centerCrop().into(laptopImage);
@@ -63,22 +67,74 @@ public class LaptopDetailsActivity extends AppCompatActivity
         laptopSsd.setText("SSD: " + ssd);
 
         CartViewModel cartViewModel = CartViewModel.getInstance();
-        addToCartButton.setOnClickListener(v ->
-            {
-                double priceValue = 0.0;
-                try
-                {
-                    priceValue = price != null ? Double.parseDouble(
-                            price.replaceAll("[^0-9.]", "")) : 0.0;
-                }
-                catch (Exception ignored)
-                {
-                }
-                CartItem cartItem = new CartItem(model, priceValue, 1);
-                cartViewModel.addItem(cartItem);
-                Toast.makeText(this, "Added to cart", Toast.LENGTH_SHORT).show();
-            });
 
+        Runnable updateCartUI = () -> {
+            java.util.List<CartItem> items = cartViewModel.getCartItems().getValue();
+            int quantity = 0;
+            try {
+                if (price != null) {
+                    Double.parseDouble(price.replaceAll("[^0-9.]", ""));
+                }
+            } catch (Exception ignored) {}
+            if (items != null) {
+                for (CartItem item : items) {
+                    if (item.getName().equals(model)) {
+                        quantity = item.getQuantity();
+                        break;
+                    }
+                }
+            }
+            boolean nowInCart = quantity > 0;
+            if (nowInCart) {
+                addToCartButton.setVisibility(android.view.View.GONE);
+                layoutCartActions.setVisibility(android.view.View.VISIBLE);
+                textQuantity.setText(String.valueOf(quantity));
+            } else {
+                addToCartButton.setVisibility(android.view.View.VISIBLE);
+                layoutCartActions.setVisibility(android.view.View.GONE);
+            }
+        };
+
+        cartViewModel.getCartItems().observe(this, items -> updateCartUI.run());
+
+        addToCartButton.setOnClickListener(v -> {
+            double priceValue = 0.0;
+            try {
+                priceValue = price != null ? Double.parseDouble(price.replaceAll("[^0-9.]", "")) : 0.0;
+            } catch (Exception ignored) {}
+            CartItem cartItem = new CartItem(model, priceValue, 1);
+            cartViewModel.addItem(cartItem);
+            Toast.makeText(this, "Added to cart", Toast.LENGTH_SHORT).show();
+        });
+        buttonAddMoreToCart.setOnClickListener(v -> {
+            double priceValue = 0.0;
+            try {
+                priceValue = price != null ? Double.parseDouble(price.replaceAll("[^0-9.]", "")) : 0.0;
+            } catch (Exception ignored) {}
+            CartItem cartItem = new CartItem(model, priceValue, 1);
+            cartViewModel.addItem(cartItem);
+        });
+        buttonRemoveFromCart.setOnClickListener(v -> {
+            java.util.List<CartItem> items = cartViewModel.getCartItems().getValue();
+            double priceValue = 0.0;
+            try {
+                priceValue = price != null ? Double.parseDouble(price.replaceAll("[^0-9.]", "")) : 0.0;
+            } catch (Exception ignored) {}
+            if (items != null) {
+                for (CartItem item : items) {
+                    if (item.getName().equals(model)) {
+                        int newQty = item.getQuantity() - 1;
+                        if (newQty > 0) {
+                            cartViewModel.addItem(new CartItem(model, priceValue, -1));
+                        } else {
+                            cartViewModel.addItem(new CartItem(model, priceValue, -item.getQuantity()));
+                        }
+                        break;
+                    }
+                }
+            }
+        });
         backButton.setOnClickListener(v -> finish());
-        }
+        updateCartUI.run();
     }
+}

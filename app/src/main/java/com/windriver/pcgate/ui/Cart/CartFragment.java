@@ -1,5 +1,6 @@
 package com.windriver.pcgate.ui.Cart;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.windriver.pcgate.R;
 import com.windriver.pcgate.databinding.FragmentCartBinding;
 
 public class CartFragment extends Fragment
@@ -19,6 +21,7 @@ public class CartFragment extends Fragment
     private FragmentCartBinding binding;
     private CartAdapter cartAdapter;
 
+    @SuppressLint("DefaultLocale")
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
         {
@@ -34,15 +37,17 @@ public class CartFragment extends Fragment
         final TextView textTotal = binding.textTotal;
         Button buttonCheckout = binding.buttonCheckout;
 
+        binding.fabChat.setOnClickListener(v -> {
+            androidx.navigation.NavController navController = androidx.navigation.Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main);
+            if (navController.getCurrentDestination() != null && navController.getCurrentDestination().getId() != R.id.chatFragment) {
+                navController.navigate(R.id.chatFragment);
+            }
+        });
 
         cartViewModel.getCartItems().observe(getViewLifecycleOwner(), items ->
-            {
-                cartAdapter.setCartItems(items);
-            });
+                cartAdapter.setCartItems(items));
         cartViewModel.getTotalSum().observe(getViewLifecycleOwner(), sum ->
-            {
-                textTotal.setText(String.format("Total: $%.2f", sum));
-            });
+                textTotal.setText(String.format("Total: $%.2f", sum)));
         return root;
         }
 

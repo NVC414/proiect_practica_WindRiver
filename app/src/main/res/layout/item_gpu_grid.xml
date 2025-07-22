@@ -1,63 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="220dp"
-    android:orientation="vertical"
-    android:background="@color/surface"
-    android:layout_marginEnd="8dp"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="140dp"
+    android:layout_height="280dp"
     android:layout_marginStart="8dp"
     android:layout_marginTop="8dp"
+    android:layout_marginEnd="8dp"
     android:layout_marginBottom="8dp"
+    android:background="@color/surface"
     android:padding="6dp">
 
-    <ImageView
-        android:id="@+id/gpuImage"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1.5"
-        android:layout_gravity="center_horizontal"
-        android:contentDescription="@string/gpu_image"
-        android:scaleType="fitCenter"
-        android:background="@color/surface" />
-
-    <TextView
-        android:id="@+id/gpuName"
+    <LinearLayout
+        android:id="@+id/contentLayoutGpu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/item_gpu_name"
-        android:textStyle="bold"
-        android:textSize="15sp"
-        android:gravity="center_horizontal"
-        android:ellipsize="end"
-        android:maxLines="2"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="2dp"
-        android:textColor="@color/on_surface" />
+        android:layout_above="@+id/cartContainerGpu"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/gpuPrice"
+        <ImageView
+            android:id="@+id/gpuImage"
+            android:layout_width="match_parent"
+            android:layout_height="135dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@color/surface"
+            android:contentDescription="@string/gpu_image"
+            android:padding="8dp"
+            android:scaleType="fitCenter" />
+
+        <TextView
+            android:id="@+id/gpuName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="2dp"
+            android:ellipsize="end"
+            android:gravity="center_horizontal"
+            android:maxLines="2"
+            android:text="@string/item_gpu_name"
+            android:textColor="@color/on_surface"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/gpuPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:gravity="center_horizontal"
+            android:text="@string/price"
+            android:textColor="@color/on_surface"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/cartContainerGpu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/pret"
-        android:textSize="13sp"
-        android:textColor="@color/on_surface"
-        android:gravity="center_horizontal"
-        android:layout_marginTop="2dp"
-        android:layout_marginBottom="2dp" />
+        android:layout_alignParentBottom="true">
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.2" />
+        <Button
+            android:id="@+id/buttonAddToCartGpu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/primary"
+            android:text="@string/add_to_cart"
+            android:textColor="@color/on_primary"
+            android:textSize="12sp"
+            android:visibility="visible" />
 
-    <Button
-        android:id="@+id/buttonAddToCartGpu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/add_to_cart"
-        android:textSize="13sp"
-        android:layout_gravity="bottom"
-        android:background="@color/primary"
-        android:textColor="@color/on_primary" />
+        <LinearLayout
+            android:id="@+id/layoutCartActionsGpu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="gone">
 
-</LinearLayout>
+            <ImageButton
+                android:id="@+id/buttonRemoveFromCartGpu"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/add_or_remove_button_rounded"
+                android:contentDescription="@string/remove"
+                android:src="@drawable/ic_remove_button"
+                app:tint="@color/on_primary" />
+
+            <TextView
+                android:id="@+id/textQuantityGpu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:gravity="center"
+                android:text="1"
+                android:textColor="@color/on_surface"
+                android:textSize="12sp"
+                tools:ignore="HardcodedText" />
+
+            <ImageButton
+                android:id="@+id/buttonAddMoreToCartGpu"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/add_or_remove_button_rounded"
+                android:contentDescription="@string/add"
+                android:src="@drawable/ic_add_button"
+                app:tint="@color/on_primary" />
+        </LinearLayout>
+    </FrameLayout>
+</RelativeLayout>

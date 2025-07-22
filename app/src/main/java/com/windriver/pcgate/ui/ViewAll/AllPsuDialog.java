@@ -21,6 +21,7 @@ import com.windriver.pcgate.adapter.PsuAdapter;
 import com.windriver.pcgate.adapter.PsuAdapter.OnAddToCartClickListener;
 import com.windriver.pcgate.model.PsuItem;
 import com.windriver.pcgate.ui.DetailView.PsuDetailsActivity;
+import com.windriver.pcgate.ui.Cart.CartViewModel;
 
 import java.util.List;
 
@@ -42,6 +43,25 @@ public class AllPsuDialog extends DialogFragment {
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         PsuAdapter adapter = new PsuAdapter(allPsus, R.layout.item_psu_grid);
         adapter.setOnAddToCartClickListener(addToCartClickListener);
+        CartViewModel cartViewModel = CartViewModel.getInstance();
+        adapter.setOnRemoveFromCartClickListener(item -> {
+            double priceValue = 0.0;
+            try { priceValue = Double.parseDouble(item.getPrice().replaceAll("[^0-9.]", "")); } catch (Exception ignored) {}
+            java.util.List<com.windriver.pcgate.ui.Cart.CartItem> current = cartViewModel.getCartItems().getValue();
+            if (current != null) {
+                for (com.windriver.pcgate.ui.Cart.CartItem ci : current) {
+                    if (ci.getName().equals(item.getName())) {
+                        int newQty = ci.getQuantity() - 1;
+                        if (newQty > 0) {
+                            cartViewModel.addItem(new com.windriver.pcgate.ui.Cart.CartItem(item.getName(), priceValue, -1));
+                        } else {
+                            cartViewModel.addItem(new com.windriver.pcgate.ui.Cart.CartItem(item.getName(), priceValue, -ci.getQuantity()));
+                        }
+                        break;
+                    }
+                }
+            }
+        });
         adapter.setOnItemClickListener(item -> {
             if ("__VIEW_MORE__".equals(item.getName())) {
                 return;
@@ -56,6 +76,15 @@ public class AllPsuDialog extends DialogFragment {
             intent.putExtra("type", item.getType() != null ? item.getType() : "");
             intent.putExtra("wattage", item.getWattage());
             startActivity(intent);
+        });
+        cartViewModel.getCartItems().observe(getViewLifecycleOwner(), items -> {
+            java.util.Map<String, Integer> qtys = new java.util.HashMap<>();
+            if (items != null) {
+                for (com.windriver.pcgate.ui.Cart.CartItem ci : items) {
+                    qtys.put(ci.getName(), ci.getQuantity());
+                }
+            }
+            adapter.setCartQuantities(qtys);
         });
         recyclerView.setAdapter(adapter);
         ImageButton backButton = view.findViewById(R.id.buttonBack);

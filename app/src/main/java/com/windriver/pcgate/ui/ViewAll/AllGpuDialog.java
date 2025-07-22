@@ -19,6 +19,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.windriver.pcgate.R;
 import com.windriver.pcgate.adapter.GpuAdapter;
 import com.windriver.pcgate.model.GpuItem;
+import com.windriver.pcgate.ui.Cart.CartItem;
+import com.windriver.pcgate.ui.Cart.CartViewModel;
 import com.windriver.pcgate.ui.DetailView.GpuDetailsActivity;
 
 import java.util.List;
@@ -39,6 +41,7 @@ public class AllGpuDialog extends DialogFragment {
         View view = inflater.inflate(R.layout.dialog_all_gpu, container, false);
         RecyclerView recyclerView = view.findViewById(R.id.allGpuRecyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        CartViewModel cartViewModel = CartViewModel.getInstance();
         GpuAdapter adapter = new GpuAdapter(allGpus, R.layout.item_gpu_grid);
         adapter.setOnAddToCartClickListener(addToCartClickListener);
         adapter.setOnItemClickListener(item -> {
@@ -56,6 +59,33 @@ public class AllGpuDialog extends DialogFragment {
             intent.putExtra("memory", item.getMemory());
             intent.putExtra("length", item.getLength());
             startActivity(intent);
+        });
+        adapter.setOnRemoveFromCartClickListener(item -> {
+            double priceValue = 0.0;
+            try { priceValue = Double.parseDouble(item.getPrice().replaceAll("[^0-9.]", "")); } catch (Exception ignored) {}
+            java.util.List<CartItem> current = cartViewModel.getCartItems().getValue();
+            if (current != null) {
+                for (CartItem ci : current) {
+                    if (ci.getName().equals(item.getName())) {
+                        int newQty = ci.getQuantity() - 1;
+                        if (newQty > 0) {
+                            cartViewModel.addItem(new CartItem(item.getName(), priceValue, -1));
+                        } else {
+                            cartViewModel.addItem(new CartItem(item.getName(), priceValue, -ci.getQuantity()));
+                        }
+                        break;
+                    }
+                }
+            }
+        });
+        cartViewModel.getCartItems().observe(getViewLifecycleOwner(), items -> {
+            java.util.Map<String, Integer> qtys = new java.util.HashMap<>();
+            if (items != null) {
+                for (CartItem ci : items) {
+                    qtys.put(ci.getName(), ci.getQuantity());
+                }
+            }
+            adapter.setCartQuantities(qtys);
         });
         recyclerView.setAdapter(adapter);
         ImageButton backButton = view.findViewById(R.id.buttonBack);

@@ -58,19 +58,32 @@ public class ChatFragment extends Fragment implements MenuProvider
     private RecyclerView chatRecyclerView;
     private EditText messageInput;
     private ImageButton sendButton;
-    private ImageButton micButton;
     private View bottomSpace;
     private ChatFutures chat;
     private final List<Content> history = new ArrayList<>();
     private final Executor executor = Executors.newSingleThreadExecutor();
 
-    private static final String[] KEYWORDS = {"case", "cpu", "laptop", "memory", "motherboard", "power-supply", "video-card"};
+    private static final String[] KEYWORDS = {"case", "cpu", "laptop", "memory", "motherboard", "power-supply", "video-card", "processor", "ram", "psu", "gpu"};
     private static final String[] CPU_KEYWORDS = {"Ryzen", "Intel"};
-    private boolean keywordsAddedToContext = false;
+    private static final java.util.Map<String, String> KEYWORD_CATEGORY_MAP = new java.util.HashMap<>() {{
+        put("cpu", "cpu");
+        put("processor", "cpu");
+        put("memory", "memory");
+        put("ram", "memory");
+        put("power-supply", "power-supply");
+        put("psu", "power-supply");
+        put("video-card", "video-card");
+        put("gpu", "video-card");
+        put("case", "case");
+        put("laptop", "laptop");
+        put("motherboard", "motherboard");
+    }};
 
     private final List<String> chatHistory = new ArrayList<>();
     private ChatHistoryManager chatHistoryManager;
     private List<ChatMessage> currentMessages = new ArrayList<>();
+    private String currentChatId = null;
+    private boolean keywordsAddedToContext = false;
 
     @Nullable
     @Override
@@ -81,13 +94,11 @@ public class ChatFragment extends Fragment implements MenuProvider
         chatRecyclerView = view.findViewById(R.id.chatRecyclerView);
         messageInput = view.findViewById(R.id.messageInput);
         sendButton = view.findViewById(R.id.sendButton);
-        micButton = view.findViewById(R.id.micButton);
         bottomSpace = view.findViewById(R.id.bottomSpace);
 
 
-        if (getActivity() instanceof AppCompatActivity)
+        if (getActivity() instanceof AppCompatActivity activity)
         {
-            AppCompatActivity activity = (AppCompatActivity) getActivity();
             if (activity.getSupportActionBar() != null)
             {
                 activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -96,6 +107,11 @@ public class ChatFragment extends Fragment implements MenuProvider
         chatHistoryManager = new ChatHistoryManager(requireContext());
         return view;
         }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
@@ -117,13 +133,14 @@ public class ChatFragment extends Fragment implements MenuProvider
             currentMessages.addAll(current);
             for (ChatMessage msg : current)
                 chatAdapter.addMessage(msg);
+            chatRecyclerView.post(() -> chatRecyclerView.scrollToPosition(chatAdapter.getItemCount() - 1));
         }
-
+        currentChatId = null;
 
 
         if (!keywordsAddedToContext)
         {
-            String keywordsContext = "Store keywords: case, cpu, laptop, memory, motherboard, power-supply, video-card.";
+            String keywordsContext = getString(R.string.ai_keywords_categories);
             Content keywordsContent = new Content.Builder().setRole("user").addText(
                     keywordsContext).build();
             history.add(keywordsContent);
@@ -139,7 +156,7 @@ public class ChatFragment extends Fragment implements MenuProvider
         GenerativeModelFutures model = GenerativeModelFutures.from(ai);
         if (!keywordsAddedToContext)
         {
-            String keywordsContext = "Store keywords: case, cpu, laptop, memory, motherboard, power-supply, video-card.";
+            String keywordsContext = getString(R.string.ai_keywords_categories);
             Content keywordsContent = new Content.Builder().setRole("user").addText(
                     keywordsContext).build();
             history.add(keywordsContent);
@@ -185,6 +202,7 @@ public class ChatFragment extends Fragment implements MenuProvider
                 }
                 return insets;
             });
+
         }
 
     @Override
@@ -196,6 +214,20 @@ public class ChatFragment extends Fragment implements MenuProvider
         }
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (chatHistoryManager != null) {
+            chatHistoryManager.saveCurrentChat(currentMessages);
+            chatHistoryManager.saveChat(currentMessages, currentChatId);
+        }
+        if (isVisible() && !requireActivity().isChangingConfigurations()) {
+            androidx.navigation.NavController navController = androidx.navigation.Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main);
+            if (navController.getCurrentDestination() != null && navController.getCurrentDestination().getId() == R.id.chatFragment) {
+                navController.navigate(R.id.navigation_home);
+            }
+        }
+    }
 
     @Override
     public void onDestroy() {
@@ -220,10 +252,11 @@ public class ChatFragment extends Fragment implements MenuProvider
 
             if (!currentMessages.isEmpty())
             {
-                chatHistoryManager.saveChat(currentMessages);
+                chatHistoryManager.saveChat(currentMessages, currentChatId);
             }
             chatAdapter.clearMessages();
             currentMessages.clear();
+            currentChatId = null;
             if (getView() != null)
             {
                 getView().findViewById(R.id.clearChatButton).performClick();
@@ -265,41 +298,51 @@ public class ChatFragment extends Fragment implements MenuProvider
                         currentMessages.addAll(chat);
                         for (ChatMessage msg : chat)
                             chatAdapter.addMessage(msg);
+                        // Set currentChatId to the loaded chat's UUID
+                        currentChatId = history.get(which).id();
                     }).setNegativeButton("Cancel", null).show();
         }
 
     private void handleUserMessage(String text)
         {
         ChatMessage userMsg = new ChatMessage.UserMessage(text);
-        chatAdapter.addMessage(userMsg);
+        requireActivity().runOnUiThread(() -> {
+            chatAdapter.addMessage(userMsg);
+            chatRecyclerView.post(() -> chatRecyclerView.scrollToPosition(chatAdapter.getItemCount() - 1));
+        });
         currentMessages.add(userMsg);
         messageInput.setText("");
         chatHistory.add("User: " + text);
 
-        String foundKeyword = null;
-        for (String keyword : KEYWORDS)
-        {
-            if (text.toLowerCase().contains(keyword))
-            {
-                foundKeyword = keyword;
-                break;
+        String mappedCategory = null;
+        String lowerText = text.toLowerCase();
+        boolean mentionsGpu = lowerText.contains("gpu") || lowerText.contains("video-card");
+        boolean mentionsRam = lowerText.contains("ram") || lowerText.contains("memory");
+        if (mentionsGpu && mentionsRam) {
+            mappedCategory = KEYWORD_CATEGORY_MAP.get("gpu");
+        } else {
+            for (String keyword : KEYWORDS) {
+                if (lowerText.contains(keyword)) {
+                    mappedCategory = KEYWORD_CATEGORY_MAP.get(keyword);
+                    break;
+                }
             }
         }
 
         List<String> contextToSend = new ArrayList<>();
-        if (foundKeyword != null && foundKeyword.equals("cpu"))
+        if (mappedCategory != null && mappedCategory.equals("cpu"))
         {
             for (String cpuKeyword : CPU_KEYWORDS)
             {
-                if (text.toLowerCase().contains(cpuKeyword.toLowerCase()))
+                if (lowerText.contains(cpuKeyword.toLowerCase()))
                 {
                     contextToSend.add("CPU keyword: " + cpuKeyword);
                 }
             }
         }
-        if (foundKeyword != null)
+        if (mappedCategory != null)
         {
-            fetchItemsAndSend(foundKeyword, text, contextToSend);
+            fetchItemsAndSend(mappedCategory, text, contextToSend);
         }
         else
         {
@@ -339,81 +382,84 @@ public class ChatFragment extends Fragment implements MenuProvider
     private void sendMessageToGemini(String userInput, List<String> extraContext)
         {
         chatHistory.add("User: " + userInput);
-        StringBuilder contextBuilder = new StringBuilder();
-        for (String msg : chatHistory)
-        {
-            contextBuilder.append(msg).append("\n\n");
-        }
-        for (String ctx : extraContext)
-        {
-            contextBuilder.append(ctx).append("\n\n");
-        }
-        contextBuilder.append(
-                "Answer in a friendly and conversational tone. Keep your answer concise—no more than 4 to 5 short lengths paragraphs. Use newlines to separate ideas where appropriate, but avoid overly long paragraphs or dense blocks of text. Do not use markdown formatting or symbols like asterisks or hashtags.\n\nUser's prompt:\n").append(
-                userInput);
-        Content prompt = new Content.Builder().setRole("user").addText(
+            StringBuilder contextBuilder = getStringBuilder(userInput, extraContext);
+            Content prompt = new Content.Builder().setRole("user").addText(
                 contextBuilder.toString()).build();
         Publisher<GenerateContentResponse> streamingResponse = chat.sendMessageStream(prompt);
         final StringBuilder fullResponse = new StringBuilder();
         final boolean[] aiMessageStarted = {false};
-        streamingResponse.subscribe(new Subscriber<GenerateContentResponse>()
-            {
+        streamingResponse.subscribe(new Subscriber<>() {
             @Override
-            public void onSubscribe(Subscription s)
-                {
+            public void onSubscribe(Subscription s) {
                 s.request(Long.MAX_VALUE);
-                }
+            }
 
             @Override
-            public void onNext(GenerateContentResponse response)
-                {
+            public void onNext(GenerateContentResponse response) {
                 String chunk = response.getText();
                 fullResponse.append(chunk);
                 requireActivity().runOnUiThread(() ->
-                    {
-                        if (!aiMessageStarted[0])
-                        {
-                            ChatMessage aiMsg = new ChatMessage.AiMessage(fullResponse.toString());
-                            chatAdapter.addMessage(aiMsg);
-                            currentMessages.add(aiMsg);
-                            aiMessageStarted[0] = true;
-                        }
-                        else
-                        {
-                            chatAdapter.updateLastAiMessage(fullResponse.toString());
+                {
+                    if (!aiMessageStarted[0]) {
+                        ChatMessage aiMsg = new ChatMessage.AiMessage(fullResponse.toString());
+                        chatAdapter.addMessage(aiMsg);
+                        currentMessages.add(aiMsg);
+                        aiMessageStarted[0] = true;
+                        chatRecyclerView.post(() -> chatRecyclerView.scrollToPosition(chatAdapter.getItemCount() - 1));
+                    } else {
+                        chatAdapter.updateLastAiMessage(fullResponse.toString());
 
-                            for (int i = currentMessages.size() - 1; i >= 0; i--)
-                            {
-                                if (currentMessages.get(i) instanceof ChatMessage.AiMessage)
-                                {
-                                    currentMessages.set(i,
-                                            new ChatMessage.AiMessage(fullResponse.toString()));
-                                    break;
-                                }
+                        for (int i = currentMessages.size() - 1; i >= 0; i--) {
+                            if (currentMessages.get(i) instanceof ChatMessage.AiMessage) {
+                                currentMessages.set(i,
+                                        new ChatMessage.AiMessage(fullResponse.toString()));
+                                break;
                             }
                         }
-                    });
-                }
+                    }
+                });
+            }
 
             @Override
-            public void onError(Throwable t)
-                {
-                requireActivity().runOnUiThread(() -> chatAdapter.addMessage(
-                        new ChatMessage.AiMessage("[Error: " + t.getMessage() + "]")));
-                }
+            public void onError(Throwable t) {
+                requireActivity().runOnUiThread(() -> {
+                    chatAdapter.addMessage(new ChatMessage.AiMessage("[Error: " + t.getMessage() + "]"));
+                    chatRecyclerView.post(() -> chatRecyclerView.scrollToPosition(chatAdapter.getItemCount() - 1));
+                });
+            }
 
             @Override
-            public void onComplete()
-                {
+            public void onComplete() {
                 String aiText = fullResponse.toString();
-                if (!aiText.isEmpty())
-                {
+                if (!aiText.isEmpty()) {
                     requireActivity().runOnUiThread(() ->
-                        {
-                            chatHistory.add("AI: " + aiText);
-                        });
+                            chatHistory.add("AI: " + aiText));
                 }
-                }
-            });
+            }
+        });
+        }
+
+        @NonNull
+        private StringBuilder getStringBuilder(String userInput, List<String> extraContext) {
+            StringBuilder contextBuilder = new StringBuilder();
+            for (String msg : chatHistory)
+            {
+                contextBuilder.append(msg).append("\n\n");
+            }
+            for (String ctx : extraContext)
+            {
+                contextBuilder.append(ctx).append("\n\n");
+            }
+            contextBuilder.append(
+                    """
+                            Answer in a friendly and conversational tone. \
+                            Keep your answer concise—no more than 4 to 5 short lengths paragraphs. \
+                            Use newlines to separate ideas where appropriate, but avoid overly long paragraphs or dense blocks of text. \
+                            Do not use markdown formatting or symbols like asterisks or hashtags. \
+                            If the user asks anything outside the scope of the store, politely inform them that you can only help with store-related questions. \
+                            User's prompt:
+                            """).append(
+                    userInput);
+            return contextBuilder;
         }
     }

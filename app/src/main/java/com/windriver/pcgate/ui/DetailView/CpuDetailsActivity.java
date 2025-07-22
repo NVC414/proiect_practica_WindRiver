@@ -32,9 +32,9 @@ public class CpuDetailsActivity extends AppCompatActivity
         String name = intent.getStringExtra("name");
         double price = intent.getDoubleExtra("price", 0.0);
         String imageUrl = intent.getStringExtra("imageUrl");
-        double boostClock = intent.getDoubleExtra("boost_clock", 0.0);
-        double coreClock = intent.getDoubleExtra("core_clock", 0.0);
-        int coreCount = intent.getIntExtra("core_count", 0);
+        double boostClock = intent.getDoubleExtra("boostClock", 0.0);
+        double coreClock = intent.getDoubleExtra("coreClock", 0.0);
+        int coreCount = intent.getIntExtra("coreCount", 0);
         String graphics = intent.getStringExtra("graphics");
         boolean smt = intent.getBooleanExtra("smt", false);
         String socket = intent.getStringExtra("socket");

@@ -2,6 +2,7 @@ package com.windriver.pcgate.ui.Profile;
 
 import android.animation.ObjectAnimator;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -35,22 +36,16 @@ public class ProfileFragment extends Fragment
         mAuth = FirebaseAuth.getInstance();
 
 
-
-
-
-
-
-
-        if (binding.myOrdersButton != null)
-        {
             setupButtonFeedback(binding.myOrdersButton);
-        }
-        if (binding.callSupportButton != null)
-        {
             setupButtonFeedback(binding.callSupportButton);
-        }
+            binding.callSupportButton.setOnClickListener(v -> {
+                String phoneNumber = "0748227667";
+                Intent intent = new Intent(Intent.ACTION_DIAL);
+                intent.setData(Uri.parse("tel:" + phoneNumber));
+                startActivity(intent);
+            });
 
-        return root;
+            return root;
         }
 
     @Override
@@ -61,37 +56,17 @@ public class ProfileFragment extends Fragment
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
 
-        if (currentUser != null)
-        {
-            if (binding.userDetails != null)
-            {
-                binding.userDetails.setText(currentUser.getEmail());
-            }
-        }
-        else
-        {
-            if (binding.userDetails != null)
-            {
-                binding.userDetails.setText("Not Logged In");
-            }
-        }
-
-
-        if (binding.logout != null)
-        {
             binding.logout.setOnClickListener(v ->
-                {
-                    mAuth.signOut();
-                    Intent intent = new Intent(getActivity(), Login_activity.class);
-                    intent.addFlags(
-                            Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                    if (getActivity() != null)
-                    {
-                        getActivity().finish();
-                    }
-                });
-        }
+            {
+                mAuth.signOut();
+                Intent intent = new Intent(getActivity(), Login_activity.class);
+                intent.addFlags(
+                        Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                if (getActivity() != null) {
+                    getActivity().finish();
+                }
+            });
         }
 
     private void setupButtonFeedback(ImageButton button)

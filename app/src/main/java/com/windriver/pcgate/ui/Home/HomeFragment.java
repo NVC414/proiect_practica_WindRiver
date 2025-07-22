@@ -436,22 +436,46 @@ public class HomeFragment extends Fragment
     laptopRecyclerView.setVisibility(View.INVISIBLE);
 
 
-    com.windriver.pcgate.adapter.LaptopAdapter.OnAddToCartClickListener addToCartClickListenerLaptop = item ->
-        {
-            double price = 0.0;
-            try
-            {
-                price = Double.parseDouble(item.getPrice().replaceAll("[^0-9.]", ""));
-            }
-            catch (Exception ignored)
-            {
-            }
-            CartItem cartItem = new CartItem(item.getModel(), price, 1);
-            cartViewModel.addItem(cartItem);
-            android.widget.Toast.makeText(getContext(), "Added to cart",
-                    android.widget.Toast.LENGTH_SHORT).show();
-        };
+    com.windriver.pcgate.adapter.LaptopAdapter.OnAddToCartClickListener addToCartClickListenerLaptop = item -> {
+        double price = 0.0;
+        try {
+            price = Double.parseDouble(item.getPrice().replaceAll("[^0-9.]", ""));
+        } catch (Exception ignored) {}
+        CartItem cartItem = new CartItem(item.getModel(), price, 1);
+        cartViewModel.addItem(cartItem);
+        android.widget.Toast.makeText(getContext(), "Added to cart", android.widget.Toast.LENGTH_SHORT).show();
+    };
     laptopAdapter.setOnAddToCartClickListener(addToCartClickListenerLaptop);
+
+
+    com.windriver.pcgate.adapter.LaptopAdapter.OnRemoveFromCartClickListener removeFromCartClickListenerLaptop = item -> {
+        List<CartItem> currentCart = cartViewModel.getCartItems().getValue();
+        if (currentCart != null) {
+            for (CartItem cartItem : currentCart) {
+                if (cartItem.getName().equals(item.getModel())) {
+                    int newQty = cartItem.getQuantity() - 1;
+                    if (newQty > 0) {
+                        cartViewModel.addItem(new CartItem(item.getModel(), cartItem.getPrice(), -1));
+                    } else {
+                        cartViewModel.addItem(new CartItem(item.getModel(), cartItem.getPrice(), -cartItem.getQuantity()));
+                    }
+                    break;
+                }
+            }
+        }
+    };
+    laptopAdapter.setOnRemoveFromCartClickListener(removeFromCartClickListenerLaptop);
+
+
+    cartViewModel.getCartItems().observe(getViewLifecycleOwner(), items -> {
+        java.util.Map<String, Integer> quantities = new java.util.HashMap<>();
+        if (items != null) {
+            for (CartItem cartItem : items) {
+                quantities.put(cartItem.getName(), cartItem.getQuantity());
+            }
+        }
+        laptopAdapter.setCartQuantities(quantities);
+    });
 
 
     DatabaseReference laptopRef = FirebaseDatabase.getInstance().getReference().child("laptop");
@@ -593,16 +617,46 @@ public class HomeFragment extends Fragment
                 memoryList);
         memoryRecyclerView.setAdapter(memoryAdapter);
 
-
-        com.windriver.pcgate.adapter.MemoryAdapter.OnAddToCartClickListener addToCartClickListenerMemory = item ->
-            {
-                double price = item.getPrice();
-                CartItem cartItem = new CartItem(item.getName(), price, 1);
-                cartViewModel.addItem(cartItem);
-                android.widget.Toast.makeText(getContext(), "Added to cart",
-                        android.widget.Toast.LENGTH_SHORT).show();
-            };
+        com.windriver.pcgate.adapter.MemoryAdapter.OnAddToCartClickListener addToCartClickListenerMemory = item -> {
+            double price = 0.0;
+            try {
+                price = item.getPrice();
+            } catch (Exception ignored) {}
+            CartItem cartItem = new CartItem(item.getName(), price, 1);
+            cartViewModel.addItem(cartItem);
+            android.widget.Toast.makeText(getContext(), "Added to cart", android.widget.Toast.LENGTH_SHORT).show();
+        };
         memoryAdapter.setOnAddToCartClickListener(addToCartClickListenerMemory);
+
+
+        com.windriver.pcgate.adapter.MemoryAdapter.OnRemoveFromCartClickListener removeFromCartClickListenerMemory = item -> {
+            List<CartItem> currentCart = cartViewModel.getCartItems().getValue();
+            if (currentCart != null) {
+                for (CartItem cartItem : currentCart) {
+                    if (cartItem.getName().equals(item.getName())) {
+                        int newQty = cartItem.getQuantity() - 1;
+                        if (newQty > 0) {
+                            cartViewModel.addItem(new CartItem(item.getName(), cartItem.getPrice(), -1));
+                        } else {
+                            cartViewModel.addItem(new CartItem(item.getName(), cartItem.getPrice(), -cartItem.getQuantity()));
+                        }
+                        break;
+                    }
+                }
+            }
+        };
+        memoryAdapter.setOnRemoveFromCartClickListener(removeFromCartClickListenerMemory);
+
+
+        cartViewModel.getCartItems().observe(getViewLifecycleOwner(), items -> {
+            java.util.Map<String, Integer> quantities = new java.util.HashMap<>();
+            if (items != null) {
+                for (CartItem cartItem : items) {
+                    quantities.put(cartItem.getName(), cartItem.getQuantity());
+                }
+            }
+            memoryAdapter.setCartQuantities(quantities);
+        });
 
 
         DatabaseReference memoryRef = FirebaseDatabase.getInstance().getReference().child("memory");
@@ -723,6 +777,34 @@ public class HomeFragment extends Fragment
         };
         motherboardAdapter.setOnAddToCartClickListener(addToCartClickListenerMotherboard);
 
+        com.windriver.pcgate.adapter.MotherboardAdapter.OnRemoveFromCartClickListener removeFromCartClickListenerMotherboard = item -> {
+            List<CartItem> currentCart = cartViewModel.getCartItems().getValue();
+            if (currentCart != null) {
+                for (CartItem cartItem : currentCart) {
+                    if (cartItem.getName().equals(item.getName())) {
+                        int newQty = cartItem.getQuantity() - 1;
+                        if (newQty > 0) {
+                            cartViewModel.addItem(new CartItem(item.getName(), cartItem.getPrice(), -1));
+                        } else {
+                            cartViewModel.addItem(new CartItem(item.getName(), cartItem.getPrice(), -cartItem.getQuantity()));
+                        }
+                        break;
+                    }
+                }
+            }
+        };
+        motherboardAdapter.setOnRemoveFromCartClickListener(removeFromCartClickListenerMotherboard);
+
+        cartViewModel.getCartItems().observe(getViewLifecycleOwner(), items -> {
+            java.util.Map<String, Integer> quantities = new java.util.HashMap<>();
+            if (items != null) {
+                for (CartItem cartItem : items) {
+                    quantities.put(cartItem.getName(), cartItem.getQuantity());
+                }
+            }
+            motherboardAdapter.setCartQuantities(quantities);
+        });
+
 
         DatabaseReference motherboardRef = FirebaseDatabase.getInstance().getReference().child("motherboard");
         motherboardRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -837,6 +919,35 @@ public class HomeFragment extends Fragment
             android.widget.Toast.makeText(getContext(), "Added to cart", android.widget.Toast.LENGTH_SHORT).show();
         };
         gpuAdapter.setOnAddToCartClickListener(addToCartClickListenerGpu);
+
+
+        com.windriver.pcgate.adapter.GpuAdapter.OnRemoveFromCartClickListener removeFromCartClickListenerGpu = item -> {
+            List<CartItem> currentCart = cartViewModel.getCartItems().getValue();
+            if (currentCart != null) {
+                for (CartItem cartItem : currentCart) {
+                    if (cartItem.getName().equals(item.getName())) {
+                        int newQty = cartItem.getQuantity() - 1;
+                        if (newQty > 0) {
+                            cartViewModel.addItem(new CartItem(item.getName(), cartItem.getPrice(), -1));
+                        } else {
+                            cartViewModel.addItem(new CartItem(item.getName(), cartItem.getPrice(), -cartItem.getQuantity()));
+                        }
+                        break;
+                    }
+                }
+            }
+        };
+        gpuAdapter.setOnRemoveFromCartClickListener(removeFromCartClickListenerGpu);
+
+        cartViewModel.getCartItems().observe(getViewLifecycleOwner(), items -> {
+            java.util.Map<String, Integer> quantities = new java.util.HashMap<>();
+            if (items != null) {
+                for (CartItem cartItem : items) {
+                    quantities.put(cartItem.getName(), cartItem.getQuantity());
+                }
+            }
+            gpuAdapter.setCartQuantities(quantities);
+        });
 
 
         final int totalCategories = 6;
@@ -983,7 +1094,6 @@ public class HomeFragment extends Fragment
         com.windriver.pcgate.adapter.PsuAdapter psuAdapter = new com.windriver.pcgate.adapter.PsuAdapter(psuList);
         psuRecyclerView.setAdapter(psuAdapter);
 
-
         com.windriver.pcgate.adapter.PsuAdapter.OnAddToCartClickListener addToCartClickListenerPsu = item -> {
             double price = 0.0;
             try {
@@ -995,6 +1105,35 @@ public class HomeFragment extends Fragment
         };
         psuAdapter.setOnAddToCartClickListener(addToCartClickListenerPsu);
 
+
+        com.windriver.pcgate.adapter.PsuAdapter.OnRemoveFromCartClickListener removeFromCartClickListenerPsu = item -> {
+            List<CartItem> currentCart = cartViewModel.getCartItems().getValue();
+            if (currentCart != null) {
+                for (CartItem cartItem : currentCart) {
+                    if (cartItem.getName().equals(item.getName())) {
+                        int newQty = cartItem.getQuantity() - 1;
+                        if (newQty > 0) {
+                            cartViewModel.addItem(new CartItem(item.getName(), cartItem.getPrice(), -1));
+                        } else {
+                            cartViewModel.addItem(new CartItem(item.getName(), cartItem.getPrice(), -cartItem.getQuantity()));
+                        }
+                        break;
+                    }
+                }
+            }
+        };
+        psuAdapter.setOnRemoveFromCartClickListener(removeFromCartClickListenerPsu);
+
+
+        cartViewModel.getCartItems().observe(getViewLifecycleOwner(), items -> {
+            java.util.Map<String, Integer> quantities = new java.util.HashMap<>();
+            if (items != null) {
+                for (CartItem cartItem : items) {
+                    quantities.put(cartItem.getName(), cartItem.getQuantity());
+                }
+            }
+            psuAdapter.setCartQuantities(quantities);
+        });
 
         DatabaseReference psuRef = FirebaseDatabase.getInstance().getReference().child("power-supply");
         psuRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -1066,14 +1205,12 @@ public class HomeFragment extends Fragment
                 }
                 psuAdapter.setPsuList(persistentRandomPsus);
                 psuAdapter.setAllPsus(allPsus);
-                hideProgressBarIfDone.run();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 android.util.Log.e("HomeFragment", "Database error: " + error.getMessage());
                 android.widget.Toast.makeText(getContext(), "Failed to load PSUs: " + error.getMessage(), android.widget.Toast.LENGTH_SHORT).show();
-                hideProgressBarIfDone.run();
             }
         });
 

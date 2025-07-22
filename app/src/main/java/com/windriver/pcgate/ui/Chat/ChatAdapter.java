@@ -181,8 +181,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 animator.setDuration(80);
                 animator.addUpdateListener(animation ->
                     {
-                        int val = (Integer) animation.getAnimatedValue();
-                        textView.getLayoutParams().height = val;
+                        textView.getLayoutParams().height = (int) (Integer) animation.getAnimatedValue();
                         textView.requestLayout();
                     });
                 animator.start();

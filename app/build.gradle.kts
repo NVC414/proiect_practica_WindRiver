@@ -49,17 +49,12 @@ android {
 }
 
 dependencies {
-
-    // Retrofit for networking
-    implementation(libs.retrofit) // Use the latest version
-    implementation(libs.converter.gson) // Or another converter like Moshi
-
-    // OkHttp (usually included by Retrofit, but good to be aware of)
-    implementation(libs.okhttp) // Use the latest version
-    implementation(libs.logging.interceptor) // For logging requests/responses (optional, for debugging)
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.okhttp)
+    implementation(libs.logging.interceptor)
     implementation(libs.google.genai)
-    // Kotlin Coroutines for asynchronous operations
-    implementation(libs.kotlinx.coroutines.android) // Use the latest version
+    implementation(libs.kotlinx.coroutines.android)
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.constraintlayout)
@@ -88,7 +83,6 @@ dependencies {
     annotationProcessor(libs.lombok.v11832)
 }
 
-// Enable annotation processing
 tasks.withType<JavaCompile> {
     options.annotationProcessorPath = configurations.annotationProcessor.get()
 }

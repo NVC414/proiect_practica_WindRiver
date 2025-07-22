@@ -1,9 +1,11 @@
 package com.windriver.pcgate.adapter;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -30,6 +32,8 @@ public class GpuAdapter extends RecyclerView.Adapter<GpuAdapter.GpuViewHolder> {
     private List<GpuItem> allGpus = new java.util.ArrayList<>();
     private final int layoutResId;
     private OnItemClickListener itemClickListener;
+    private java.util.Map<String, Integer> cartQuantities = new java.util.HashMap<>();
+    private OnRemoveFromCartClickListener removeFromCartClickListener;
 
     public GpuAdapter(List<GpuItem> gpuList) {
         this(gpuList, R.layout.item_gpu);
@@ -64,6 +68,19 @@ public class GpuAdapter extends RecyclerView.Adapter<GpuAdapter.GpuViewHolder> {
         this.itemClickListener = listener;
     }
 
+    public void setCartQuantities(java.util.Map<String, Integer> cartQuantities) {
+        this.cartQuantities = cartQuantities;
+        notifyDataSetChanged();
+    }
+
+    public interface OnRemoveFromCartClickListener {
+        void onRemoveFromCart(GpuItem item);
+    }
+
+    public void setOnRemoveFromCartClickListener(OnRemoveFromCartClickListener listener) {
+        this.removeFromCartClickListener = listener;
+    }
+
     @Override
     public int getItemViewType(int position) {
         GpuItem item = gpuList.get(position);
@@ -84,6 +101,7 @@ public class GpuAdapter extends RecyclerView.Adapter<GpuAdapter.GpuViewHolder> {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull GpuViewHolder holder, int position) {
         int viewType = getItemViewType(position);
@@ -107,11 +125,31 @@ public class GpuAdapter extends RecyclerView.Adapter<GpuAdapter.GpuViewHolder> {
         } else {
             GpuItem item = gpuList.get(position);
             holder.name.setText(item.getName());
-            holder.price.setText(item.getPrice());
-            holder.addToCartButton.setVisibility(View.VISIBLE);
+            holder.price.setText("$"+item.getPrice());
+            int quantity = cartQuantities.getOrDefault(item.getName(), 0);
+
+            if (quantity > 0) {
+                holder.addToCartButton.setVisibility(View.GONE);
+                holder.layoutCartActions.setVisibility(View.VISIBLE);
+                holder.textQuantity.setText(String.valueOf(quantity));
+            } else {
+                holder.addToCartButton.setVisibility(View.VISIBLE);
+                holder.layoutCartActions.setVisibility(View.GONE);
+            }
+
             holder.addToCartButton.setOnClickListener(v -> {
                 if (addToCartClickListener != null) {
                     addToCartClickListener.onAddToCart(item);
+                }
+            });
+            holder.buttonAddMoreToCart.setOnClickListener(v -> {
+                if (addToCartClickListener != null) {
+                    addToCartClickListener.onAddToCart(item);
+                }
+            });
+            holder.buttonRemoveFromCart.setOnClickListener(v -> {
+                if (removeFromCartClickListener != null) {
+                    removeFromCartClickListener.onRemoveFromCart(item);
                 }
             });
             holder.itemView.setOnClickListener(v -> {
@@ -144,6 +182,10 @@ public class GpuAdapter extends RecyclerView.Adapter<GpuAdapter.GpuViewHolder> {
         TextView name, price;
         Button addToCartButton;
         ImageView gpuImage;
+        ImageButton buttonRemoveFromCart;
+        ImageButton buttonAddMoreToCart;
+        View layoutCartActions;
+        TextView textQuantity;
 
         public GpuViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -151,6 +193,10 @@ public class GpuAdapter extends RecyclerView.Adapter<GpuAdapter.GpuViewHolder> {
             price = itemView.findViewById(R.id.gpuPrice);
             addToCartButton = itemView.findViewById(R.id.buttonAddToCartGpu);
             gpuImage = itemView.findViewById(R.id.gpuImage);
+            buttonRemoveFromCart = itemView.findViewById(R.id.buttonRemoveFromCartGpu);
+            buttonAddMoreToCart = itemView.findViewById(R.id.buttonAddMoreToCartGpu);
+            layoutCartActions = itemView.findViewById(R.id.layoutCartActionsGpu);
+            textQuantity = itemView.findViewById(R.id.textQuantityGpu);
         }
     }
 

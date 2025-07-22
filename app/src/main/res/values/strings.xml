@@ -58,4 +58,12 @@
     <string name="remove">Remove</string>
     <string name="add">Add</string>
     <string name="chat_with_gemini_ai">Chat with Gemini AI</string>
+    <string name="item_motherboard_name">item motherboard name</string>
+    <string name="motherboard_name">motherboard name</string>
+    <string name="new_chat">New Chat</string>
+    <string name="microphone">Microphone</string>
+    <string name="type_a_message">Type a message…</string>
+    <string name="send">Send</string>
+    <string name="ai_keywords_categories">Store keywords: case, cpu, laptop, memory, motherboard, power-supply, video-card.</string>
+    <string name="speak_now">speak now</string>
 </resources>

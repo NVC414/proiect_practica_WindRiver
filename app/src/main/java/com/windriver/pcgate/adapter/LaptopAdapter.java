@@ -1,9 +1,11 @@
 package com.windriver.pcgate.adapter;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,6 +33,8 @@ public class LaptopAdapter extends RecyclerView.Adapter<LaptopAdapter.LaptopView
     private List<LaptopItem> allLaptops = new java.util.ArrayList<>();
     private final int layoutResId;
     private OnItemClickListener itemClickListener;
+    private java.util.Map<String, Integer> cartQuantities = new java.util.HashMap<>();
+    private OnRemoveFromCartClickListener removeFromCartClickListener;
 
     public LaptopAdapter(List<LaptopItem> laptopList)
         {
@@ -74,6 +78,19 @@ public class LaptopAdapter extends RecyclerView.Adapter<LaptopAdapter.LaptopView
         this.itemClickListener = listener;
         }
 
+    public void setCartQuantities(java.util.Map<String, Integer> cartQuantities) {
+        this.cartQuantities = cartQuantities;
+        notifyDataSetChanged();
+    }
+
+    public interface OnRemoveFromCartClickListener {
+        void onRemoveFromCart(LaptopItem item);
+    }
+
+    public void setOnRemoveFromCartClickListener(OnRemoveFromCartClickListener listener) {
+        this.removeFromCartClickListener = listener;
+    }
+
     @Override
     public int getItemViewType(int position)
         {
@@ -100,6 +117,7 @@ public class LaptopAdapter extends RecyclerView.Adapter<LaptopAdapter.LaptopView
         }
         }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull LaptopViewHolder holder, int position)
         {
@@ -127,15 +145,31 @@ public class LaptopAdapter extends RecyclerView.Adapter<LaptopAdapter.LaptopView
         {
             LaptopItem item = laptopList.get(position);
             holder.model.setText(item.getModel());
-            holder.price.setText(item.getPrice());
-            holder.addToCartButton.setVisibility(View.VISIBLE);
-            holder.addToCartButton.setOnClickListener(v ->
-                {
-                    if (addToCartClickListener != null)
-                    {
-                        addToCartClickListener.onAddToCart(item);
-                    }
-                });
+            holder.price.setText("$" + item.getPrice());
+            int quantity = cartQuantities.getOrDefault(item.getModel(), 0);
+            if (quantity > 0) {
+                holder.addToCartButton.setVisibility(View.GONE);
+                holder.layoutCartActions.setVisibility(View.VISIBLE);
+                holder.textQuantity.setText(String.valueOf(quantity));
+            } else {
+                holder.addToCartButton.setVisibility(View.VISIBLE);
+                holder.layoutCartActions.setVisibility(View.GONE);
+            }
+            holder.addToCartButton.setOnClickListener(v -> {
+                if (addToCartClickListener != null) {
+                    addToCartClickListener.onAddToCart(item);
+                }
+            });
+            holder.buttonAddMoreToCart.setOnClickListener(v -> {
+                if (addToCartClickListener != null) {
+                    addToCartClickListener.onAddToCart(item);
+                }
+            });
+            holder.buttonRemoveFromCart.setOnClickListener(v -> {
+                if (removeFromCartClickListener != null) {
+                    removeFromCartClickListener.onRemoveFromCart(item);
+                }
+            });
             holder.itemView.setOnClickListener(v ->
                 {
                     if (itemClickListener != null)
@@ -169,7 +203,10 @@ public class LaptopAdapter extends RecyclerView.Adapter<LaptopAdapter.LaptopView
         TextView model, price;
         Button addToCartButton;
         ImageView laptopImage;
-
+        ImageButton buttonRemoveFromCart;
+        ImageButton buttonAddMoreToCart;
+        View layoutCartActions;
+        TextView textQuantity;
         public LaptopViewHolder(@NonNull View itemView)
             {
             super(itemView);
@@ -177,6 +214,10 @@ public class LaptopAdapter extends RecyclerView.Adapter<LaptopAdapter.LaptopView
             price = itemView.findViewById(R.id.laptopPrice);
             addToCartButton = itemView.findViewById(R.id.buttonAddToCart);
             laptopImage = itemView.findViewById(R.id.laptopImage);
+            buttonRemoveFromCart = itemView.findViewById(R.id.buttonRemoveFromCartLaptop);
+            buttonAddMoreToCart = itemView.findViewById(R.id.buttonAddMoreToCartLaptop);
+            layoutCartActions = itemView.findViewById(R.id.layoutCartActionsLaptop);
+            textQuantity = itemView.findViewById(R.id.textQuantityLaptop);
             }
         }
 
