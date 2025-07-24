@@ -167,8 +167,8 @@ public class GpuAdapter extends RecyclerView.Adapter<GpuAdapter.GpuViewHolder> {
             });
             if (holder.gpuImage != null) {
                 String url = item.getImageUrl() != null ? item.getImageUrl() : "";
-                holder.gpuImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                holder.gpuImage.setBackgroundColor(android.graphics.Color.WHITE);
+                holder.gpuImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                holder.gpuImage.setBackgroundColor(android.graphics.Color.TRANSPARENT);
                 holder.gpuImage.setPadding(8, 8, 8, 8);
                 Glide.with(holder.itemView.getContext()).load(url).placeholder(
                         R.drawable.ic_gpu_placeholder).into(holder.gpuImage);

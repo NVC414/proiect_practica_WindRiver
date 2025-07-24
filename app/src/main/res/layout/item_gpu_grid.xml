@@ -8,7 +8,7 @@
     android:layout_marginTop="8dp"
     android:layout_marginEnd="8dp"
     android:layout_marginBottom="8dp"
-    android:background="@color/surface"
+    android:background="@drawable/item_box_rounded"
     android:padding="6dp"
     tools:ignore="Overdraw">
 
@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="135dp"
             android:layout_gravity="center_horizontal"
-            android:background="@color/surface"
+            android:background="@android:color/transparent"
             android:contentDescription="@string/gpu_image"
             android:padding="8dp"
             android:scaleType="fitCenter" />
@@ -66,7 +66,7 @@
             android:id="@+id/buttonAddToCartGpu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/primary"
+            android:background="@drawable/add_to_cart_rounded"
             android:text="@string/add_to_cart"
             android:textColor="@color/on_primary"
             android:textSize="12sp"
