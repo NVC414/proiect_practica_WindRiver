@@ -24,7 +24,7 @@ import com.windriver.pcgate.ui.LoginRegister.Login_activity;
 
 public class VerifyOTP extends AppCompatActivity {
     // Class member variables
-    String fullName, phoneNumber, username, password, email, date, gender, Occupation;
+    String fullName, phoneNumber, username, email, date, gender, Occupation;
     Button buttons;
 
     @Override
@@ -38,8 +38,7 @@ public class VerifyOTP extends AppCompatActivity {
 
         // For the rest, ensure you assign to the class members, not new local variables
         this.username = getIntent().getStringExtra("username");
-        this.email = getIntent().getStringExtra("email");
-        this.password = getIntent().getStringExtra("password"); // Still advise against storing raw password
+        this.email = getIntent().getStringExtra("email");// Still advise against storing raw password
         this.phoneNumber = getIntent().getStringExtra("phone");
         this.gender = getIntent().getStringExtra("gender");
         this.date = getIntent().getStringExtra("date");
@@ -76,7 +75,7 @@ public class VerifyOTP extends AppCompatActivity {
         );
 
         // Store data under the User's email
-        reference.child(email).setValue(userProfileData)
+        reference.child("email").setValue(userProfileData)
                 .addOnSuccessListener(aVoid -> {
                     // Data successfully written
                     // The navigation to MainActivity is already handled in the onClickListener

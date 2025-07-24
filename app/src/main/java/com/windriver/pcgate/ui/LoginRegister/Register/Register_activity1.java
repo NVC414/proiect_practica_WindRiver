@@ -33,7 +33,6 @@ public class Register_activity1 extends AppCompatActivity {
     ProgressBar progressBar;
     TextView textView;
     ImageView ButtonBack;
-    String UserUID;
 
     @Override
     public void onStart() {
@@ -85,65 +84,63 @@ public class Register_activity1 extends AppCompatActivity {
         signup_next_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!validatePhoneNumber() | !validateFullName() | !validateUsername() | !validateEmail() | !validatePassword())
-                    return;
-                else {
-                    Intent intent = new Intent(getApplicationContext(), Register_activity2.class);
-                    intent.putExtra("email", editTextEmail.getText().toString());
-                    intent.putExtra("password", editTextPassword.getText().toString());
-                    intent.putExtra("name", textInputLayoutName.getEditText().getText().toString());
-                    intent.putExtra("phone", textInputLayoutPhone.getEditText().getText().toString());
-                    intent.putExtra("username", textInputLayoutUsername.getEditText().getText().toString());
-                    startActivity(intent);
-                    finish();
+                // Step 1: Validate all fields from this activity
+                // Use && for short-circuiting: if one fails, don't check others unnecessarily.
+                // Also, call all validation methods to ensure all errors are shown at once if multiple fields are wrong.
+                boolean isPhoneValid = validatePhoneNumber();
+                boolean isNameValid = validateFullName();
+                boolean isUsernameValid = validateUsername();
+                boolean isEmailValid = validateEmail();
+                boolean isPasswordValid = validatePassword();
+
+                if (!isPhoneValid || !isNameValid || !isUsernameValid || !isEmailValid || !isPasswordValid) {
+                    // If any validation fails, Toast a general message or rely on individual field errors
+                    Toast.makeText(Register_activity1.this, "Please correct the errors.", Toast.LENGTH_SHORT).show();
+                    return; // Exit onClick
                 }
-            }
-        });
-        signup_next_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+
+                // If all validations pass, proceed to create user
                 progressBar.setVisibility(View.VISIBLE);
                 String email = editTextEmail.getText().toString();
                 String password = editTextPassword.getText().toString();
+                String name = textInputLayoutName.getEditText().getText().toString();
+                String phone = textInputLayoutPhone.getEditText().getText().toString();
+                String username = textInputLayoutUsername.getEditText().getText().toString();
 
-
-                if (TextUtils.isEmpty(email)) {
-                    Toast.makeText(Register_activity1.this, "Enter email",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (TextUtils.isEmpty(password)) {
-                    Toast.makeText(Register_activity1.this, "Enter password",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                mAuth.createUserWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 progressBar.setVisibility(View.GONE);
                                 if (task.isSuccessful()) {
-                                    sendEmailVerifiation();
-                                    Toast.makeText(Register_activity1.this, "Account created.",
-                                            Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(getApplicationContext(),
-                                            Register_activity2.class);
+                                    // User created successfully
+                                    Toast.makeText(Register_activity1.this, "Account created. Please verify your email.", Toast.LENGTH_LONG).show();
+                                    sendEmailVerifiation(); // This will sign the user out.
+
+                                    // Get user details from the successful task for passing
+                                    FirebaseUser firebaseUser = task.getResult().getUser();
+                                    String userEmail = firebaseUser.getEmail(); // This is the confirmed email from Auth
+
+                                    Intent intent = new Intent(getApplicationContext(), Register_activity2.class);
+                                    // Pass data collected in THIS activity and from Auth
+                                    intent.putExtra("email", userEmail);    // Pass the email used for auth
+                                    intent.putExtra("name", name);
+                                    intent.putExtra("phone", phone);
+                                    intent.putExtra("username", username);
+                                    // DO NOT pass the raw password further unless absolutely necessary for a non-DB purpose
+                                    // and even then, handle with extreme care. VerifyOTP does not seem to need it for UserHelperClass.
+
                                     startActivity(intent);
                                     finish();
                                 } else {
-                                    Toast.makeText(Register_activity1.this, "Authentication failed.",
-                                            Toast.LENGTH_SHORT).show();
-
+                                    // Authentication failed
+                                    Toast.makeText(Register_activity1.this, "Authentication failed: " + task.getException().getMessage(),
+                                            Toast.LENGTH_LONG).show();
                                 }
                             }
                         });
-
-
-
             }
-
-
         });
-
     }
 
     private void sendEmailVerifiation() {
