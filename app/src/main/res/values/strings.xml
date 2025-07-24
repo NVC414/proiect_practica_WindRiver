@@ -56,4 +56,5 @@
     <string name="ai_icon">ai icon</string>
     <string name="user_icon">user icon</string>
     <string name="chat_history">Chat History</string>
+    <string name="pcgate">PCGate</string>
 </resources>

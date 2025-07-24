@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,11 +35,12 @@ import com.windriver.pcgate.ui.viewAll.AllCasesDialog;
 import com.windriver.pcgate.ui.viewAll.AllCpusDialog;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
-public class HomeFragment extends Fragment
-    {
+public class HomeFragment extends Fragment {
 
     private static List<CaseItem> persistentRandomCases = null;
     private static List<com.windriver.pcgate.model.CpuItem> persistentRandomCpus = null;
@@ -51,17 +51,26 @@ public class HomeFragment extends Fragment
     private static List<com.windriver.pcgate.model.LaptopItem> persistentRandomLaptops = null;
 
     private final int[] images = {R.drawable.banner_image1, R.drawable.banner_image2, R.drawable.banner_image3};
+    private SegmentedLoadingView loadingView;
+    private android.widget.TextView loadingTitle;
+    private final List<View> categoryViews = new ArrayList<>();
+    private final AtomicInteger loadedCategories = new AtomicInteger(0);
+    private static boolean allDataLoaded = false;
+    private final int TOTAL_CATEGORIES = 7;
+    private final boolean showcase = true; // animatia va lua mai mult ptr afisare
+    private boolean animationFinished = false;
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState)
-        {
+                             @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_home, container, false);
-        }
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         ViewPager2 viewPager = view.findViewById(R.id.viewPager);
         TabLayout tabLayout = view.findViewById(R.id.tabLayout);
 
@@ -70,6 +79,48 @@ public class HomeFragment extends Fragment
 
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) ->
                 tab.setCustomView(R.layout.custom_tab)).attach();
+
+
+        loadingView = view.findViewById(R.id.loadingView);
+        loadingTitle = view.findViewById(R.id.loadingTitle);
+        categoryViews.addAll(Arrays.asList(
+                view.findViewById(R.id.carcaseTitle), view.findViewById(R.id.caseRecyclerView),
+                view.findViewById(R.id.cpuTitle), view.findViewById(R.id.cpuRecyclerView),
+                view.findViewById(R.id.laptopTitle), view.findViewById(R.id.laptopRecyclerView),
+                view.findViewById(R.id.memoryTitle), view.findViewById(R.id.memoryRecyclerView),
+                view.findViewById(R.id.motherboardTitle), view.findViewById(R.id.motherboardRecyclerView),
+                view.findViewById(R.id.gpuTitle), view.findViewById(R.id.gpuRecyclerView),
+                view.findViewById(R.id.psuTitle), view.findViewById(R.id.psuRecyclerView)
+        ));
+
+        if (!allDataLoaded) {
+            loadingView.setVisibility(View.VISIBLE);
+            loadingTitle.setVisibility(View.VISIBLE);
+            for (View v : categoryViews) {
+                v.setVisibility(View.GONE);
+            }
+            if (showcase) {
+                // Showcase mode: animate with a delay
+                animationFinished = false;
+                android.os.Handler handler = new android.os.Handler(android.os.Looper.getMainLooper());
+                // ms
+                int ANIMATION_DELAY_PER_SEGMENT = 200;
+                for (int i = 1; i <= TOTAL_CATEGORIES; i++) {
+                    final int progress = i;
+                    handler.postDelayed(() -> loadingView.setProgress(progress), (long) i * ANIMATION_DELAY_PER_SEGMENT);
+                }
+                handler.postDelayed(() -> {
+                    animationFinished = true;
+                    tryFinishLoading();
+                }, (long) TOTAL_CATEGORIES * ANIMATION_DELAY_PER_SEGMENT);
+            }
+        } else {
+            loadingView.setVisibility(View.GONE);
+            loadingTitle.setVisibility(View.GONE);
+            for (View v : categoryViews) {
+                v.setVisibility(View.VISIBLE);
+            }
+        }
 
 
         RecyclerView caseRecyclerView = view.findViewById(R.id.caseRecyclerView);
@@ -84,39 +135,30 @@ public class HomeFragment extends Fragment
 
 
         CaseAdapter.OnAddToCartClickListener addToCartClickListener = item ->
-            {
-                double price = 0.0;
-                try
-                {
-                    price = Double.parseDouble(item.getPrice().replaceAll("[^0-9.]", ""));
-                }
-                catch (Exception ignored)
-                {
-                }
-                CartItem cartItem = new CartItem(item.getName(), price, 1);
-                cartViewModel.addItem(cartItem);
-                android.widget.Toast.makeText(getContext(), "Added to cart",
-                        android.widget.Toast.LENGTH_SHORT).show();
-            };
+        {
+            double price = 0.0;
+            try {
+                price = Double.parseDouble(item.getPrice().replaceAll("[^0-9.]", ""));
+            } catch (Exception ignored) {
+            }
+            CartItem cartItem = new CartItem(item.getName(), price, 1);
+            cartViewModel.addItem(cartItem);
+            android.widget.Toast.makeText(getContext(), "Added to cart",
+                    android.widget.Toast.LENGTH_SHORT).show();
+        };
         caseAdapter.setOnAddToCartClickListener(addToCartClickListener);
 
 
-    CaseAdapter.OnRemoveFromCartClickListener removeFromCartClickListener = item ->
+        CaseAdapter.OnRemoveFromCartClickListener removeFromCartClickListener = item ->
         {
             List<CartItem> currentCart = cartViewModel.getCartItems().getValue();
-            if (currentCart != null)
-            {
-                for (CartItem cartItem : currentCart)
-                {
-                    if (cartItem.getName().equals(item.getName()))
-                    {
+            if (currentCart != null) {
+                for (CartItem cartItem : currentCart) {
+                    if (cartItem.getName().equals(item.getName())) {
                         int newQty = cartItem.getQuantity() - 1;
-                        if (newQty > 0)
-                        {
+                        if (newQty > 0) {
                             cartViewModel.addItem(new CartItem(item.getName(), cartItem.getPrice(), -1));
-                        }
-                        else
-                        {
+                        } else {
 
                             cartViewModel.addItem(new CartItem(item.getName(), cartItem.getPrice(),
                                     -cartItem.getQuantity()));
@@ -126,32 +168,31 @@ public class HomeFragment extends Fragment
                 }
             }
         };
-    caseAdapter.setOnRemoveFromCartClickListener(removeFromCartClickListener);
+        caseAdapter.setOnRemoveFromCartClickListener(removeFromCartClickListener);
 
 
-    cartViewModel.getCartItems().observe(getViewLifecycleOwner(), items ->
+        cartViewModel.getCartItems().observe(getViewLifecycleOwner(), items ->
         {
             java.util.Map<String, Integer> quantities = new java.util.HashMap<>();
-            if (items != null)
-            {
-                for (CartItem cartItem : items)
-                {
+            if (items != null) {
+                for (CartItem cartItem : items) {
                     quantities.put(cartItem.getName(), cartItem.getQuantity());
                 }
             }
             caseAdapter.setCartQuantities(quantities);
         });
 
+        if (persistentRandomCases != null) {
+            caseAdapter.setCaseList(persistentRandomCases);
+        }
+
 
         DatabaseReference caseRef = FirebaseDatabase.getInstance().getReference().child("case");
-        caseRef.addListenerForSingleValueEvent(new ValueEventListener()
-            {
+        caseRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot)
-                {
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<CaseItem> allCases = new ArrayList<>();
-                for (DataSnapshot child : snapshot.getChildren())
-                {
+                for (DataSnapshot child : snapshot.getChildren()) {
                     String name = "";
                     String price = "";
                     String imageUrl = "";
@@ -161,67 +202,50 @@ public class HomeFragment extends Fragment
                     String psu = "";
                     int internal_35_bays = 0;
                     double external_volume = 0;
-                    if (child.child("name").getValue() != null)
-                    {
+                    if (child.child("name").getValue() != null) {
                         name = Objects.requireNonNull(child.child("name").getValue()).toString();
                     }
-                    if (child.child("price").getValue() != null)
-                    {
+                    if (child.child("price").getValue() != null) {
                         price = Objects.requireNonNull(child.child("price").getValue()).toString();
                     }
-                    if (child.child("image-url").getValue() != null)
-                    {
+                    if (child.child("image-url").getValue() != null) {
                         imageUrl = Objects.requireNonNull(
                                 child.child("image-url").getValue()).toString();
                     }
-                    if (child.child("color").getValue() != null)
-                    {
+                    if (child.child("color").getValue() != null) {
                         color = Objects.requireNonNull(child.child("color").getValue()).toString();
                     }
-                    if (child.child("type").getValue() != null)
-                    {
+                    if (child.child("type").getValue() != null) {
                         type = Objects.requireNonNull(child.child("type").getValue()).toString();
                     }
-                    if (child.child("side_panel").getValue() != null)
-                    {
+                    if (child.child("side_panel").getValue() != null) {
                         side_panel = Objects.requireNonNull(
                                 child.child("side_panel").getValue()).toString();
                     }
-                    if (child.child("psu").getValue() != null)
-                    {
+                    if (child.child("psu").getValue() != null) {
                         psu = Objects.requireNonNull(child.child("psu").getValue()).toString();
                     }
-                    if (child.child("internal_35_bays").getValue() != null)
-                    {
-                        try
-                        {
+                    if (child.child("internal_35_bays").getValue() != null) {
+                        try {
                             internal_35_bays = Integer.parseInt(Objects.requireNonNull(
                                     child.child("internal_35_bays").getValue()).toString());
-                        }
-                        catch (Exception ignored)
-                        {
+                        } catch (Exception ignored) {
                         }
                     }
-                    if (child.child("external_volume").getValue() != null)
-                    {
-                        try
-                        {
+                    if (child.child("external_volume").getValue() != null) {
+                        try {
                             external_volume = Double.parseDouble(Objects.requireNonNull(
                                     child.child("external_volume").getValue()).toString());
-                        }
-                        catch (Exception ignored)
-                        {
+                        } catch (Exception ignored) {
                         }
                     }
                     allCases.add(new CaseItem(name, price, imageUrl, color, type, side_panel, psu,
                             internal_35_bays, external_volume));
                 }
-                if (persistentRandomCases == null)
-                {
+                if (persistentRandomCases == null) {
                     java.util.Collections.shuffle(allCases);
                     persistentRandomCases = new ArrayList<>();
-                    for (int i = 0; i < Math.min(5, allCases.size()); i++)
-                    {
+                    for (int i = 0; i < Math.min(5, allCases.size()); i++) {
                         persistentRandomCases.add(allCases.get(i));
                     }
                     CaseItem viewMoreItem = new CaseItem("__VIEW_MORE__", "", "", "", "", "", "", 0,
@@ -230,56 +254,53 @@ public class HomeFragment extends Fragment
                 }
                 caseAdapter.setCaseList(persistentRandomCases);
                 caseAdapter.setAllCases(allCases);
-                }
+                onCategoryDataLoaded();
+            }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error)
-                {
+            public void onCancelled(@NonNull DatabaseError error) {
                 android.util.Log.e("HomeFragment", "Database error: " + error.getMessage());
                 android.widget.Toast.makeText(getContext(),
                         "Failed to load cases: " + error.getMessage(),
                         android.widget.Toast.LENGTH_SHORT).show();
-                }
-            });
+            }
+        });
 
 
         caseAdapter.setOnViewMoreClickListener(() ->
-            {
+        {
 
-                AllCasesDialog dialog = new AllCasesDialog(caseAdapter.getAllCases(),
-                        addToCartClickListener
+            AllCasesDialog dialog = new AllCasesDialog(caseAdapter.getAllCases(),
+                    addToCartClickListener
 
-                );
-                dialog.show(getParentFragmentManager(), "AllCasesDialog");
-            });
+            );
+            dialog.show(getParentFragmentManager(), "AllCasesDialog");
+        });
 
         caseAdapter.setOnItemClickListener(item ->
-            {
-                if ("__VIEW_MORE__".equals(item.getName()))
-                {
-                    return;
-                }
-                Intent intent = new Intent(getContext(), CaseDetailsActivity.class);
-                intent.putExtra("name", item.getName());
-                intent.putExtra("price", item.getPrice());
-                intent.putExtra("imageUrl", item.getImageUrl());
+        {
+            if ("__VIEW_MORE__".equals(item.getName())) {
+                return;
+            }
+            Intent intent = new Intent(getContext(), CaseDetailsActivity.class);
+            intent.putExtra("name", item.getName());
+            intent.putExtra("price", item.getPrice());
+            intent.putExtra("imageUrl", item.getImageUrl());
 
 
-                for (CaseItem c : caseAdapter.getAllCases())
-                {
-                    if (c.getName().equals(item.getName()))
-                    {
-                        intent.putExtra("color", c.getColor() != null ? c.getColor() : "");
-                        intent.putExtra("type", c.getType() != null ? c.getType() : "");
-                        intent.putExtra("side_panel", c.getSidePanel() != null ? c.getSidePanel() : "");
-                        intent.putExtra("psu", c.getPsu() != null ? c.getPsu() : "");
-                        intent.putExtra("internal_35_bays", c.getInternal35Bays());
-                        intent.putExtra("external_volume", c.getExternalVolume());
-                        break;
-                    }
+            for (CaseItem c : caseAdapter.getAllCases()) {
+                if (c.getName().equals(item.getName())) {
+                    intent.putExtra("color", c.getColor() != null ? c.getColor() : "");
+                    intent.putExtra("type", c.getType() != null ? c.getType() : "");
+                    intent.putExtra("side_panel", c.getSidePanel() != null ? c.getSidePanel() : "");
+                    intent.putExtra("psu", c.getPsu() != null ? c.getPsu() : "");
+                    intent.putExtra("internal_35_bays", c.getInternal35Bays());
+                    intent.putExtra("external_volume", c.getExternalVolume());
+                    break;
                 }
-                startActivity(intent);
-            });
+            }
+            startActivity(intent);
+        });
 
 
         RecyclerView cpuRecyclerView = view.findViewById(R.id.cpuRecyclerView);
@@ -292,13 +313,13 @@ public class HomeFragment extends Fragment
 
 
         com.windriver.pcgate.adapter.CpuAdapter.OnAddToCartClickListener addToCartClickListenerCpu = item ->
-            {
-                double price = item.getPrice();
-                CartItem cartItem = new CartItem(item.getName(), price, 1);
-                cartViewModel.addItem(cartItem);
-                android.widget.Toast.makeText(getContext(), "Added to cart",
-                        android.widget.Toast.LENGTH_SHORT).show();
-            };
+        {
+            double price = item.getPrice();
+            CartItem cartItem = new CartItem(item.getName(), price, 1);
+            cartViewModel.addItem(cartItem);
+            android.widget.Toast.makeText(getContext(), "Added to cart",
+                    android.widget.Toast.LENGTH_SHORT).show();
+        };
         cpuAdapter.setOnAddToCartClickListener(addToCartClickListenerCpu);
 
 
@@ -319,8 +340,6 @@ public class HomeFragment extends Fragment
             }
         };
         cpuAdapter.setOnRemoveFromCartClickListener(removeFromCartClickListenerCpu);
-
-
         com.windriver.pcgate.adapter.CpuAdapter.OnAddMoreToCartClickListener addMoreToCartClickListenerCpu = item -> cartViewModel.addItem(new CartItem(item.getName(), item.getPrice(), 1));
         cpuAdapter.setOnAddMoreToCartClickListener(addMoreToCartClickListenerCpu);
 
@@ -335,22 +354,23 @@ public class HomeFragment extends Fragment
             cpuAdapter.setCartQuantities(quantities);
         });
 
+        if (persistentRandomCpus != null) {
+            cpuAdapter.setCpuList(persistentRandomCpus);
+        }
+
 
         DatabaseReference cpuRef = FirebaseDatabase.getInstance().getReference().child("cpu");
-        cpuRef.addListenerForSingleValueEvent(new ValueEventListener()
-            {
+        cpuRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot)
-                {
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<com.windriver.pcgate.model.CpuItem> allCpus = new ArrayList<>();
-                for (DataSnapshot child : snapshot.getChildren())
-                {
+                for (DataSnapshot child : snapshot.getChildren()) {
                     Double priceObj = child.child("price").getValue(Double.class);
                     double price = priceObj != null ? priceObj : 0.0;
                     Double boostClockObj = child.child("boost_clock").getValue(Double.class);
                     double boost_clock = boostClockObj != null ? boostClockObj : 0.0;
                     Double coreClockObj = child.child("core_clock").getValue(Double.class);
-                    double core_clock = coreClockObj != null ? coreClockObj : 0.0;
+                    double core_clock = coreClockObj != null ? coreClockObj : 0;
                     Integer coreCountObj = child.child("core_count").getValue(Integer.class);
                     int core_count = coreCountObj != null ? coreCountObj : 0;
                     Boolean smtObj = child.child("smt").getValue(Boolean.class);
@@ -365,12 +385,10 @@ public class HomeFragment extends Fragment
                             imageUrl, boost_clock, core_clock, core_count, graphics, smt, socket,
                             tdp));
                 }
-                if (persistentRandomCpus == null)
-                {
+                if (persistentRandomCpus == null) {
                     java.util.Collections.shuffle(allCpus);
                     persistentRandomCpus = new ArrayList<>();
-                    for (int i = 0; i < Math.min(5, allCpus.size()); i++)
-                    {
+                    for (int i = 0; i < Math.min(5, allCpus.size()); i++) {
                         persistentRandomCpus.add(allCpus.get(i));
                     }
                     com.windriver.pcgate.model.CpuItem viewMoreItem = new com.windriver.pcgate.model.CpuItem(
@@ -379,205 +397,186 @@ public class HomeFragment extends Fragment
                 }
                 cpuAdapter.setCpuList(persistentRandomCpus);
                 cpuAdapter.setAllCpus(allCpus);
-                }
+                onCategoryDataLoaded();
+            }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error)
-                {
+            public void onCancelled(@NonNull DatabaseError error) {
                 android.util.Log.e("HomeFragment", "Database error: " + error.getMessage());
                 android.widget.Toast.makeText(getContext(),
                         "Failed to load CPUs: " + error.getMessage(),
                         android.widget.Toast.LENGTH_SHORT).show();
-                }
-            });
-
-
-        cpuAdapter.setOnViewMoreClickListener(() ->
-            {
-
-                AllCpusDialog dialog = new AllCpusDialog(cpuAdapter.getAllCpus(),
-                        addToCartClickListenerCpu
-
-                );
-                dialog.show(getParentFragmentManager(), "AllCpusDialog");
-            });
-
-        cpuAdapter.setOnItemClickListener(item ->
-            {
-                if ("__VIEW_MORE__".equals(item.getName()))
-                {
-                    return;
-                }
-                Intent intent = new Intent(getContext(), CpuDetailsActivity.class);
-                intent.putExtra("name", item.getName());
-                intent.putExtra("price", item.getPrice());
-                intent.putExtra("imageUrl", item.getImageUrl());
-                intent.putExtra("boost_clock", item.getBoostClock());
-                intent.putExtra("core_clock", item.getCoreClock());
-                intent.putExtra("core_count", item.getCoreCount());
-                intent.putExtra("graphics", item.getGraphics());
-                intent.putExtra("smt", item.isSmt());
-                intent.putExtra("socket", item.getSocket());
-                intent.putExtra("tdp", item.getTdp());
-                startActivity(intent);
-            });
-
-
-    RecyclerView laptopRecyclerView = view.findViewById(R.id.laptopRecyclerView);
-    laptopRecyclerView.setLayoutManager(
-            new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-    List<com.windriver.pcgate.model.LaptopItem> laptopList = new ArrayList<>();
-    com.windriver.pcgate.adapter.LaptopAdapter laptopAdapter = new com.windriver.pcgate.adapter.LaptopAdapter(
-            laptopList);
-    laptopRecyclerView.setAdapter(laptopAdapter);
-    ProgressBar laptopLoadingProgressBar = new ProgressBar(getContext());
-    laptopLoadingProgressBar.setIndeterminate(true);
-    ((ViewGroup) laptopRecyclerView.getParent()).addView(laptopLoadingProgressBar);
-    laptopLoadingProgressBar.setVisibility(View.VISIBLE);
-    laptopRecyclerView.setVisibility(View.INVISIBLE);
-
-
-    com.windriver.pcgate.adapter.LaptopAdapter.OnAddToCartClickListener addToCartClickListenerLaptop = item -> {
-        double price = 0.0;
-        try {
-            price = Double.parseDouble(item.getPrice().replaceAll("[^0-9.]", ""));
-        } catch (Exception ignored) {}
-        CartItem cartItem = new CartItem(item.getModel(), price, 1);
-        cartViewModel.addItem(cartItem);
-        android.widget.Toast.makeText(getContext(), "Added to cart", android.widget.Toast.LENGTH_SHORT).show();
-    };
-    laptopAdapter.setOnAddToCartClickListener(addToCartClickListenerLaptop);
-
-
-    com.windriver.pcgate.adapter.LaptopAdapter.OnRemoveFromCartClickListener removeFromCartClickListenerLaptop = item -> {
-        List<CartItem> currentCart = cartViewModel.getCartItems().getValue();
-        if (currentCart != null) {
-            for (CartItem cartItem : currentCart) {
-                if (cartItem.getName().equals(item.getModel())) {
-                    int newQty = cartItem.getQuantity() - 1;
-                    if (newQty > 0) {
-                        cartViewModel.addItem(new CartItem(item.getModel(), cartItem.getPrice(), -1));
-                    } else {
-                        cartViewModel.addItem(new CartItem(item.getModel(), cartItem.getPrice(), -cartItem.getQuantity()));
-                    }
-                    break;
-                }
-            }
-        }
-    };
-    laptopAdapter.setOnRemoveFromCartClickListener(removeFromCartClickListenerLaptop);
-
-
-    cartViewModel.getCartItems().observe(getViewLifecycleOwner(), items -> {
-        java.util.Map<String, Integer> quantities = new java.util.HashMap<>();
-        if (items != null) {
-            for (CartItem cartItem : items) {
-                quantities.put(cartItem.getName(), cartItem.getQuantity());
-            }
-        }
-        laptopAdapter.setCartQuantities(quantities);
-    });
-
-
-    DatabaseReference laptopRef = FirebaseDatabase.getInstance().getReference().child("laptop");
-    laptopRef.addListenerForSingleValueEvent(new ValueEventListener()
-        {
-        @Override
-        public void onDataChange(@NonNull DataSnapshot snapshot)
-            {
-            List<com.windriver.pcgate.model.LaptopItem> allLaptops = new ArrayList<>();
-            for (DataSnapshot child : snapshot.getChildren())
-            {
-                String brand = "";
-                String model = "";
-                String price = "";
-                String imageUrl = "";
-                String processor = "";
-                String ram_gb = "";
-                String ram_type = "";
-                String graphic_card_gb = "";
-                String hdd = "";
-                String ssd = "";
-                if (child.child("brand").getValue() != null)
-                {
-                    brand = Objects.requireNonNull(child.child("brand").getValue()).toString();
-                }
-                if (child.child("model").getValue() != null)
-                {
-                    model = Objects.requireNonNull(child.child("model").getValue()).toString();
-                }
-                if (child.child("price").getValue() != null)
-                {
-                    price = Objects.requireNonNull(child.child("price").getValue()).toString();
-                }
-                if (child.child("image-url").getValue() != null)
-                {
-                    imageUrl = Objects.requireNonNull(
-                            child.child("image-url").getValue()).toString();
-                }
-                if (child.child("processor").getValue() != null)
-                {
-                    processor = Objects.requireNonNull(
-                            child.child("processor").getValue()).toString();
-                }
-                if (child.child("ram_gb").getValue() != null)
-                {
-                    ram_gb = Objects.requireNonNull(child.child("ram_gb").getValue()).toString();
-                }
-                if (child.child("ram_type").getValue() != null)
-                {
-                    ram_type = Objects.requireNonNull(
-                            child.child("ram_type").getValue()).toString();
-                }
-                if (child.child("graphic_card_gb").getValue() != null)
-                {
-                    graphic_card_gb = Objects.requireNonNull(
-                            child.child("graphic_card_gb").getValue()).toString();
-                }
-                if (child.child("hdd").getValue() != null)
-                {
-                    hdd = Objects.requireNonNull(child.child("hdd").getValue()).toString();
-                }
-                if (child.child("ssd").getValue() != null)
-                {
-                    ssd = Objects.requireNonNull(child.child("ssd").getValue()).toString();
-                }
-                allLaptops.add(
-                        new com.windriver.pcgate.model.LaptopItem(brand, model, price, imageUrl,
-                                processor, ram_gb, ram_type, graphic_card_gb, hdd, ssd));
-            }
-            java.util.Collections.shuffle(allLaptops);
-            persistentRandomLaptops = new ArrayList<>();
-            for (int i = 0; i < Math.min(5, allLaptops.size()); i++)
-            {
-                persistentRandomLaptops.add(allLaptops.get(i));
-            }
-            com.windriver.pcgate.model.LaptopItem viewMoreItem = new com.windriver.pcgate.model.LaptopItem(
-                    "", "__VIEW_MORE__", "", "", "", "", "", "", "", "");
-            persistentRandomLaptops.add(viewMoreItem);
-            laptopAdapter.setLaptopList(persistentRandomLaptops);
-            laptopAdapter.setAllLaptops(allLaptops);
-            laptopLoadingProgressBar.setVisibility(View.GONE);
-            laptopRecyclerView.setVisibility(View.VISIBLE);
-            }
-
-        @Override
-        public void onCancelled(@NonNull DatabaseError error)
-            {
-            android.util.Log.e("HomeFragment", "Database error: " + error.getMessage());
-            android.widget.Toast.makeText(getContext(),
-                    "Failed to load laptops: " + error.getMessage(),
-                    android.widget.Toast.LENGTH_SHORT).show();
-            laptopLoadingProgressBar.setVisibility(View.GONE);
-            laptopRecyclerView.setVisibility(View.VISIBLE);
             }
         });
 
 
-    laptopAdapter.setOnViewMoreClickListener(() ->
+        cpuAdapter.setOnViewMoreClickListener(() ->
         {
-            if (laptopAdapter.getAllLaptops() == null || laptopAdapter.getAllLaptops().isEmpty())
-            {
+
+            AllCpusDialog dialog = new AllCpusDialog(cpuAdapter.getAllCpus(),
+                    addToCartClickListenerCpu
+
+            );
+            dialog.show(getParentFragmentManager(), "AllCpusDialog");
+        });
+
+        cpuAdapter.setOnItemClickListener(item ->
+        {
+            if ("__VIEW_MORE__".equals(item.getName())) {
+                return;
+            }
+            Intent intent = new Intent(getContext(), CpuDetailsActivity.class);
+            intent.putExtra("name", item.getName());
+            intent.putExtra("price", item.getPrice());
+            intent.putExtra("imageUrl", item.getImageUrl());
+            intent.putExtra("boost_clock", item.getBoostClock());
+            intent.putExtra("core_clock", item.getCoreClock());
+            intent.putExtra("core_count", item.getCoreCount());
+            intent.putExtra("graphics", item.getGraphics());
+            intent.putExtra("smt", item.isSmt());
+            intent.putExtra("socket", item.getSocket());
+            intent.putExtra("tdp", item.getTdp());
+            startActivity(intent);
+        });
+
+
+        RecyclerView laptopRecyclerView = view.findViewById(R.id.laptopRecyclerView);
+        laptopRecyclerView.setLayoutManager(
+                new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        List<com.windriver.pcgate.model.LaptopItem> laptopList = new ArrayList<>();
+        com.windriver.pcgate.adapter.LaptopAdapter laptopAdapter = new com.windriver.pcgate.adapter.LaptopAdapter(
+                laptopList);
+        laptopRecyclerView.setAdapter(laptopAdapter);
+
+
+        com.windriver.pcgate.adapter.LaptopAdapter.OnAddToCartClickListener addToCartClickListenerLaptop = item -> {
+            double price = 0.0;
+            try {
+                price = Double.parseDouble(item.getPrice().replaceAll("[^0-9.]", ""));
+            } catch (Exception ignored) {
+            }
+            CartItem cartItem = new CartItem(item.getModel(), price, 1);
+            cartViewModel.addItem(cartItem);
+            android.widget.Toast.makeText(getContext(), "Added to cart", android.widget.Toast.LENGTH_SHORT).show();
+        };
+        laptopAdapter.setOnAddToCartClickListener(addToCartClickListenerLaptop);
+
+
+        com.windriver.pcgate.adapter.LaptopAdapter.OnRemoveFromCartClickListener removeFromCartClickListenerLaptop = item -> {
+            List<CartItem> currentCart = cartViewModel.getCartItems().getValue();
+            if (currentCart != null) {
+                for (CartItem cartItem : currentCart) {
+                    if (cartItem.getName().equals(item.getModel())) {
+                        int newQty = cartItem.getQuantity() - 1;
+                        if (newQty > 0) {
+                            cartViewModel.addItem(new CartItem(item.getModel(), cartItem.getPrice(), -1));
+                        } else {
+                            cartViewModel.addItem(new CartItem(item.getModel(), cartItem.getPrice(), -cartItem.getQuantity()));
+                        }
+                        break;
+                    }
+                }
+            }
+        };
+        laptopAdapter.setOnRemoveFromCartClickListener(removeFromCartClickListenerLaptop);
+
+
+        cartViewModel.getCartItems().observe(getViewLifecycleOwner(), items -> {
+            java.util.Map<String, Integer> quantities = new java.util.HashMap<>();
+            if (items != null) {
+                for (CartItem cartItem : items) {
+                    quantities.put(cartItem.getName(), cartItem.getQuantity());
+                }
+            }
+            laptopAdapter.setCartQuantities(quantities);
+        });
+
+        if (persistentRandomLaptops != null) {
+            laptopAdapter.setLaptopList(persistentRandomLaptops);
+        }
+
+        DatabaseReference laptopRef = FirebaseDatabase.getInstance().getReference().child("laptop");
+        laptopRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<com.windriver.pcgate.model.LaptopItem> allLaptops = new ArrayList<>();
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    String brand = "";
+                    String model = "";
+                    String price = "";
+                    String imageUrl = "";
+                    String processor = "";
+                    String ram_gb = "";
+                    String ram_type = "";
+                    String graphic_card_gb = "";
+                    String hdd = "";
+                    String ssd = "";
+                    if (child.child("brand").getValue() != null) {
+                        brand = Objects.requireNonNull(child.child("brand").getValue()).toString();
+                    }
+                    if (child.child("model").getValue() != null) {
+                        model = Objects.requireNonNull(child.child("model").getValue()).toString();
+                    }
+                    if (child.child("price").getValue() != null) {
+                        price = Objects.requireNonNull(child.child("price").getValue()).toString();
+                    }
+                    if (child.child("image-url").getValue() != null) {
+                        imageUrl = Objects.requireNonNull(
+                                child.child("image-url").getValue()).toString();
+                    }
+                    if (child.child("processor").getValue() != null) {
+                        processor = Objects.requireNonNull(
+                                child.child("processor").getValue()).toString();
+                    }
+                    if (child.child("ram_gb").getValue() != null) {
+                        ram_gb = Objects.requireNonNull(child.child("ram_gb").getValue()).toString();
+                    }
+                    if (child.child("ram_type").getValue() != null) {
+                        ram_type = Objects.requireNonNull(
+                                child.child("ram_type").getValue()).toString();
+                    }
+                    if (child.child("graphic_card_gb").getValue() != null) {
+                        graphic_card_gb = Objects.requireNonNull(
+                                child.child("graphic_card_gb").getValue()).toString();
+                    }
+                    if (child.child("hdd").getValue() != null) {
+                        hdd = Objects.requireNonNull(child.child("hdd").getValue()).toString();
+                    }
+                    if (child.child("ssd").getValue() != null) {
+                        ssd = Objects.requireNonNull(child.child("ssd").getValue()).toString();
+                    }
+                    allLaptops.add(
+                            new com.windriver.pcgate.model.LaptopItem(brand, model, price, imageUrl,
+                                    processor, ram_gb, ram_type, graphic_card_gb, hdd, ssd));
+                }
+                if (persistentRandomLaptops == null) {
+                    java.util.Collections.shuffle(allLaptops);
+                    persistentRandomLaptops = new ArrayList<>();
+                    for (int i = 0; i < Math.min(5, allLaptops.size()); i++) {
+                        persistentRandomLaptops.add(allLaptops.get(i));
+                    }
+                    com.windriver.pcgate.model.LaptopItem viewMoreItem = new com.windriver.pcgate.model.LaptopItem(
+                            "", "__VIEW_MORE__", "", "", "", "", "", "", "", "");
+                    persistentRandomLaptops.add(viewMoreItem);
+                }
+                laptopAdapter.setLaptopList(persistentRandomLaptops);
+                laptopAdapter.setAllLaptops(allLaptops);
+                onCategoryDataLoaded();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                android.util.Log.e("HomeFragment", "Database error: " + error.getMessage());
+                android.widget.Toast.makeText(getContext(),
+                        "Failed to load laptops: " + error.getMessage(),
+                        android.widget.Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+        laptopAdapter.setOnViewMoreClickListener(() ->
+        {
+            if (laptopAdapter.getAllLaptops() == null || laptopAdapter.getAllLaptops().isEmpty()) {
                 android.widget.Toast.makeText(getContext(),
                         "Laptops are still loading. Please wait.",
                         android.widget.Toast.LENGTH_SHORT).show();
@@ -588,10 +587,9 @@ public class HomeFragment extends Fragment
             dialog.show(getParentFragmentManager(), "AllLaptopsDialog");
         });
 
-    laptopAdapter.setOnItemClickListener(item ->
+        laptopAdapter.setOnItemClickListener(item ->
         {
-            if ("__VIEW_MORE__".equals(item.getModel()))
-            {
+            if ("__VIEW_MORE__".equals(item.getModel())) {
                 return;
             }
             Intent intent = new Intent(getContext(),
@@ -622,7 +620,8 @@ public class HomeFragment extends Fragment
             double price = 0.0;
             try {
                 price = item.getPrice();
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
             CartItem cartItem = new CartItem(item.getName(), price, 1);
             cartViewModel.addItem(cartItem);
             android.widget.Toast.makeText(getContext(), "Added to cart", android.widget.Toast.LENGTH_SHORT).show();
@@ -660,15 +659,17 @@ public class HomeFragment extends Fragment
         });
 
 
+        // Show cached memory instantly if available
+        if (persistentRandomMemory != null) {
+            memoryAdapter.setMemoryList(persistentRandomMemory);
+        }
+
         DatabaseReference memoryRef = FirebaseDatabase.getInstance().getReference().child("memory");
-        memoryRef.addListenerForSingleValueEvent(new ValueEventListener()
-            {
+        memoryRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot)
-                {
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<com.windriver.pcgate.model.MemoryItem> allMemory = new ArrayList<>();
-                for (DataSnapshot child : snapshot.getChildren())
-                {
+                for (DataSnapshot child : snapshot.getChildren()) {
                     String name = child.child("name").getValue(String.class);
                     Double priceObj = child.child("price").getValue(Double.class);
                     double price = priceObj != null ? priceObj : 0.0;
@@ -681,20 +682,16 @@ public class HomeFragment extends Fragment
                             Integer.class);
                     int first_word_latency = firstWordLatencyObj != null ? firstWordLatencyObj : 0;
                     List<Integer> modules = new ArrayList<>();
-                    for (DataSnapshot mod : child.child("modules").getChildren())
-                    {
+                    for (DataSnapshot mod : child.child("modules").getChildren()) {
                         Integer val = mod.getValue(Integer.class);
-                        if (val != null)
-                        {
+                        if (val != null) {
                             modules.add(val);
                         }
                     }
                     List<Integer> speed = new ArrayList<>();
-                    for (DataSnapshot spd : child.child("speed").getChildren())
-                    {
+                    for (DataSnapshot spd : child.child("speed").getChildren()) {
                         Integer val = spd.getValue(Integer.class);
-                        if (val != null)
-                        {
+                        if (val != null) {
                             speed.add(val);
                         }
                     }
@@ -703,12 +700,10 @@ public class HomeFragment extends Fragment
                                     imageUrl, color, ddr_type, cas_latency, first_word_latency,
                                     modules, speed));
                 }
-                if (persistentRandomMemory == null)
-                {
+                if (persistentRandomMemory == null) {
                     java.util.Collections.shuffle(allMemory);
                     persistentRandomMemory = new ArrayList<>();
-                    for (int i = 0; i < Math.min(5, allMemory.size()); i++)
-                    {
+                    for (int i = 0; i < Math.min(5, allMemory.size()); i++) {
                         persistentRandomMemory.add(allMemory.get(i));
                     }
                     com.windriver.pcgate.model.MemoryItem viewMoreItem = new com.windriver.pcgate.model.MemoryItem(
@@ -718,37 +713,36 @@ public class HomeFragment extends Fragment
                 }
                 memoryAdapter.setMemoryList(persistentRandomMemory);
                 memoryAdapter.setAllMemory(allMemory);
-                }
+                onCategoryDataLoaded();
+            }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error)
-                {
+            public void onCancelled(@NonNull DatabaseError error) {
                 android.util.Log.e("HomeFragment", "Database error: " + error.getMessage());
                 android.widget.Toast.makeText(getContext(),
                         "Failed to load Memory: " + error.getMessage(),
                         android.widget.Toast.LENGTH_SHORT).show();
-                }
-            });
+            }
+        });
 
 
         memoryAdapter.setOnViewMoreClickListener(() ->
-            {
-                com.windriver.pcgate.ui.viewAll.AllMemoryDialog dialog = new com.windriver.pcgate.ui.viewAll.AllMemoryDialog(
-                        memoryAdapter.getAllMemory(), addToCartClickListenerMemory);
-                dialog.show(getParentFragmentManager(), "AllMemoryDialog");
-            });
+        {
+            com.windriver.pcgate.ui.viewAll.AllMemoryDialog dialog = new com.windriver.pcgate.ui.viewAll.AllMemoryDialog(
+                    memoryAdapter.getAllMemory(), addToCartClickListenerMemory);
+            dialog.show(getParentFragmentManager(), "AllMemoryDialog");
+        });
 
         memoryAdapter.setOnItemClickListener(item ->
-            {
-                if ("__VIEW_MORE__".equals(item.getName()))
-                {
-                    return;
-                }
-                Intent intent = getIntent(item);
-                intent.putIntegerArrayListExtra("modules", new java.util.ArrayList<>(item.getModules()));
-                intent.putIntegerArrayListExtra("speed", new java.util.ArrayList<>(item.getSpeed()));
-                startActivity(intent);
-            });
+        {
+            if ("__VIEW_MORE__".equals(item.getName())) {
+                return;
+            }
+            Intent intent = getIntent(item);
+            intent.putIntegerArrayListExtra("modules", new java.util.ArrayList<>(item.getModules()));
+            intent.putIntegerArrayListExtra("speed", new java.util.ArrayList<>(item.getSpeed()));
+            startActivity(intent);
+        });
 
 
         RecyclerView motherboardRecyclerView = view.findViewById(R.id.motherboardRecyclerView);
@@ -763,7 +757,8 @@ public class HomeFragment extends Fragment
             double price = 0.0;
             try {
                 price = Double.parseDouble(item.getPrice().replaceAll("[^0-9.]", ""));
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
             CartItem cartItem = new CartItem(item.getName(), price, 1);
             cartViewModel.addItem(cartItem);
             android.widget.Toast.makeText(getContext(), "Added to cart", android.widget.Toast.LENGTH_SHORT).show();
@@ -798,6 +793,9 @@ public class HomeFragment extends Fragment
             motherboardAdapter.setCartQuantities(quantities);
         });
 
+        if (persistentRandomMotherboards != null) {
+            motherboardAdapter.setMotherboardList(persistentRandomMotherboards);
+        }
 
         DatabaseReference motherboardRef = FirebaseDatabase.getInstance().getReference().child("motherboard");
         motherboardRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -838,12 +836,14 @@ public class HomeFragment extends Fragment
                     if (child.child("max_memory").getValue() != null) {
                         try {
                             maxMemory = Integer.parseInt(Objects.requireNonNull(child.child("max_memory").getValue()).toString());
-                        } catch (Exception ignored) {}
+                        } catch (Exception ignored) {
+                        }
                     }
                     if (child.child("memory_slots").getValue() != null) {
                         try {
                             memorySlots = Integer.parseInt(Objects.requireNonNull(child.child("memory_slots").getValue()).toString());
-                        } catch (Exception ignored) {}
+                        } catch (Exception ignored) {
+                        }
                     }
                     allMotherboards.add(new com.windriver.pcgate.model.MotherboardItem(name, price, imageUrl, color, ddrType, formFactor, socket, maxMemory, memorySlots));
                 }
@@ -858,6 +858,7 @@ public class HomeFragment extends Fragment
                 }
                 motherboardAdapter.setMotherboardList(persistentRandomMotherboards);
                 motherboardAdapter.setAllMotherboards(allMotherboards);
+                onCategoryDataLoaded();
             }
 
             @Override
@@ -870,7 +871,7 @@ public class HomeFragment extends Fragment
 
         motherboardAdapter.setOnViewMoreClickListener(() -> {
             com.windriver.pcgate.ui.viewAll.AllMotherboardsDialog dialog = new com.windriver.pcgate.ui.viewAll.AllMotherboardsDialog(
-                motherboardAdapter.getAllMotherboards(), addToCartClickListenerMotherboard);
+                    motherboardAdapter.getAllMotherboards(), addToCartClickListenerMotherboard);
             dialog.show(getParentFragmentManager(), "AllMotherboardsDialog");
         });
 
@@ -893,8 +894,6 @@ public class HomeFragment extends Fragment
 
 
         RecyclerView gpuRecyclerView = view.findViewById(R.id.gpuRecyclerView);
-        ProgressBar gpuLoadingProgressBar = view.findViewById(R.id.gpuLoadingProgressBar);
-        gpuLoadingProgressBar.setVisibility(View.VISIBLE);
         gpuRecyclerView.setLayoutManager(
                 new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         List<com.windriver.pcgate.model.GpuItem> gpuList = new ArrayList<>();
@@ -906,7 +905,8 @@ public class HomeFragment extends Fragment
             double price = 0.0;
             try {
                 price = Double.parseDouble(item.getPrice().replaceAll("[^0-9.]", ""));
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
             CartItem cartItem = new CartItem(item.getName(), price, 1);
             cartViewModel.addItem(cartItem);
             android.widget.Toast.makeText(getContext(), "Added to cart", android.widget.Toast.LENGTH_SHORT).show();
@@ -943,15 +943,9 @@ public class HomeFragment extends Fragment
         });
 
 
-        final int totalCategories = 6;
-        final int[] loadedCount = {0};
-        Runnable hideProgressBarIfDone = () -> {
-            loadedCount[0]++;
-            if (loadedCount[0] >= totalCategories) {
-                gpuLoadingProgressBar.setVisibility(View.GONE);
-            }
-        };
-
+        if (persistentRandomGpus != null) {
+            gpuAdapter.setGpuList(persistentRandomGpus);
+        }
 
         DatabaseReference gpuRef = FirebaseDatabase.getInstance().getReference("video-card");
         gpuRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -1013,7 +1007,8 @@ public class HomeFragment extends Fragment
                         } else if (memoryObj instanceof String) {
                             try {
                                 memory = Integer.parseInt((String) memoryObj);
-                            } catch (Exception ignored) {}
+                            } catch (Exception ignored) {
+                            }
                         }
                     }
                     int length = 0;
@@ -1026,7 +1021,8 @@ public class HomeFragment extends Fragment
                         } else if (lengthObj instanceof String) {
                             try {
                                 length = Integer.parseInt((String) lengthObj);
-                            } catch (Exception ignored) {}
+                            } catch (Exception ignored) {
+                            }
                         }
                     }
                     allGpus.add(new com.windriver.pcgate.model.GpuItem(name, price, imageUrl, color, chipset, core_clock, boost_clock, memory, length));
@@ -1042,23 +1038,20 @@ public class HomeFragment extends Fragment
                 }
                 gpuAdapter.setGpuList(persistentRandomGpus);
                 gpuAdapter.setAllGpus(allGpus);
-                gpuLoadingProgressBar.setVisibility(View.GONE);
-                hideProgressBarIfDone.run();
+                onCategoryDataLoaded();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 android.util.Log.e("HomeFragment", "Database error: " + error.getMessage());
                 android.widget.Toast.makeText(getContext(), "Failed to load GPUs: " + error.getMessage(), android.widget.Toast.LENGTH_SHORT).show();
-                gpuLoadingProgressBar.setVisibility(View.GONE);
-                hideProgressBarIfDone.run();
             }
         });
 
 
         gpuAdapter.setOnViewMoreClickListener(() -> {
             com.windriver.pcgate.ui.viewAll.AllGpuDialog dialog = new com.windriver.pcgate.ui.viewAll.AllGpuDialog(
-                gpuAdapter.getAllGpus(), addToCartClickListenerGpu);
+                    gpuAdapter.getAllGpus(), addToCartClickListenerGpu);
             dialog.show(getParentFragmentManager(), "AllGpuDialog");
         });
 
@@ -1084,14 +1077,15 @@ public class HomeFragment extends Fragment
         psuRecyclerView.setLayoutManager(
                 new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         List<com.windriver.pcgate.model.PsuItem> psuList = new ArrayList<>();
-        com.windriver.pcgate.adapter.PsuAdapter psuAdapter = new com.windriver.pcgate.adapter.PsuAdapter(psuList);
+        final com.windriver.pcgate.adapter.PsuAdapter psuAdapter = new com.windriver.pcgate.adapter.PsuAdapter(psuList);
         psuRecyclerView.setAdapter(psuAdapter);
 
         com.windriver.pcgate.adapter.PsuAdapter.OnAddToCartClickListener addToCartClickListenerPsu = item -> {
             double price = 0.0;
             try {
                 price = Double.parseDouble(item.getPrice().replaceAll("[^0-9.]", ""));
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
             CartItem cartItem = new CartItem(item.getName(), price, 1);
             cartViewModel.addItem(cartItem);
             android.widget.Toast.makeText(getContext(), "Added to cart", android.widget.Toast.LENGTH_SHORT).show();
@@ -1118,76 +1112,68 @@ public class HomeFragment extends Fragment
         psuAdapter.setOnRemoveFromCartClickListener(removeFromCartClickListenerPsu);
 
 
-        cartViewModel.getCartItems().observe(getViewLifecycleOwner(), items -> {
-            java.util.Map<String, Integer> quantities = new java.util.HashMap<>();
-            if (items != null) {
-                for (CartItem cartItem : items) {
-                    quantities.put(cartItem.getName(), cartItem.getQuantity());
-                }
-            }
-            psuAdapter.setCartQuantities(quantities);
-        });
-
         DatabaseReference psuRef = FirebaseDatabase.getInstance().getReference().child("power-supply");
         psuRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @SuppressLint("DefaultLocale")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<com.windriver.pcgate.model.PsuItem> allPsus = new ArrayList<>();
-                for (DataSnapshot child : snapshot.getChildren()) {
-                    String name = "";
-                    String price = "";
-                    String imageUrl = "";
-                    String color = "";
-                    String efficiency = "";
-                    String modular = "";
-                    String type = "";
-                    int wattage = 0;
-                    if (child.child("name").getValue() != null) {
-                        name = Objects.requireNonNull(child.child("name").getValue()).toString();
-                    }
-                    Object priceObj = child.child("price").getValue();
-                    if (priceObj != null) {
-                        if (priceObj instanceof Double) {
-                            price = String.format("%.2f", (Double) priceObj);
-                        } else if (priceObj instanceof Long) {
-                            price = String.format("%d", (Long) priceObj);
-                        } else if (priceObj instanceof String) {
-                            price = (String) priceObj;
-                        } else {
-                            price = String.valueOf(priceObj);
-                        }
-                    }
-                    if (child.child("image-url").getValue() != null) {
-                        imageUrl = Objects.requireNonNull(child.child("image-url").getValue()).toString();
-                    }
-                    if (child.child("color").getValue() != null) {
-                        color = Objects.requireNonNull(child.child("color").getValue()).toString();
-                    }
-                    if (child.child("efficiency").getValue() != null) {
-                        efficiency = Objects.requireNonNull(child.child("efficiency").getValue()).toString();
-                    }
-                    if (child.child("modular").getValue() != null) {
-                        modular = Objects.requireNonNull(child.child("modular").getValue()).toString();
-                    }
-                    if (child.child("type").getValue() != null) {
-                        type = Objects.requireNonNull(child.child("type").getValue()).toString();
-                    }
-                    Object wattageObj = child.child("wattage").getValue();
-                    if (wattageObj != null) {
-                        if (wattageObj instanceof Long) {
-                            wattage = ((Long) wattageObj).intValue();
-                        } else if (wattageObj instanceof Integer) {
-                            wattage = (Integer) wattageObj;
-                        } else if (wattageObj instanceof String) {
-                            try {
-                                wattage = Integer.parseInt((String) wattageObj);
-                            } catch (Exception ignored) {}
-                        }
-                    }
-                    allPsus.add(new com.windriver.pcgate.model.PsuItem(name, price, imageUrl, color, efficiency, modular, type, wattage));
-                }
                 if (persistentRandomPsus == null) {
+                    for (DataSnapshot child : snapshot.getChildren()) {
+                        String name = "";
+                        String price = "";
+                        String imageUrl = "";
+                        String color = "";
+                        String efficiency = "";
+                        String modular = "";
+                        String type = "";
+                        int wattage = 0;
+                        if (child.child("name").getValue() != null) {
+                            name = Objects.requireNonNull(child.child("name").getValue()).toString();
+                        }
+                        Object priceObj = child.child("price").getValue();
+                        if (priceObj != null) {
+                            if (priceObj instanceof Double) {
+                                price = String.format("%.2f", (Double) priceObj);
+                            } else if (priceObj instanceof Long) {
+                                price = String.format("%d", (Long) priceObj);
+                            } else if (priceObj instanceof String) {
+                                price = (String) priceObj;
+                            } else {
+                                price = String.valueOf(priceObj);
+                            }
+                        }
+                        if (child.child("image-url").getValue() != null) {
+                            imageUrl = Objects.requireNonNull(child.child("image-url").getValue()).toString();
+                        }
+                        if (child.child("color").getValue() != null) {
+                            color = Objects.requireNonNull(child.child("color").getValue()).toString();
+                        }
+                        if (child.child("efficiency").getValue() != null) {
+                            efficiency = Objects.requireNonNull(child.child("efficiency").getValue()).toString();
+                        }
+                        if (child.child("modular").getValue() != null) {
+                            modular = Objects.requireNonNull(child.child("modular").getValue()).toString();
+                        }
+                        if (child.child("type").getValue() != null) {
+                            type = Objects.requireNonNull(child.child("type").getValue()).toString();
+                        }
+                        Object wattageObj = child.child("wattage").getValue();
+                        if (wattageObj != null) {
+                            if (wattageObj instanceof Long) {
+                                wattage = ((Long) wattageObj).intValue();
+                            } else if (wattageObj instanceof Integer) {
+                                wattage = (Integer) wattageObj;
+                            } else if (wattageObj instanceof String) {
+                                try {
+                                    wattage = Integer.parseInt((String) wattageObj);
+                                } catch (Exception ignored) {
+                                }
+                            }
+                        }
+                        allPsus.add(new com.windriver.pcgate.model.PsuItem(name, price, imageUrl, color, efficiency, modular, type, wattage));
+                    }
+
                     java.util.Collections.shuffle(allPsus);
                     persistentRandomPsus = new ArrayList<>();
                     for (int i = 0; i < Math.min(5, allPsus.size()); i++) {
@@ -1196,8 +1182,38 @@ public class HomeFragment extends Fragment
                     com.windriver.pcgate.model.PsuItem viewMoreItem = new com.windriver.pcgate.model.PsuItem("__VIEW_MORE__", "", "", "", "", "", "", 0);
                     persistentRandomPsus.add(viewMoreItem);
                 }
+
                 psuAdapter.setPsuList(persistentRandomPsus);
                 psuAdapter.setAllPsus(allPsus);
+
+                psuAdapter.setOnItemClickListener(item -> {
+                    Intent intent = new Intent(getActivity(), com.windriver.pcgate.ui.detailView.PsuDetailsActivity.class);
+                    intent.putExtra("name", item.getName());
+                    intent.putExtra("price", item.getPrice());
+                    intent.putExtra("imageUrl", item.getImageUrl());
+                    intent.putExtra("color", item.getColor());
+                    intent.putExtra("efficiency", item.getEfficiency());
+                    intent.putExtra("modular", item.getModular());
+                    intent.putExtra("type", item.getType());
+                    intent.putExtra("wattage", item.getWattage());
+                    startActivity(intent);
+                });
+
+                cartViewModel.getCartItems().observe(getViewLifecycleOwner(), items -> {
+                    java.util.Map<String, Integer> quantities = new java.util.HashMap<>();
+                    if (items != null) {
+                        for (CartItem cartItem : items) {
+                            quantities.put(cartItem.getName(), cartItem.getQuantity());
+                        }
+                    }
+                    psuAdapter.setCartQuantities(quantities);
+                });
+
+                psuAdapter.setOnViewMoreClickListener(() -> {
+                    com.windriver.pcgate.ui.viewAll.AllPsuDialog dialog = new com.windriver.pcgate.ui.viewAll.AllPsuDialog(allPsus, addToCartClickListenerPsu);
+                    dialog.show(getParentFragmentManager(), "AllPsuDialog");
+                });
+                onCategoryDataLoaded();
             }
 
             @Override
@@ -1207,44 +1223,61 @@ public class HomeFragment extends Fragment
             }
         });
 
-        psuAdapter.setOnViewMoreClickListener(() -> {
-            com.windriver.pcgate.ui.viewAll.AllPsuDialog dialog = new com.windriver.pcgate.ui.viewAll.AllPsuDialog(psuAdapter.getAllPsus(), addToCartClickListenerPsu);
-            dialog.show(getParentFragmentManager(), "AllPsuDialog");
-        });
+        com.google.android.material.floatingactionbutton.FloatingActionButton fabChat = view.findViewById(
+                R.id.fabChat);
+        fabChat.setOnClickListener(v ->
+                Navigation.findNavController(view).navigate(R.id.chatFragment));
+    }
 
-        psuAdapter.setOnItemClickListener(item -> {
-            if ("__VIEW_MORE__".equals(item.getName())) {
-                return;
-            }
-            Intent intent = new Intent(getContext(), com.windriver.pcgate.ui.detailView.PsuDetailsActivity.class);
-            intent.putExtra("name", item.getName());
-            intent.putExtra("price", item.getPrice());
-            intent.putExtra("imageUrl", item.getImageUrl());
-            intent.putExtra("color", item.getColor());
-            intent.putExtra("efficiency", item.getEfficiency());
-            intent.putExtra("modular", item.getModular());
-            intent.putExtra("type", item.getType());
-            intent.putExtra("wattage", item.getWattage());
-            startActivity(intent);
-        });
-
-    com.google.android.material.floatingactionbutton.FloatingActionButton fabChat = view.findViewById(
-            R.id.fabChat);
-    fabChat.setOnClickListener(v ->
-            Navigation.findNavController(view).navigate(R.id.chatFragment));
+    private void onCategoryDataLoaded() {
+        int loadedCount = loadedCategories.incrementAndGet();
+        if (!showcase) {
+            loadingView.setProgress(loadedCount);
         }
 
-        @NonNull
-        private Intent getIntent(MemoryItem item) {
-            Intent intent = new Intent(getContext(),
-                    com.windriver.pcgate.ui.detailView.MemoryDetailsActivity.class);
-            intent.putExtra("name", item.getName());
-            intent.putExtra("price", item.getPrice());
-            intent.putExtra("imageUrl", item.getImageUrl());
-            intent.putExtra("ddr_type", item.getDdrType());
-            intent.putExtra("color", item.getColor());
-            intent.putExtra("cas_latency", item.getCasLatency());
-            intent.putExtra("first_word_latency", item.getFirstWordLatency());
-            return intent;
+        if (loadedCount >= TOTAL_CATEGORIES) {
+            tryFinishLoading();
         }
     }
+
+    private synchronized void tryFinishLoading() {
+        if (allDataLoaded) return; // Already finished
+
+        boolean dataIsReady = loadedCategories.get() >= TOTAL_CATEGORIES;
+        boolean animationIsReady = !showcase || animationFinished;
+
+        if (dataIsReady && animationIsReady) {
+            allDataLoaded = true;
+            if (getView() != null) { // Ensure fragment is still alive
+                getView().post(() -> {
+                    loadingView.setVisibility(View.GONE);
+                    loadingTitle.setVisibility(View.GONE);
+                    showCategoryViewsWithAnimation();
+                });
+            }
+        }
+    }
+
+    private void showCategoryViewsWithAnimation() {
+        android.os.Handler handler = new android.os.Handler(android.os.Looper.getMainLooper());
+        for (int i = 0; i < categoryViews.size(); i++) {
+            final View view = categoryViews.get(i);
+            handler.postDelayed(() -> view.setVisibility(View.VISIBLE), i * 100);
+        }
+    }
+
+    @NonNull
+    private Intent getIntent(MemoryItem item) {
+        Intent intent = new Intent(getContext(),
+                com.windriver.pcgate.ui.detailView.MemoryDetailsActivity.class);
+        intent.putExtra("name", item.getName());
+        intent.putExtra("price", item.getPrice());
+        intent.putExtra("imageUrl", item.getImageUrl());
+        intent.putExtra("ddr_type", item.getDdrType());
+        intent.putExtra("color", item.getColor());
+        intent.putExtra("cas_latency", item.getCasLatency());
+        intent.putExtra("first_word_latency", item.getFirstWordLatency());
+        return intent;
+    }
+}
+
