@@ -75,7 +75,7 @@ public class VerifyOTP extends AppCompatActivity {
         );
 
         // Store data under the User's email
-        reference.child("email").setValue(userProfileData)
+        reference.child(email.replace("@", "%").replace(".", ",")).setValue(userProfileData)
                 .addOnSuccessListener(aVoid -> {
                     // Data successfully written
                     // The navigation to MainActivity is already handled in the onClickListener
