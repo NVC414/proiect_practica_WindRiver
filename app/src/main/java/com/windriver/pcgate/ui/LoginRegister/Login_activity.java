@@ -21,6 +21,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.windriver.pcgate.ui.LoginRegister.Register.Register_activity1;
 
 public class Login_activity extends AppCompatActivity
     {
@@ -60,7 +61,7 @@ public class Login_activity extends AppCompatActivity
             @Override
             public void onClick(View view)
                 {
-                Intent intent = new Intent(getApplicationContext(), Register_activity.class);
+                Intent intent = new Intent(getApplicationContext(), Register_activity1.class);
                 startActivity(intent);
                 finish();
                 }
@@ -96,12 +97,14 @@ public class Login_activity extends AppCompatActivity
                                 progressBar.setVisibility(View.GONE);
                                 if (task.isSuccessful())
                                 {
-                                    Toast.makeText(getApplicationContext(), "Login Successful",
+                                    if(mAuth.getCurrentUser().isEmailVerified())
+                                    {Toast.makeText(getApplicationContext(), "Login Successful",
                                             Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(getApplicationContext(),
                                             MainActivity.class);
                                     startActivity(intent);
-                                    finish();
+                                    finish();} else Toast.makeText(getApplicationContext(), "Verify your email before proceeding",
+                                            Toast.LENGTH_SHORT).show();
                                 }
                                 else
                                 {
