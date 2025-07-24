@@ -104,7 +104,7 @@ public class HomeFragment extends Fragment {
                 animationFinished = false;
                 android.os.Handler handler = new android.os.Handler(android.os.Looper.getMainLooper());
                 // ms
-                int ANIMATION_DELAY_PER_SEGMENT = 200;
+                int ANIMATION_DELAY_PER_SEGMENT = 300;
                 for (int i = 1; i <= TOTAL_CATEGORIES; i++) {
                     final int progress = i;
                     handler.postDelayed(() -> loadingView.setProgress(progress), (long) i * ANIMATION_DELAY_PER_SEGMENT);
