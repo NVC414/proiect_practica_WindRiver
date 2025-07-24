@@ -1,4 +1,4 @@
-package com.windriver.pcgate.ui.Cart;
+package com.windriver.pcgate.ui.cart;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -25,7 +25,7 @@ public class CartFragment extends Fragment
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
         {
-        com.windriver.pcgate.ui.Cart.CartViewModel cartViewModel = com.windriver.pcgate.ui.Cart.CartViewModel.getInstance();
+        com.windriver.pcgate.ui.cart.CartViewModel cartViewModel = com.windriver.pcgate.ui.cart.CartViewModel.getInstance();
         binding = FragmentCartBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 

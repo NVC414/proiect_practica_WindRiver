@@ -1,4 +1,4 @@
-package com.windriver.pcgate.ui.ViewAll;
+package com.windriver.pcgate.ui.viewAll;
 
 import android.app.Dialog;
 import android.os.Bundle;
@@ -18,8 +18,8 @@ import com.windriver.pcgate.R;
 import com.windriver.pcgate.adapter.MemoryAdapter;
 import com.windriver.pcgate.adapter.MemoryAdapter.OnAddToCartClickListener;
 import com.windriver.pcgate.model.MemoryItem;
-import com.windriver.pcgate.ui.Cart.CartItem;
-import com.windriver.pcgate.ui.Cart.CartViewModel;
+import com.windriver.pcgate.ui.cart.CartItem;
+import com.windriver.pcgate.ui.cart.CartViewModel;
 
 import java.util.List;
 
@@ -53,7 +53,7 @@ public class AllMemoryDialog extends DialogFragment
                     return;
                 }
                 android.content.Intent intent = new android.content.Intent(getContext(),
-                        com.windriver.pcgate.ui.DetailView.MemoryDetailsActivity.class);
+                        com.windriver.pcgate.ui.detailView.MemoryDetailsActivity.class);
                 intent.putExtra("name", item.getName());
                 intent.putExtra("price", item.getPrice());
                 intent.putExtra("imageUrl", item.getImageUrl());

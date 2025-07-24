@@ -1,4 +1,4 @@
-package com.windriver.pcgate.ui.ViewAll;
+package com.windriver.pcgate.ui.viewAll;
 
 import android.app.Dialog;
 import android.content.Intent;
@@ -19,9 +19,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.windriver.pcgate.R;
 import com.windriver.pcgate.adapter.GpuAdapter;
 import com.windriver.pcgate.model.GpuItem;
-import com.windriver.pcgate.ui.Cart.CartItem;
-import com.windriver.pcgate.ui.Cart.CartViewModel;
-import com.windriver.pcgate.ui.DetailView.GpuDetailsActivity;
+import com.windriver.pcgate.ui.cart.CartItem;
+import com.windriver.pcgate.ui.cart.CartViewModel;
+import com.windriver.pcgate.ui.detailView.GpuDetailsActivity;
 
 import java.util.List;
 

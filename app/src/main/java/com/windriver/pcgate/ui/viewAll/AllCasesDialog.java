@@ -1,4 +1,4 @@
-package com.windriver.pcgate.ui.ViewAll;
+package com.windriver.pcgate.ui.viewAll;
 
 import android.app.Dialog;
 import android.os.Bundle;
@@ -16,22 +16,22 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.windriver.pcgate.R;
-import com.windriver.pcgate.adapter.CpuAdapter;
-import com.windriver.pcgate.model.CpuItem;
-import com.windriver.pcgate.ui.Cart.CartItem;
-import com.windriver.pcgate.ui.Cart.CartViewModel;
+import com.windriver.pcgate.adapter.CaseAdapter;
+import com.windriver.pcgate.adapter.CaseAdapter.OnAddToCartClickListener;
+import com.windriver.pcgate.model.CaseItem;
+import com.windriver.pcgate.ui.cart.CartItem;
+import com.windriver.pcgate.ui.cart.CartViewModel;
 
 import java.util.List;
 
-public class AllCpusDialog extends DialogFragment
+public class AllCasesDialog extends DialogFragment
     {
-    private final List<CpuItem> allCpus;
-    private final CpuAdapter.OnAddToCartClickListener addToCartClickListener;
+    private final List<CaseItem> allCases;
+    private final OnAddToCartClickListener addToCartClickListener;
 
-    public AllCpusDialog(List<CpuItem> allCpus,
-                         CpuAdapter.OnAddToCartClickListener addToCartClickListener)
+    public AllCasesDialog(List<CaseItem> allCases, OnAddToCartClickListener addToCartClickListener)
         {
-        this.allCpus = allCpus;
+        this.allCases = allCases;
         this.addToCartClickListener = addToCartClickListener;
         }
 
@@ -40,51 +40,47 @@ public class AllCpusDialog extends DialogFragment
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState)
         {
-        View view = inflater.inflate(R.layout.dialog_all_cpus, container, false);
-
-        ImageButton backButton = view.findViewById(R.id.buttonBack);
-        backButton.setOnClickListener(v -> dismiss());
-        return view;
+        return inflater.inflate(R.layout.dialog_all_cases, container, false);
         }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        RecyclerView recyclerView = view.findViewById(R.id.allCpusRecyclerView);
+        RecyclerView recyclerView = view.findViewById(R.id.allCasesRecyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 3));
         CartViewModel cartViewModel = CartViewModel.getInstance();
-        CpuAdapter adapter = new CpuAdapter(allCpus, R.layout.item_cpu_grid);
+        CaseAdapter adapter = new CaseAdapter(allCases, R.layout.item_case_grid);
 
         adapter.setOnAddToCartClickListener(addToCartClickListener);
         adapter.setOnRemoveFromCartClickListener(item -> {
+            double priceValue = 0.0;
+            try { priceValue = Double.parseDouble(item.getPrice().replaceAll("[^0-9.]", "")); } catch (Exception ignored) {}
             java.util.List<CartItem> current = cartViewModel.getCartItems().getValue();
             if (current != null) {
                 for (CartItem ci : current) {
                     if (ci.getName().equals(item.getName())) {
                         int newQty = ci.getQuantity() - 1;
                         if (newQty > 0) {
-                            cartViewModel.addItem(new CartItem(item.getName(), item.getPrice(), -1));
+                            cartViewModel.addItem(new CartItem(item.getName(), priceValue, -1));
                         } else {
-                            cartViewModel.addItem(new CartItem(item.getName(), item.getPrice(), -ci.getQuantity()));
+                            cartViewModel.addItem(new CartItem(item.getName(), priceValue, -ci.getQuantity()));
                         }
                         break;
                     }
                 }
             }
         });
-        adapter.setOnAddMoreToCartClickListener(item -> cartViewModel.addItem(new CartItem(item.getName(), item.getPrice(), 1)));
         adapter.setOnItemClickListener(item -> {
-            android.content.Intent intent = new android.content.Intent(requireContext(), com.windriver.pcgate.ui.DetailView.CpuDetailsActivity.class);
+            android.content.Intent intent = new android.content.Intent(requireContext(), com.windriver.pcgate.ui.detailView.CaseDetailsActivity.class);
             intent.putExtra("name", item.getName());
             intent.putExtra("price", item.getPrice());
             intent.putExtra("imageUrl", item.getImageUrl());
-            intent.putExtra("boostClock", item.getBoostClock());
-            intent.putExtra("coreClock", item.getCoreClock());
-            intent.putExtra("coreCount", item.getCoreCount());
-            intent.putExtra("graphics", item.getGraphics());
-            intent.putExtra("smt", item.isSmt());
-            intent.putExtra("socket", item.getSocket());
-            intent.putExtra("tdp", item.getTdp());
+            intent.putExtra("type", item.getType());
+            intent.putExtra("color", item.getColor());
+            intent.putExtra("side_panel", item.getSidePanel());
+            intent.putExtra("psu", item.getPsu());
+            intent.putExtra("internal_35_bays", item.getInternal35Bays());
+            intent.putExtra("external_volume", item.getExternalVolume());
             startActivity(intent);
         });
         cartViewModel.getCartItems().observe(getViewLifecycleOwner(), items -> {
@@ -97,6 +93,8 @@ public class AllCpusDialog extends DialogFragment
             adapter.setCartQuantities(qtys);
         });
         recyclerView.setAdapter(adapter);
+        ImageButton backButton = view.findViewById(R.id.buttonBack);
+        backButton.setOnClickListener(v -> dismiss());
     }
 
     @Override
@@ -118,7 +116,7 @@ public class AllCpusDialog extends DialogFragment
     public Dialog onCreateDialog(Bundle savedInstanceState)
         {
         Dialog dialog = super.onCreateDialog(savedInstanceState);
-        dialog.setTitle("All CPUs");
+        dialog.setTitle("All Cases");
         return dialog;
         }
     }

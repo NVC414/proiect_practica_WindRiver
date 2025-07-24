@@ -5,15 +5,6 @@
     <string name="title_cart">Cart</string>
     <string name="my_orders">My Orders</string>
     <string name="call_support">Call Support</string>
-    <string name="title_activity_login">LoginActivity</string>
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome !"</string>
-    <string name="invalid_username">Not a valid username</string>
-    <string name="invalid_password">Password must be >5 characters</string>
-    <string name="login_failed">"Login failed"</string>
     <string name="login">Login</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
@@ -41,7 +32,6 @@
     <string name="pret">Pret</string>
     <string name="memory_name">Memory Name</string>
     <string name="placi_de_baza">Placi de baza</string>
-    <string name="view_more">View more</string>
     <string name="motherboard_image">placa de baza</string>
     <string name="placi_video">Placi Video</string>
     <string name="gpu_image">gpu image</string>
@@ -50,7 +40,6 @@
     <string name="all_psu">All PSUs</string>
     <string name="psu_image">PSU Image</string>
     <string name="item_psu_name">PSU Name</string>
-    <string name="psu_price">PSU Price</string>
     <string name="laptopuri">Laptopuri</string>
     <string name="laptop_image">Laptop image</string>
     <string name="item_laptop_model">Model</string>
@@ -61,9 +50,10 @@
     <string name="item_motherboard_name">item motherboard name</string>
     <string name="motherboard_name">motherboard name</string>
     <string name="new_chat">New Chat</string>
-    <string name="microphone">Microphone</string>
     <string name="type_a_message">Type a message…</string>
     <string name="send">Send</string>
     <string name="ai_keywords_categories">Store keywords: case, cpu, laptop, memory, motherboard, power-supply, video-card.</string>
-    <string name="speak_now">speak now</string>
+    <string name="ai_icon">ai icon</string>
+    <string name="user_icon">user icon</string>
+    <string name="chat_history">Chat History</string>
 </resources>

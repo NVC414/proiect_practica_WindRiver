@@ -1,5 +1,6 @@
 package com.windriver.pcgate.adapter;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +23,7 @@ import lombok.Setter;
 
 public class MemoryAdapter extends RecyclerView.Adapter<MemoryAdapter.MemoryViewHolder>
     {
-    private List<MemoryItem> memoryList;
+    private final List<MemoryItem> memoryList;
     private OnAddToCartClickListener addToCartClickListener;
     private static final int TYPE_MEMORY = 0;
     private static final int TYPE_VIEW_MORE = 1;
@@ -76,17 +77,55 @@ public class MemoryAdapter extends RecyclerView.Adapter<MemoryAdapter.MemoryView
         this.itemClickListener = listener;
         }
 
-    public void setCartQuantities(java.util.Map<String, Integer> cartQuantities) {
-        this.cartQuantities = cartQuantities;
-        notifyDataSetChanged();
-    }
-
     public interface OnRemoveFromCartClickListener {
         void onRemoveFromCart(MemoryItem item);
     }
 
     public void setOnRemoveFromCartClickListener(OnRemoveFromCartClickListener listener) {
         this.removeFromCartClickListener = listener;
+    }
+
+    public void setCartQuantities(java.util.Map<String, Integer> cartQuantities)
+    {
+        for (int i = 0; i < memoryList.size(); i++) {
+            MemoryItem item = memoryList.get(i);
+            String key = item.getName();
+            Integer oldQty = this.cartQuantities.get(key);
+            Integer newQty = cartQuantities.get(key);
+            if ((oldQty == null && newQty != null) || (oldQty != null && !oldQty.equals(newQty))) {
+                notifyItemChanged(i);
+            }
+        }
+        this.cartQuantities = cartQuantities;
+    }
+
+    public void setMemoryList(List<MemoryItem> newList)
+    {
+        androidx.recyclerview.widget.DiffUtil.DiffResult diffResult = androidx.recyclerview.widget.DiffUtil.calculateDiff(new androidx.recyclerview.widget.DiffUtil.Callback() {
+            @Override
+            public int getOldListSize() {
+                return memoryList.size();
+            }
+            @Override
+            public int getNewListSize() {
+                return newList.size();
+            }
+            @Override
+            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                MemoryItem oldItem = memoryList.get(oldItemPosition);
+                MemoryItem newItem = newList.get(newItemPosition);
+                return oldItem.getName().equals(newItem.getName());
+            }
+            @Override
+            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                MemoryItem oldItem = memoryList.get(oldItemPosition);
+                MemoryItem newItem = newList.get(newItemPosition);
+                return oldItem.equals(newItem);
+            }
+        });
+        memoryList.clear();
+        memoryList.addAll(newList);
+        diffResult.dispatchUpdatesTo(this);
     }
 
     @Override
@@ -115,6 +154,7 @@ public class MemoryAdapter extends RecyclerView.Adapter<MemoryAdapter.MemoryView
         }
         }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull MemoryViewHolder holder, int position)
         {
@@ -122,7 +162,7 @@ public class MemoryAdapter extends RecyclerView.Adapter<MemoryAdapter.MemoryView
         if (viewType == TYPE_VIEW_MORE)
         {
             ViewMoreViewHolder viewMoreHolder = (ViewMoreViewHolder) holder;
-            viewMoreHolder.name.setText("View More");
+            viewMoreHolder.name.setText("@string/view_more");
             viewMoreHolder.price.setText("");
             viewMoreHolder.addToCartButton.setVisibility(View.GONE);
             if (viewMoreHolder.memoryImage != null)
@@ -143,8 +183,8 @@ public class MemoryAdapter extends RecyclerView.Adapter<MemoryAdapter.MemoryView
             MemoryItem item = memoryList.get(position);
             holder.name.setText(item.getName());
             holder.price.setText("$%s".formatted(item.getPrice()));
-            int quantity = cartQuantities.getOrDefault(item.getName(), 0);
-            if (quantity > 0) {
+            Integer quantityObj = cartQuantities.get(item.getName());
+            int quantity = (quantityObj != null) ? quantityObj : 0;            if (quantity > 0) {
                 holder.addToCartButton.setVisibility(View.GONE);
                 holder.layoutCartActions.setVisibility(View.VISIBLE);
                 holder.textQuantity.setText(String.valueOf(quantity));
@@ -189,13 +229,7 @@ public class MemoryAdapter extends RecyclerView.Adapter<MemoryAdapter.MemoryView
         return memoryList.size();
         }
 
-    public void setMemoryList(List<MemoryItem> newList)
-        {
-        this.memoryList = newList;
-        notifyDataSetChanged();
-        }
-
-    static class MemoryViewHolder extends RecyclerView.ViewHolder
+    public static class MemoryViewHolder extends RecyclerView.ViewHolder
         {
         TextView name, price;
         Button addToCartButton;

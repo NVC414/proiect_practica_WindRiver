@@ -16,15 +16,13 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.windriver.pcgate.databinding.ActivityMainBinding;
-import com.windriver.pcgate.ui.Cart.CartViewModel;
+import com.windriver.pcgate.ui.cart.CartViewModel;
 import com.windriver.pcgate.ui.LoginRegister.Login_activity;
 
 public class MainActivity extends AppCompatActivity
     {
 
-    private FirebaseAuth auth;
-    private FirebaseUser user;
-    private ActivityMainBinding binding;
+        private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -35,8 +33,8 @@ public class MainActivity extends AppCompatActivity
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        auth = FirebaseAuth.getInstance();
-        user = auth.getCurrentUser();
+            FirebaseAuth auth = FirebaseAuth.getInstance();
+            FirebaseUser user = auth.getCurrentUser();
 
         if (user == null)
         {
@@ -60,7 +58,7 @@ public class MainActivity extends AppCompatActivity
         cartViewModel.getCartItems().observe(this, items ->
             {
                 int count = 0;
-                for (com.windriver.pcgate.ui.Cart.CartItem item : items)
+                for (com.windriver.pcgate.ui.cart.CartItem item : items)
                 {
                     count += item.getQuantity();
                 }

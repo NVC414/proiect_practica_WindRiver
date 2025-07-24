@@ -1,4 +1,4 @@
-package com.windriver.pcgate.ui.Cart;
+package com.windriver.pcgate.ui.cart;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

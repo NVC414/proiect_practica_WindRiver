@@ -23,7 +23,7 @@ import lombok.Setter;
 
 public class PsuAdapter extends RecyclerView.Adapter<PsuAdapter.PsuViewHolder>
 {
-    private List<PsuItem> psuList;
+    private final List<PsuItem> psuList;
     private OnAddToCartClickListener addToCartClickListener;
     private static final int TYPE_PSU = 0;
     private static final int TYPE_VIEW_MORE = 1;
@@ -69,8 +69,16 @@ public class PsuAdapter extends RecyclerView.Adapter<PsuAdapter.PsuViewHolder>
     }
 
     public void setCartQuantities(java.util.Map<String, Integer> cartQuantities) {
+        for (int i = 0; i < psuList.size(); i++) {
+            PsuItem item = psuList.get(i);
+            String key = item.getName();
+            Integer oldQty = this.cartQuantities.get(key);
+            Integer newQty = cartQuantities.get(key);
+            if ((oldQty == null && newQty != null) || (oldQty != null && !oldQty.equals(newQty))) {
+                notifyItemChanged(i);
+            }
+        }
         this.cartQuantities = cartQuantities;
-        notifyDataSetChanged();
     }
 
     @Override
@@ -125,9 +133,8 @@ public class PsuAdapter extends RecyclerView.Adapter<PsuAdapter.PsuViewHolder>
             PsuItem item = psuList.get(position);
             holder.name.setText(item.getName());
             holder.price.setText("$" + item.getPrice());
-            int quantity = cartQuantities.getOrDefault(item.getName(), 0);
-
-            // Use correct IDs for cart actions and quantity (for both list and grid layouts)
+            Integer quantityObj = cartQuantities.get(item.getName());
+            int quantity = (quantityObj != null) ? quantityObj : 0;
             View layoutCartActions = holder.itemView.findViewById(R.id.layoutCartActionsPsu) != null ?
                 holder.itemView.findViewById(R.id.layoutCartActionsPsu) : holder.itemView.findViewById(R.id.layoutCartActions);
             Button addToCartButton = holder.itemView.findViewById(R.id.buttonAddToCart);
@@ -190,11 +197,34 @@ public class PsuAdapter extends RecyclerView.Adapter<PsuAdapter.PsuViewHolder>
     }
 
     public void setPsuList(List<PsuItem> newList) {
-        this.psuList = newList;
-        notifyDataSetChanged();
+        androidx.recyclerview.widget.DiffUtil.DiffResult diffResult = androidx.recyclerview.widget.DiffUtil.calculateDiff(new androidx.recyclerview.widget.DiffUtil.Callback() {
+            @Override
+            public int getOldListSize() {
+                return psuList.size();
+            }
+            @Override
+            public int getNewListSize() {
+                return newList.size();
+            }
+            @Override
+            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                PsuItem oldItem = psuList.get(oldItemPosition);
+                PsuItem newItem = newList.get(newItemPosition);
+                return oldItem.getName().equals(newItem.getName());
+            }
+            @Override
+            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                PsuItem oldItem = psuList.get(oldItemPosition);
+                PsuItem newItem = newList.get(newItemPosition);
+                return oldItem.equals(newItem);
+            }
+        });
+        psuList.clear();
+        psuList.addAll(newList);
+        diffResult.dispatchUpdatesTo(this);
     }
 
-    static class PsuViewHolder extends RecyclerView.ViewHolder {
+    public static class PsuViewHolder extends RecyclerView.ViewHolder {
         TextView name, price;
         Button addToCartButton;
         ImageButton buttonRemoveFromCart;

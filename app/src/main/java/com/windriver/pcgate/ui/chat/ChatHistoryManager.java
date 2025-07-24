@@ -1,4 +1,4 @@
-package com.windriver.pcgate.ui.Chat;
+package com.windriver.pcgate.ui.chat;
 
 import android.content.Context;
 import android.content.SharedPreferences;

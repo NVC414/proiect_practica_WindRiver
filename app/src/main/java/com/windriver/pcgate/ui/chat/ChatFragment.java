@@ -1,4 +1,4 @@
-package com.windriver.pcgate.ui.Chat;
+package com.windriver.pcgate.ui.chat;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
@@ -52,15 +52,17 @@ import java.util.Locale;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import lombok.Getter;
+
 public class ChatFragment extends Fragment implements MenuProvider
     {
     private ChatAdapter chatAdapter;
     private RecyclerView chatRecyclerView;
     private EditText messageInput;
     private ImageButton sendButton;
-    private View bottomSpace;
-    private ChatFutures chat;
+        private ChatFutures chat;
     private final List<Content> history = new ArrayList<>();
+    @Getter
     private final Executor executor = Executors.newSingleThreadExecutor();
 
     private static final String[] KEYWORDS = {"case", "cpu", "laptop", "memory", "motherboard", "power-supply", "video-card", "processor", "ram", "psu", "gpu"};
@@ -81,7 +83,7 @@ public class ChatFragment extends Fragment implements MenuProvider
 
     private final List<String> chatHistory = new ArrayList<>();
     private ChatHistoryManager chatHistoryManager;
-    private List<ChatMessage> currentMessages = new ArrayList<>();
+    private final List<ChatMessage> currentMessages = new ArrayList<>();
     private String currentChatId = null;
     private boolean keywordsAddedToContext = false;
 
@@ -94,10 +96,9 @@ public class ChatFragment extends Fragment implements MenuProvider
         chatRecyclerView = view.findViewById(R.id.chatRecyclerView);
         messageInput = view.findViewById(R.id.messageInput);
         sendButton = view.findViewById(R.id.sendButton);
-        bottomSpace = view.findViewById(R.id.bottomSpace);
 
 
-        if (getActivity() instanceof AppCompatActivity activity)
+            if (getActivity() instanceof AppCompatActivity activity)
         {
             if (activity.getSupportActionBar() != null)
             {
@@ -462,4 +463,5 @@ public class ChatFragment extends Fragment implements MenuProvider
                     userInput);
             return contextBuilder;
         }
+
     }

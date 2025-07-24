@@ -2,12 +2,11 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mobile_navigation"
     app:startDestination="@+id/navigation_home">
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.windriver.pcgate.ui.Home.HomeFragment"
+        android:name="com.windriver.pcgate.ui.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
 
@@ -19,13 +18,13 @@
 
     <fragment
         android:id="@+id/navigation_cart"
-        android:name="com.windriver.pcgate.ui.Cart.CartFragment"
+        android:name="com.windriver.pcgate.ui.cart.CartFragment"
         android:label="@string/title_cart"
         tools:layout="@layout/fragment_cart" />
 
     <fragment
         android:id="@+id/chatFragment"
-        android:name="com.windriver.pcgate.ui.Chat.ChatFragment"
+        android:name="com.windriver.pcgate.ui.chat.ChatFragment"
         android:label="Chat"
         tools:layout="@layout/fragment_chat" />
 </navigation>

@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -17,6 +18,7 @@ import com.windriver.pcgate.R;
 import com.windriver.pcgate.model.LaptopItem;
 
 import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -78,17 +80,57 @@ public class LaptopAdapter extends RecyclerView.Adapter<LaptopAdapter.LaptopView
         this.itemClickListener = listener;
         }
 
-    public void setCartQuantities(java.util.Map<String, Integer> cartQuantities) {
-        this.cartQuantities = cartQuantities;
-        notifyDataSetChanged();
-    }
-
     public interface OnRemoveFromCartClickListener {
         void onRemoveFromCart(LaptopItem item);
     }
 
     public void setOnRemoveFromCartClickListener(OnRemoveFromCartClickListener listener) {
         this.removeFromCartClickListener = listener;
+    }
+
+    public void setCartQuantities(java.util.Map<String, Integer> cartQuantities) {
+        Map<String, Integer> oldCartQuantities = new java.util.HashMap<>(this.cartQuantities);
+        this.cartQuantities = cartQuantities;
+        for (int i = 0; i < laptopList.size(); i++) {
+            LaptopItem item = laptopList.get(i);
+            String key = item.getBrand() + "|" + item.getModel();
+            Integer oldQty = oldCartQuantities.get(key);
+            Integer newQty = cartQuantities.get(key);
+            if ((oldQty == null && newQty != null) || (oldQty != null && !oldQty.equals(newQty))) {
+                notifyItemChanged(i);
+            }
+        }
+    }
+
+    public void setLaptopList(List<LaptopItem> newList) {
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffUtil.Callback() {
+            @Override
+            public int getOldListSize() {
+                return laptopList != null ? laptopList.size() : 0;
+            }
+
+            @Override
+            public int getNewListSize() {
+                return newList != null ? newList.size() : 0;
+            }
+
+            @Override
+            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                LaptopItem oldItem = laptopList.get(oldItemPosition);
+                LaptopItem newItem = newList.get(newItemPosition);
+                // Assuming model+brand uniquely identifies a laptop
+                return oldItem.getModel().equals(newItem.getModel()) && oldItem.getBrand().equals(newItem.getBrand());
+            }
+
+            @Override
+            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                LaptopItem oldItem = laptopList.get(oldItemPosition);
+                LaptopItem newItem = newList.get(newItemPosition);
+                return oldItem.equals(newItem);
+            }
+        });
+        this.laptopList = newList;
+        diffResult.dispatchUpdatesTo(this);
     }
 
     @Override
@@ -146,7 +188,9 @@ public class LaptopAdapter extends RecyclerView.Adapter<LaptopAdapter.LaptopView
             LaptopItem item = laptopList.get(position);
             holder.model.setText(item.getModel());
             holder.price.setText("$" + item.getPrice());
-            int quantity = cartQuantities.getOrDefault(item.getModel(), 0);
+            String key = item.getBrand() + "|" + item.getModel();
+            Integer quantityObj = cartQuantities.get(key);
+            int quantity = (quantityObj != null) ? quantityObj : 0;
             if (quantity > 0) {
                 holder.addToCartButton.setVisibility(View.GONE);
                 holder.layoutCartActions.setVisibility(View.VISIBLE);
@@ -192,13 +236,7 @@ public class LaptopAdapter extends RecyclerView.Adapter<LaptopAdapter.LaptopView
         return laptopList.size();
         }
 
-    public void setLaptopList(List<LaptopItem> newList)
-        {
-        this.laptopList = newList;
-        notifyDataSetChanged();
-        }
-
-    static class LaptopViewHolder extends RecyclerView.ViewHolder
+    public static class LaptopViewHolder extends RecyclerView.ViewHolder
         {
         TextView model, price;
         Button addToCartButton;

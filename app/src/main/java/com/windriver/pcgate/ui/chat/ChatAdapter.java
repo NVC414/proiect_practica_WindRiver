@@ -1,4 +1,4 @@
-package com.windriver.pcgate.ui.Chat;
+package com.windriver.pcgate.ui.chat;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,8 +39,11 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     public void clearMessages()
         {
+        int size = messages.size();
         messages.clear();
-        notifyDataSetChanged();
+        if (size > 0) {
+            notifyItemRangeRemoved(0, size);
+        }
         }
 
     @Override

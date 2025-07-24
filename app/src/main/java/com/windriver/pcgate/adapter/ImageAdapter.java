@@ -43,7 +43,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         return images.length;
         }
 
-    static class ImageViewHolder extends RecyclerView.ViewHolder
+    public static class ImageViewHolder extends RecyclerView.ViewHolder
         {
         ImageView imageView;
 

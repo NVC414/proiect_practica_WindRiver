@@ -80,7 +80,7 @@ dependencies {
     annotationProcessor(libs.compiler)
     implementation(libs.reactive.streams)
     implementation(libs.lombok)
-    annotationProcessor(libs.lombok.v11832)
+    annotationProcessor(libs.lombok)
 }
 
 tasks.withType<JavaCompile> {

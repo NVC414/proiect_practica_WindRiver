@@ -5,7 +5,6 @@
     android:layout_height="match_parent">
 
     <ScrollView
-        android:id="@+id/homeScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
@@ -264,7 +263,6 @@
 
             <!-- Spatiu -->
             <View
-                android:id="@+id/bottomSpacer"
                 android:layout_width="0dp"
                 android:layout_height="96dp"
                 android:background="@android:color/transparent"

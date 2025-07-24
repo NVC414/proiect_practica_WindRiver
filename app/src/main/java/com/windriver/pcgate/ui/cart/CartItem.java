@@ -1,11 +1,17 @@
-package com.windriver.pcgate.ui.Cart;
+package com.windriver.pcgate.ui.cart;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+@AllArgsConstructor
+@Data
 public class CartItem
     {
     private String name;
     private double price;
     private int quantity;
 
+/*
     public CartItem(String name, double price, int quantity)
         {
         this.name = name;
@@ -32,5 +38,6 @@ public class CartItem
         {
         this.quantity = quantity;
         }
+*/
     }
 

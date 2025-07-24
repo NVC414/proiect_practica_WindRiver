@@ -35,24 +35,24 @@
 
         </activity>
         <activity
-            android:name=".ui.DetailView.CaseDetailsActivity"
+            android:name=".ui.detailView.CaseDetailsActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.DetailView.CpuDetailsActivity"
+            android:name=".ui.detailView.CpuDetailsActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.DetailView.MemoryDetailsActivity"
+            android:name=".ui.detailView.MemoryDetailsActivity"
             android:exported="false" />
 
-        <activity android:name=".ui.DetailView.MotherboardDetailsActivity"
+        <activity android:name=".ui.detailView.MotherboardDetailsActivity"
             android:exported="false" />
-        <activity android:name=".ui.DetailView.GpuDetailsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.DetailView.PsuDetailsActivity"
+        <activity android:name=".ui.detailView.GpuDetailsActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.DetailView.LaptopDetailsActivity"
+            android:name=".ui.detailView.PsuDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.detailView.LaptopDetailsActivity"
             android:exported="false" />
     </application>
 

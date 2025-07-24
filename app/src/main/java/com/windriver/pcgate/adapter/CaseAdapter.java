@@ -23,7 +23,7 @@ import lombok.Setter;
 
 public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder>
     {
-    private List<CaseItem> caseList;
+    private final List<CaseItem> caseList;
     private OnAddToCartClickListener addToCartClickListener;
     private static final int TYPE_CASE = 0;
     private static final int TYPE_VIEW_MORE = 1;
@@ -81,8 +81,16 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
 
     public void setCartQuantities(java.util.Map<String, Integer> cartQuantities)
         {
+        for (int i = 0; i < caseList.size(); i++) {
+            CaseItem item = caseList.get(i);
+            String key = item.getName();
+            Integer oldQty = this.cartQuantities.get(key);
+            Integer newQty = cartQuantities.get(key);
+            if ((oldQty == null && newQty != null) || (oldQty != null && !oldQty.equals(newQty))) {
+                notifyItemChanged(i);
+            }
+        }
         this.cartQuantities = cartQuantities;
-        notifyDataSetChanged();
         }
 
     @Override
@@ -140,7 +148,8 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
             CaseItem item = caseList.get(position);
             holder.name.setText(item.getName());
             holder.price.setText("$" + item.getPrice());
-            int quantity = cartQuantities.getOrDefault(item.getName(), 0);
+            Integer quantityObj = cartQuantities.getOrDefault(item.getName(), 0);
+            int quantity = (quantityObj != null) ? quantityObj : 0;
 
             if (quantity > 0)
             {
@@ -216,8 +225,31 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
 
     public void setCaseList(List<CaseItem> newList)
         {
-        this.caseList = newList;
-        notifyDataSetChanged();
+        androidx.recyclerview.widget.DiffUtil.DiffResult diffResult = androidx.recyclerview.widget.DiffUtil.calculateDiff(new androidx.recyclerview.widget.DiffUtil.Callback() {
+            @Override
+            public int getOldListSize() {
+                return caseList.size();
+            }
+            @Override
+            public int getNewListSize() {
+                return newList.size();
+            }
+            @Override
+            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                CaseItem oldItem = caseList.get(oldItemPosition);
+                CaseItem newItem = newList.get(newItemPosition);
+                return oldItem.getName().equals(newItem.getName());
+            }
+            @Override
+            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                CaseItem oldItem = caseList.get(oldItemPosition);
+                CaseItem newItem = newList.get(newItemPosition);
+                return oldItem.equals(newItem);
+            }
+        });
+        caseList.clear();
+        caseList.addAll(newList);
+        diffResult.dispatchUpdatesTo(this);
         }
 
 
@@ -233,7 +265,7 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
         this.removeFromCartClickListener = listener;
         }
 
-    static class CaseViewHolder extends RecyclerView.ViewHolder
+    public static class CaseViewHolder extends RecyclerView.ViewHolder
         {
         TextView name, price;
         Button addToCartButton;

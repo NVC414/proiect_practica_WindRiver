@@ -22,7 +22,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class MotherboardAdapter extends RecyclerView.Adapter<MotherboardAdapter.MotherboardViewHolder> {
-    private List<MotherboardItem> motherboardList;
+    private final List<MotherboardItem> motherboardList;
     private OnAddToCartClickListener addToCartClickListener;
     private static final int TYPE_MOTHERBOARD = 0;
     private static final int TYPE_VIEW_MORE = 1;
@@ -68,17 +68,53 @@ public class MotherboardAdapter extends RecyclerView.Adapter<MotherboardAdapter.
         this.itemClickListener = listener;
     }
 
-    public void setCartQuantities(java.util.Map<String, Integer> cartQuantities) {
-        this.cartQuantities = cartQuantities;
-        notifyDataSetChanged();
-    }
-
     public interface OnRemoveFromCartClickListener {
         void onRemoveFromCart(MotherboardItem item);
     }
 
     public void setOnRemoveFromCartClickListener(OnRemoveFromCartClickListener listener) {
         this.removeFromCartClickListener = listener;
+    }
+
+    public void setCartQuantities(java.util.Map<String, Integer> cartQuantities) {
+        for (int i = 0; i < motherboardList.size(); i++) {
+            MotherboardItem item = motherboardList.get(i);
+            String key = item.getName();
+            Integer oldQty = this.cartQuantities.get(key);
+            Integer newQty = cartQuantities.get(key);
+            if ((oldQty == null && newQty != null) || (oldQty != null && !oldQty.equals(newQty))) {
+                notifyItemChanged(i);
+            }
+        }
+        this.cartQuantities = cartQuantities;
+    }
+
+    public void setMotherboardList(List<MotherboardItem> newList) {
+        androidx.recyclerview.widget.DiffUtil.DiffResult diffResult = androidx.recyclerview.widget.DiffUtil.calculateDiff(new androidx.recyclerview.widget.DiffUtil.Callback() {
+            @Override
+            public int getOldListSize() {
+                return motherboardList.size();
+            }
+            @Override
+            public int getNewListSize() {
+                return newList.size();
+            }
+            @Override
+            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                MotherboardItem oldItem = motherboardList.get(oldItemPosition);
+                MotherboardItem newItem = newList.get(newItemPosition);
+                return oldItem.getName().equals(newItem.getName());
+            }
+            @Override
+            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                MotherboardItem oldItem = motherboardList.get(oldItemPosition);
+                MotherboardItem newItem = newList.get(newItemPosition);
+                return oldItem.equals(newItem);
+            }
+        });
+        motherboardList.clear();
+        motherboardList.addAll(newList);
+        diffResult.dispatchUpdatesTo(this);
     }
 
     @Override
@@ -123,8 +159,8 @@ public class MotherboardAdapter extends RecyclerView.Adapter<MotherboardAdapter.
             MotherboardItem item = motherboardList.get(position);
             holder.name.setText(item.getName());
             holder.price.setText("$" + item.getPrice());
-            int quantity = cartQuantities.getOrDefault(item.getName(), 0);
-
+            Integer quantityObj = cartQuantities.get(item.getName());
+            int quantity = (quantityObj != null) ? quantityObj : 0;
             if (quantity > 0) {
                 holder.addToCartButton.setVisibility(View.GONE);
                 holder.layoutCartActions.setVisibility(View.VISIBLE);
@@ -176,12 +212,7 @@ public class MotherboardAdapter extends RecyclerView.Adapter<MotherboardAdapter.
         return motherboardList.size();
     }
 
-    public void setMotherboardList(List<MotherboardItem> newList) {
-        this.motherboardList = newList;
-        notifyDataSetChanged();
-    }
-
-    static class MotherboardViewHolder extends RecyclerView.ViewHolder {
+    public static class MotherboardViewHolder extends RecyclerView.ViewHolder {
         TextView name, price;
         Button addToCartButton;
         ImageButton buttonRemoveFromCart;

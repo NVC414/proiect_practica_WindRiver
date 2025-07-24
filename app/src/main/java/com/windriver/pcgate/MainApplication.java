@@ -3,8 +3,10 @@ package com.windriver.pcgate;
 import android.app.Activity;
 import android.app.Application;
 
-import com.windriver.pcgate.ui.Chat.ChatHistoryManager;
-import com.windriver.pcgate.ui.Chat.ChatMessage;
+import androidx.annotation.NonNull;
+
+import com.windriver.pcgate.ui.chat.ChatHistoryManager;
+import com.windriver.pcgate.ui.chat.ChatMessage;
 
 import java.util.List;
 
@@ -17,18 +19,18 @@ public class MainApplication extends Application {
         super.onCreate();
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override
-            public void onActivityCreated(Activity activity, android.os.Bundle savedInstanceState) {}
+            public void onActivityCreated(@NonNull Activity activity, android.os.Bundle savedInstanceState) {}
             @Override
-            public void onActivityStarted(Activity activity) {
+            public void onActivityStarted(@NonNull Activity activity) {
                 activityReferences++;
                 isActivityChangingConfigurations = activity.isChangingConfigurations();
             }
             @Override
-            public void onActivityResumed(Activity activity) {}
+            public void onActivityResumed(@NonNull Activity activity) {}
             @Override
-            public void onActivityPaused(Activity activity) {}
+            public void onActivityPaused(@NonNull Activity activity) {}
             @Override
-            public void onActivityStopped(Activity activity) {
+            public void onActivityStopped(@NonNull Activity activity) {
                 activityReferences--;
                 isActivityChangingConfigurations = activity.isChangingConfigurations();
                 if (activityReferences == 0 && !isActivityChangingConfigurations) {
@@ -36,9 +38,9 @@ public class MainApplication extends Application {
                 }
             }
             @Override
-            public void onActivitySaveInstanceState(Activity activity, android.os.Bundle outState) {}
+            public void onActivitySaveInstanceState(@NonNull Activity activity, @NonNull android.os.Bundle outState) {}
             @Override
-            public void onActivityDestroyed(Activity activity) {}
+            public void onActivityDestroyed(@NonNull Activity activity) {}
         });
     }
     private void saveChatToHistory(Activity activity) {

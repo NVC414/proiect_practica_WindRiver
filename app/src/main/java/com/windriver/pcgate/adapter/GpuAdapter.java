@@ -69,8 +69,16 @@ public class GpuAdapter extends RecyclerView.Adapter<GpuAdapter.GpuViewHolder> {
     }
 
     public void setCartQuantities(java.util.Map<String, Integer> cartQuantities) {
+        java.util.Map<String, Integer> oldCartQuantities = new java.util.HashMap<>(this.cartQuantities);
         this.cartQuantities = cartQuantities;
-        notifyDataSetChanged();
+        for (int i = 0; i < gpuList.size(); i++) {
+            String name = gpuList.get(i).getName();
+            Integer oldQty = oldCartQuantities.get(name);
+            Integer newQty = cartQuantities.get(name);
+            if ((oldQty == null ? 0 : oldQty) != (newQty == null ? 0 : newQty)) {
+                notifyItemChanged(i);
+            }
+        }
     }
 
     public interface OnRemoveFromCartClickListener {
@@ -126,8 +134,8 @@ public class GpuAdapter extends RecyclerView.Adapter<GpuAdapter.GpuViewHolder> {
             GpuItem item = gpuList.get(position);
             holder.name.setText(item.getName());
             holder.price.setText("$"+item.getPrice());
-            int quantity = cartQuantities.getOrDefault(item.getName(), 0);
-
+            Integer quantityObj = cartQuantities.get(item.getName());
+            int quantity = (quantityObj != null) ? quantityObj : 0;
             if (quantity > 0) {
                 holder.addToCartButton.setVisibility(View.GONE);
                 holder.layoutCartActions.setVisibility(View.VISIBLE);
@@ -174,11 +182,24 @@ public class GpuAdapter extends RecyclerView.Adapter<GpuAdapter.GpuViewHolder> {
     }
 
     public void setGpuList(List<GpuItem> newList) {
+        int oldSize = this.gpuList.size();
         this.gpuList = newList;
-        notifyDataSetChanged();
+        int newSize = newList.size();
+        if (oldSize == 0) {
+            notifyItemRangeInserted(0, newSize);
+        } else if (newSize == 0) {
+            notifyItemRangeRemoved(0, oldSize);
+        } else {
+            notifyItemRangeChanged(0, Math.min(oldSize, newSize));
+            if (newSize > oldSize) {
+                notifyItemRangeInserted(oldSize, newSize - oldSize);
+            } else if (oldSize > newSize) {
+                notifyItemRangeRemoved(newSize, oldSize - newSize);
+            }
+        }
     }
 
-    static class GpuViewHolder extends RecyclerView.ViewHolder {
+    public static class GpuViewHolder extends RecyclerView.ViewHolder {
         TextView name, price;
         Button addToCartButton;
         ImageView gpuImage;

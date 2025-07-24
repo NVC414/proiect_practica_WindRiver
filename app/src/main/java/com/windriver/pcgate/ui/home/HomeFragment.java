@@ -1,4 +1,4 @@
-package com.windriver.pcgate.ui.Home;
+package com.windriver.pcgate.ui.home;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -27,12 +27,13 @@ import com.windriver.pcgate.R;
 import com.windriver.pcgate.adapter.CaseAdapter;
 import com.windriver.pcgate.adapter.ImageAdapter;
 import com.windriver.pcgate.model.CaseItem;
-import com.windriver.pcgate.ui.Cart.CartItem;
-import com.windriver.pcgate.ui.Cart.CartViewModel;
-import com.windriver.pcgate.ui.DetailView.CaseDetailsActivity;
-import com.windriver.pcgate.ui.DetailView.CpuDetailsActivity;
-import com.windriver.pcgate.ui.ViewAll.AllCasesDialog;
-import com.windriver.pcgate.ui.ViewAll.AllCpusDialog;
+import com.windriver.pcgate.model.MemoryItem;
+import com.windriver.pcgate.ui.cart.CartItem;
+import com.windriver.pcgate.ui.cart.CartViewModel;
+import com.windriver.pcgate.ui.detailView.CaseDetailsActivity;
+import com.windriver.pcgate.ui.detailView.CpuDetailsActivity;
+import com.windriver.pcgate.ui.viewAll.AllCasesDialog;
+import com.windriver.pcgate.ui.viewAll.AllCpusDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -582,7 +583,7 @@ public class HomeFragment extends Fragment
                         android.widget.Toast.LENGTH_SHORT).show();
                 return;
             }
-            com.windriver.pcgate.ui.ViewAll.AllLaptopsDialog dialog = new com.windriver.pcgate.ui.ViewAll.AllLaptopsDialog(
+            com.windriver.pcgate.ui.viewAll.AllLaptopsDialog dialog = new com.windriver.pcgate.ui.viewAll.AllLaptopsDialog(
                     laptopAdapter.getAllLaptops(), addToCartClickListenerLaptop);
             dialog.show(getParentFragmentManager(), "AllLaptopsDialog");
         });
@@ -594,7 +595,7 @@ public class HomeFragment extends Fragment
                 return;
             }
             Intent intent = new Intent(getContext(),
-                    com.windriver.pcgate.ui.DetailView.LaptopDetailsActivity.class);
+                    com.windriver.pcgate.ui.detailView.LaptopDetailsActivity.class);
             intent.putExtra("brand", item.getBrand());
             intent.putExtra("model", item.getModel());
             intent.putExtra("price", item.getPrice());
@@ -732,7 +733,7 @@ public class HomeFragment extends Fragment
 
         memoryAdapter.setOnViewMoreClickListener(() ->
             {
-                com.windriver.pcgate.ui.ViewAll.AllMemoryDialog dialog = new com.windriver.pcgate.ui.ViewAll.AllMemoryDialog(
+                com.windriver.pcgate.ui.viewAll.AllMemoryDialog dialog = new com.windriver.pcgate.ui.viewAll.AllMemoryDialog(
                         memoryAdapter.getAllMemory(), addToCartClickListenerMemory);
                 dialog.show(getParentFragmentManager(), "AllMemoryDialog");
             });
@@ -743,15 +744,7 @@ public class HomeFragment extends Fragment
                 {
                     return;
                 }
-                Intent intent = new Intent(getContext(),
-                        com.windriver.pcgate.ui.DetailView.MemoryDetailsActivity.class);
-                intent.putExtra("name", item.getName());
-                intent.putExtra("price", item.getPrice());
-                intent.putExtra("imageUrl", item.getImageUrl());
-                intent.putExtra("ddr_type", item.getDdrType());
-                intent.putExtra("color", item.getColor());
-                intent.putExtra("cas_latency", item.getCasLatency());
-                intent.putExtra("first_word_latency", item.getFirstWordLatency());
+                Intent intent = getIntent(item);
                 intent.putIntegerArrayListExtra("modules", new java.util.ArrayList<>(item.getModules()));
                 intent.putIntegerArrayListExtra("speed", new java.util.ArrayList<>(item.getSpeed()));
                 startActivity(intent);
@@ -876,7 +869,7 @@ public class HomeFragment extends Fragment
 
 
         motherboardAdapter.setOnViewMoreClickListener(() -> {
-            com.windriver.pcgate.ui.ViewAll.AllMotherboardsDialog dialog = new com.windriver.pcgate.ui.ViewAll.AllMotherboardsDialog(
+            com.windriver.pcgate.ui.viewAll.AllMotherboardsDialog dialog = new com.windriver.pcgate.ui.viewAll.AllMotherboardsDialog(
                 motherboardAdapter.getAllMotherboards(), addToCartClickListenerMotherboard);
             dialog.show(getParentFragmentManager(), "AllMotherboardsDialog");
         });
@@ -885,7 +878,7 @@ public class HomeFragment extends Fragment
             if ("__VIEW_MORE__".equals(item.getName())) {
                 return;
             }
-            Intent intent = new Intent(getContext(), com.windriver.pcgate.ui.DetailView.MotherboardDetailsActivity.class);
+            Intent intent = new Intent(getContext(), com.windriver.pcgate.ui.detailView.MotherboardDetailsActivity.class);
             intent.putExtra("name", item.getName());
             intent.putExtra("price", item.getPrice());
             intent.putExtra("imageUrl", item.getImageUrl());
@@ -1064,7 +1057,7 @@ public class HomeFragment extends Fragment
 
 
         gpuAdapter.setOnViewMoreClickListener(() -> {
-            com.windriver.pcgate.ui.ViewAll.AllGpuDialog dialog = new com.windriver.pcgate.ui.ViewAll.AllGpuDialog(
+            com.windriver.pcgate.ui.viewAll.AllGpuDialog dialog = new com.windriver.pcgate.ui.viewAll.AllGpuDialog(
                 gpuAdapter.getAllGpus(), addToCartClickListenerGpu);
             dialog.show(getParentFragmentManager(), "AllGpuDialog");
         });
@@ -1073,7 +1066,7 @@ public class HomeFragment extends Fragment
             if ("__VIEW_MORE__".equals(item.getName())) {
                 return;
             }
-            Intent intent = new Intent(getContext(), com.windriver.pcgate.ui.DetailView.GpuDetailsActivity.class);
+            Intent intent = new Intent(getContext(), com.windriver.pcgate.ui.detailView.GpuDetailsActivity.class);
             intent.putExtra("name", item.getName());
             intent.putExtra("price", item.getPrice());
             intent.putExtra("imageUrl", item.getImageUrl());
@@ -1215,7 +1208,7 @@ public class HomeFragment extends Fragment
         });
 
         psuAdapter.setOnViewMoreClickListener(() -> {
-            com.windriver.pcgate.ui.ViewAll.AllPsuDialog dialog = new com.windriver.pcgate.ui.ViewAll.AllPsuDialog(psuAdapter.getAllPsus(), addToCartClickListenerPsu);
+            com.windriver.pcgate.ui.viewAll.AllPsuDialog dialog = new com.windriver.pcgate.ui.viewAll.AllPsuDialog(psuAdapter.getAllPsus(), addToCartClickListenerPsu);
             dialog.show(getParentFragmentManager(), "AllPsuDialog");
         });
 
@@ -1223,7 +1216,7 @@ public class HomeFragment extends Fragment
             if ("__VIEW_MORE__".equals(item.getName())) {
                 return;
             }
-            Intent intent = new Intent(getContext(), com.windriver.pcgate.ui.DetailView.PsuDetailsActivity.class);
+            Intent intent = new Intent(getContext(), com.windriver.pcgate.ui.detailView.PsuDetailsActivity.class);
             intent.putExtra("name", item.getName());
             intent.putExtra("price", item.getPrice());
             intent.putExtra("imageUrl", item.getImageUrl());
@@ -1239,5 +1232,19 @@ public class HomeFragment extends Fragment
             R.id.fabChat);
     fabChat.setOnClickListener(v ->
             Navigation.findNavController(view).navigate(R.id.chatFragment));
+        }
+
+        @NonNull
+        private Intent getIntent(MemoryItem item) {
+            Intent intent = new Intent(getContext(),
+                    com.windriver.pcgate.ui.detailView.MemoryDetailsActivity.class);
+            intent.putExtra("name", item.getName());
+            intent.putExtra("price", item.getPrice());
+            intent.putExtra("imageUrl", item.getImageUrl());
+            intent.putExtra("ddr_type", item.getDdrType());
+            intent.putExtra("color", item.getColor());
+            intent.putExtra("cas_latency", item.getCasLatency());
+            intent.putExtra("first_word_latency", item.getFirstWordLatency());
+            return intent;
         }
     }

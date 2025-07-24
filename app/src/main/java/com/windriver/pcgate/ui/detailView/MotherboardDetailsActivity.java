@@ -1,8 +1,9 @@
-package com.windriver.pcgate.ui.DetailView;
+package com.windriver.pcgate.ui.detailView;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -12,55 +13,56 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.windriver.pcgate.R;
-import com.windriver.pcgate.ui.Cart.CartItem;
-import com.windriver.pcgate.ui.Cart.CartViewModel;
 import com.bumptech.glide.Glide;
+import com.windriver.pcgate.R;
+import com.windriver.pcgate.ui.cart.CartItem;
+import com.windriver.pcgate.ui.cart.CartViewModel;
 
-public class GpuDetailsActivity extends AppCompatActivity {
+public class MotherboardDetailsActivity extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_gpu_details);
+        setContentView(R.layout.activity_motherboard_details);
 
         Intent intent = getIntent();
         String name = intent.getStringExtra("name");
         String price = intent.getStringExtra("price");
         String imageUrl = intent.getStringExtra("imageUrl");
         String color = intent.getStringExtra("color");
-        String chipset = intent.getStringExtra("chipset");
-        String coreClock = intent.getStringExtra("core_clock");
-        String boostClock = intent.getStringExtra("boost_clock");
-        int memory = intent.getIntExtra("memory", 0);
-        int length = intent.getIntExtra("length", 0);
+        String ddrType = intent.getStringExtra("ddr_type");
+        String formFactor = intent.getStringExtra("form_factor");
+        String socket = intent.getStringExtra("socket");
+        int maxMemory = intent.getIntExtra("max_memory", 0);
+        int memorySlots = intent.getIntExtra("memory_slots", 0);
 
-        ImageView gpuImage = findViewById(R.id.gpuImage);
-        TextView gpuName = findViewById(R.id.gpuName);
-        TextView gpuPrice = findViewById(R.id.gpuPrice);
-        TextView gpuChipset = findViewById(R.id.gpuChipset);
-        TextView gpuColor = findViewById(R.id.gpuColor);
-        TextView gpuCoreClock = findViewById(R.id.gpuCoreClock);
-        TextView gpuBoostClock = findViewById(R.id.gpuBoostClock);
-        TextView gpuMemory = findViewById(R.id.gpuMemory);
-        TextView gpuLength = findViewById(R.id.gpuLength);
-        Button addToCartButton = findViewById(R.id.buttonAddToCartGpu);
+        ImageView motherboardImage = findViewById(R.id.motherboardImage);
+        TextView motherboardName = findViewById(R.id.motherboardName);
+        TextView motherboardPrice = findViewById(R.id.motherboardPrice);
+        TextView motherboardColor = findViewById(R.id.motherboardColor);
+        TextView motherboardDDRType = findViewById(R.id.motherboardDDRType);
+        TextView motherboardFormFactor = findViewById(R.id.motherboardFormFactor);
+        TextView motherboardSocket = findViewById(R.id.motherboardSocket);
+        TextView motherboardMaxMemory = findViewById(R.id.motherboardMaxMemory);
+        TextView motherboardMemorySlots = findViewById(R.id.motherboardMemorySlots);
+        Button addToCartButton = findViewById(R.id.buttonAddToCartMotherboard);
         ImageButton backButton = findViewById(R.id.buttonBack);
-        android.view.View layoutCartActions = findViewById(R.id.layoutCartActionsGpu);
-        ImageButton buttonRemoveFromCart = findViewById(R.id.buttonRemoveFromCartGpu);
-        ImageButton buttonAddMoreToCart = findViewById(R.id.buttonAddMoreToCartGpu);
-        TextView textQuantity = findViewById(R.id.textQuantityGpu);
+        View layoutCartActions = findViewById(R.id.layoutCartActionsMotherboard);
+        ImageButton buttonRemoveFromCart = findViewById(R.id.buttonRemoveFromCartMotherboard);
+        ImageButton buttonAddMoreToCart = findViewById(R.id.buttonAddMoreToCartMotherboard);
+        TextView textQuantity = findViewById(R.id.textQuantityMotherboard);
 
-        Glide.with(this).load(imageUrl).placeholder(R.drawable.ic_gpu_placeholder).centerInside().into(gpuImage);
+        Glide.with(this).load(imageUrl).placeholder(
+                R.drawable.ic_motherboard_placeholder).centerCrop().into(motherboardImage);
 
-        gpuName.setText(name);
-        gpuPrice.setText(price);
-        gpuChipset.setText("Chipset: " + chipset);
-        gpuColor.setText("Color: " + color);
-        gpuCoreClock.setText("Core Clock: " + coreClock + " MHz");
-        gpuBoostClock.setText("Boost Clock: " + boostClock + " MHz");
-        gpuMemory.setText("Memory: " + memory + " GB");
-        gpuLength.setText("Length: " + length + " mm");
+        motherboardName.setText(name);
+        motherboardPrice.setText("$" + price);
+        motherboardColor.setText("Color: " + color);
+        motherboardDDRType.setText("DDR Type: " + ddrType);
+        motherboardFormFactor.setText("Form Factor: " + formFactor);
+        motherboardSocket.setText("Socket: " + socket);
+        motherboardMaxMemory.setText("Max Memory: " + maxMemory + " GB");
+        motherboardMemorySlots.setText("Memory Slots: " + memorySlots);
 
         CartViewModel cartViewModel = CartViewModel.getInstance();
 
@@ -82,12 +84,12 @@ public class GpuDetailsActivity extends AppCompatActivity {
             }
             boolean nowInCart = quantity > 0;
             if (nowInCart) {
-                addToCartButton.setVisibility(android.view.View.GONE);
-                layoutCartActions.setVisibility(android.view.View.VISIBLE);
+                addToCartButton.setVisibility(View.GONE);
+                layoutCartActions.setVisibility(View.VISIBLE);
                 textQuantity.setText(String.valueOf(quantity));
             } else {
-                addToCartButton.setVisibility(android.view.View.VISIBLE);
-                layoutCartActions.setVisibility(android.view.View.GONE);
+                addToCartButton.setVisibility(View.VISIBLE);
+                layoutCartActions.setVisibility(View.GONE);
             }
         };
 
