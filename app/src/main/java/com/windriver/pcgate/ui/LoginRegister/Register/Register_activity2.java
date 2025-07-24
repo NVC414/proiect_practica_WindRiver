@@ -1,8 +1,8 @@
 package com.windriver.pcgate.ui.LoginRegister.Register;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -11,11 +11,9 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.windriver.pcgate.R;
-import com.windriver.pcgate.ui.LoginRegister.Login_activity;
 
 import java.util.Calendar;
 
@@ -33,17 +31,7 @@ public class Register_activity2 extends AppCompatActivity {
         radioGroup = findViewById(R.id.RadioGroup);
         datePicker = findViewById(R.id.AgePicker);
 
-        textViews = findViewById(R.id.loginNow);
-        textViews.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                Intent intent = new Intent(getApplicationContext(), Login_activity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
+        textViews = findViewById(R.id.Occupation);
         button = findViewById(R.id.next_button);
         button.setOnClickListener(new View.OnClickListener()
         {
@@ -65,6 +53,7 @@ public class Register_activity2 extends AppCompatActivity {
                 intent.putExtra("email", getIntent().getStringExtra("email"));
                 intent.putExtra("password", getIntent().getStringExtra("password"));
                 intent.putExtra("phone", getIntent().getStringExtra("phone"));
+                intent.putExtra("occupation", textViews.getText().toString());
                 startActivity(intent);
                 finish();
             }

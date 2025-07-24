@@ -1,18 +1,27 @@
 package com.windriver.pcgate.Databases;
 
 public class UserHelperClass {
-    String fullName, phoneNumber,username,email,date,gender;
+    String fullName, phoneNumber,username,email,date,gender,Occupation;
 
-    public UserHelperClass(String fullName, String phoneNumber, String username, String email, String date, String gender) {
+    public UserHelperClass(String fullName, String phoneNumber, String username, String email, String date, String gender, String Occupation) {
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
         this.username = username;
         this.email = email;
         this.date = date;
         this.gender = gender;
+        this.Occupation = Occupation;
     }
 
     public UserHelperClass(){}
+
+    public String getOccupation() {
+        return Occupation;
+    }
+
+    public void setOccupation(String Occupation) {
+        this.Occupation = Occupation;
+    }
 
     public String getFullName() {
         return fullName;

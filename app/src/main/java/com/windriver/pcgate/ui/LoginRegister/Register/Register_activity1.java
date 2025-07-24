@@ -33,6 +33,7 @@ public class Register_activity1 extends AppCompatActivity {
     ProgressBar progressBar;
     TextView textView;
     ImageView ButtonBack;
+    String UserUID;
 
     @Override
     public void onStart() {
@@ -87,7 +88,7 @@ public class Register_activity1 extends AppCompatActivity {
                 if(!validatePhoneNumber() | !validateFullName() | !validateUsername() | !validateEmail() | !validatePassword())
                     return;
                 else {
-                    Intent intent = new Intent(getApplicationContext(), VerifyOTP.class);
+                    Intent intent = new Intent(getApplicationContext(), Register_activity2.class);
                     intent.putExtra("email", editTextEmail.getText().toString());
                     intent.putExtra("password", editTextPassword.getText().toString());
                     intent.putExtra("name", textInputLayoutName.getEditText().getText().toString());
@@ -124,9 +125,8 @@ public class Register_activity1 extends AppCompatActivity {
                                     sendEmailVerifiation();
                                     Toast.makeText(Register_activity1.this, "Account created.",
                                             Toast.LENGTH_SHORT).show();
-                                    FirebaseUser user = mAuth.getCurrentUser();
                                     Intent intent = new Intent(getApplicationContext(),
-                                            VerifyOTP.class);
+                                            Register_activity2.class);
                                     startActivity(intent);
                                     finish();
                                 } else {
@@ -138,7 +138,9 @@ public class Register_activity1 extends AppCompatActivity {
                         });
 
 
+
             }
+
 
         });
 
@@ -153,7 +155,7 @@ public class Register_activity1 extends AppCompatActivity {
                     if (task.isSuccessful()){
                         Toast.makeText(Register_activity1.this, "Verification email sent to "+user.getEmail(),
                                 Toast.LENGTH_SHORT).show();
-                        FirebaseAuth.getInstance().signOut();
+                        mAuth.signOut();
                     }
                 }
             });

@@ -47,7 +47,7 @@
         app:startIconTint="@color/white">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/full_name"
+            android:id="@+id/Occupation"
             style="@style/TextColor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
