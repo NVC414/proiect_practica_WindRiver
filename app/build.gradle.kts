@@ -49,7 +49,7 @@ dependencies {
     // Retrofit for networking
     implementation(libs.retrofit) // Use the latest version
     implementation(libs.converter.gson) // Or another converter like Moshi
-
+    implementation(libs.pinview)
     // OkHttp (usually included by Retrofit, but good to be aware of)
     implementation(libs.okhttp) // Use the latest version
     implementation(libs.logging.interceptor) // For logging requests/responses (optional, for debugging)

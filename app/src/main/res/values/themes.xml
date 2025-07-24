@@ -18,4 +18,28 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+
+    <style name="ScreenBackground"><item name="android:background">@color/white</item></style>
+    <style name="CardBackground"><item name="android:background">@color/white</item></style>
+    <style name="TextColor"><item name="android:textColor">@color/white</item></style>
+    <style name="MyDatePickerSpinnerStyle" parent="android:Widget.Material.Light.DatePicker">
+        <!-- For API 21+ -->
+        <item name="android:textColorPrimary">@color/white</item> <!-- Color of the selected number -->
+        <item name="android:textColorSecondary">@color/light_gray</item> <!-- Color of non-selected numbers, adjust as needed -->
+        <item name="android:colorControlNormal">@color/white</item> <!-- Color of the dividers -->
+        <!-- You might need to experiment with other attributes for full control -->
+        <!-- <item name="android:numbersTextColor">@color/white</item> --> <!-- Older attribute, might work on some devices -->
+        <!-- <item name="android:numbersInnerTextColor">@color/white</item> --> <!-- Older attribute -->
+    </style>
+
+    <!-- Optional: If you want a theme that specifically uses this style -->
+    <style name="MyDatePickerDialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:datePickerStyle">@style/MyDatePickerSpinnerStyle</item>
+        <item name="colorAccent">@color/your_accent_color</item> <!-- For buttons like OK/Cancel -->
+    </style>
+
+    <!-- Define your colors if not already defined -->
+    <color name="light_gray">#D3D3D3</color> <!-- Example, choose your desired secondary color -->
+    <color name="your_accent_color">#007AFF</color>
 </resources>

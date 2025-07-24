@@ -1,7 +1,9 @@
 package com.windriver.pcgate.ui.Profile;
 
 import android.animation.ObjectAnimator;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -11,8 +13,11 @@ import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
+import com.windriver.pcgate.R;
 import com.windriver.pcgate.databinding.FragmentProfileBinding;
 import com.windriver.pcgate.ui.LoginRegister.Login_activity;
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,10 +29,14 @@ public class ProfileFragment extends Fragment
     private FirebaseAuth mAuth;
     private FragmentProfileBinding binding;
 
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
         {
+
+
+
         binding = FragmentProfileBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
@@ -63,9 +72,9 @@ public class ProfileFragment extends Fragment
         // Display User Email using ViewBinding
         if (currentUser != null)
         {
-            if (binding.userDetails != null)
+            if (binding.welcomeBannerTextView != null)
             { // Replace 'userEmailText' with your actual ID in the binding
-                binding.userDetails.setText(currentUser.getEmail());
+                binding.welcomeBannerTextView.setText(currentUser.getEmail());
             }
         }
         else

@@ -9,17 +9,23 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MyApplication"
-        >
+        android:theme="@style/Theme.MyApplication">
         <activity
-            android:name=".ui.LoginRegister.Register_activity"
-            android:theme="@style/Theme.Material3.Light.NoActionBar"
-            android:exported="false" />
+            android:name=".ui.LoginRegister.Register.VerifyOTP"
+            android:exported="false"
+            android:theme="@style/Theme.Material3.Light.NoActionBar"/>
+        <activity
+            android:name=".ui.LoginRegister.Register.Register_activity1"
+            android:exported="false"
+            android:theme="@style/Theme.Material3.Light.NoActionBar" />
+        <activity
+            android:name=".ui.LoginRegister.Register.Register_activity2"
+            android:exported="false"
+            android:theme="@style/Theme.Material3.Light.NoActionBar" />
         <activity
             android:name=".ui.LoginRegister.Login_activity"
-            android:theme="@style/Theme.Material3.Light.NoActionBar"
-
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.Material3.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,8 +34,7 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:exported="true"
-            >
+            android:exported="true">
 
         </activity>
         <activity
@@ -41,10 +46,11 @@
         <activity
             android:name=".ui.DetailView.MemoryDetailsActivity"
             android:exported="false" />
-
-        <activity android:name=".ui.DetailView.MotherboardDetailsActivity"
+        <activity
+            android:name=".ui.DetailView.MotherboardDetailsActivity"
             android:exported="false" />
-        <activity android:name=".ui.DetailView.GpuDetailsActivity"
+        <activity
+            android:name=".ui.DetailView.GpuDetailsActivity"
             android:exported="false" />
         <activity
             android:name=".ui.DetailView.PsuDetailsActivity"
@@ -52,6 +58,10 @@
         <activity
             android:name=".ui.DetailView.LaptopDetailsActivity"
             android:exported="false" />
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

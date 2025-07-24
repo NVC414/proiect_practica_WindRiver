@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">PC Store</string>
     <string name="title_home">Home</string>
     <string name="title_profile">Profile</string>
@@ -17,9 +17,9 @@
     <string name="login">Login</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
-    <string name="register">Register</string>
-    <string name="click_to_login">Click to login</string>
-    <string name="click_to_register">Click to register</string>
+    <string name="register">Create an Account</string>
+    <string name="click_to_login">Already have an account? Login!</string>
+    <string name="click_to_register">Don\'t have an account? Register!</string>
     <string name="logout">Logout</string>
     <string name="total_0_00_ron">Total: $0.00</string>
     <string name="checkout">Checkout</string>
@@ -58,4 +58,19 @@
     <string name="remove">Remove</string>
     <string name="add">Add</string>
     <string name="chat_with_gemini_ai">Chat with Gemini AI</string>
+    <string name="enter_full_name">Full Name</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="username_text">Username</string>
+    <string name="next">Next</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="other">Other</string>
+    <string name="select_your_age">Select Your Date of Birth</string>
+    <string name="otp_code_text">Email\nVerification</string>
+    <string name="otp_verification_text">Verification</string>
+    <string name="otp_description_text">Code</string>
+    <string name="verify_code">Verify Code</string>
+    <string name="One_time_request">Please check your email to confirm your address.\nDon\'t forget to check your spam folder as well, as the confirmation might be there.\n\nAfter confirming your email, please press next to proceed with the rest of the registration!</string>
+    <string name="tell_us_more_about_yourself">Tell us more about yourself!</string>
+    <string name="what_s_your_occupation">What\'s Your Occupation?</string>
 </resources>
