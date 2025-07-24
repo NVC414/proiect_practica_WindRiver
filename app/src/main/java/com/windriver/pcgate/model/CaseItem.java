@@ -1,32 +1,20 @@
 package com.windriver.pcgate.model;
 
-public class CaseItem
-    {
-    public String name;
-    public String price;
-    public String imageUrl;
-    public String color;
-    public String type;
-    public String side_panel;
-    public String psu;
-    public int internal_35_bays;
-    public double external_volume;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-    public CaseItem()
-        {
-        }
-
-    public CaseItem(String name, String price, String imageUrl, String color, String type,
-                    String side_panel, String psu, int internal_35_bays, double external_volume)
-        {
-        this.name = name;
-        this.price = "$"+price;
-        this.imageUrl = imageUrl;
-        this.color = color;
-        this.type = type;
-        this.side_panel = side_panel;
-        this.psu = psu;
-        this.internal_35_bays = internal_35_bays;
-        this.external_volume = external_volume;
-        }
-    }
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class CaseItem {
+    private String name;
+    private String price;
+    private String imageUrl;
+    private String color;
+    private String type;
+    private String sidePanel;
+    private String psu;
+    private int internal35Bays;
+    private double externalVolume;
+}

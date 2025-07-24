@@ -1,6 +1,6 @@
 package com.windriver.pcgate.repository;
 
-import com.windriver.pcgate.ui.Cart.CartItem;
+import com.windriver.pcgate.ui.cart.CartItem;
 
 import java.util.ArrayList;
 import java.util.List;

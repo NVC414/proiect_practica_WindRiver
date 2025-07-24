@@ -5,13 +5,15 @@ plugins {
 
 android {
     namespace = "com.windriver.pcgate"
-    compileSdk = 35
+    compileSdk = 36
 
     packaging {
         resources {
             excludes += "/META-INF/DEPENDENCIES"
             excludes += "/META-INF/INDEX.LIST"
             excludes += "mozilla/public-suffix-list.txt"
+            excludes += "dump_syms/linux/dump_syms.bin"
+            excludes += "/META-INF/gradle/incremental.annotation.processors"
         }
     }
     defaultConfig {
@@ -23,6 +25,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
     }
 
     buildTypes {
@@ -46,16 +49,12 @@ android {
 }
 
 dependencies {
-    // Retrofit for networking
-    implementation(libs.retrofit) // Use the latest version
-    implementation(libs.converter.gson) // Or another converter like Moshi
-
-    // OkHttp (usually included by Retrofit, but good to be aware of)
-    implementation(libs.okhttp) // Use the latest version
-    implementation(libs.logging.interceptor) // For logging requests/responses (optional, for debugging)
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.okhttp)
+    implementation(libs.logging.interceptor)
     implementation(libs.google.genai)
-    // Kotlin Coroutines for asynchronous operations
-    implementation(libs.kotlinx.coroutines.android) // Use the latest version
+    implementation(libs.kotlinx.coroutines.android)
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.constraintlayout)
@@ -80,4 +79,10 @@ dependencies {
     implementation(libs.glide)
     annotationProcessor(libs.compiler)
     implementation(libs.reactive.streams)
+    implementation(libs.lombok)
+    annotationProcessor(libs.lombok)
+}
+
+tasks.withType<JavaCompile> {
+    options.annotationProcessorPath = configurations.annotationProcessor.get()
 }

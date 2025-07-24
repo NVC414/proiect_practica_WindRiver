@@ -1,108 +1,177 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/background"
-    android:padding="24dp">
+    android:padding="24dp"
+    tools:ignore="Overdraw">
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="87dp" />
-
-    <ImageButton
-        android:id="@+id/buttonBack"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_gravity="start"
-        android:background="@drawable/roundedcorners"
-        android:contentDescription="@string/back"
-        android:src="@android:drawable/ic_menu_revert"
-        android:tint="@color/on_surface"
-        tools:ignore="TouchTargetSizeCheck" />
-
-    <ImageView
-        android:id="@+id/memoryImage"
-        android:layout_width="180dp"
-        android:layout_height="180dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="16dp"
-        android:background="@color/surface"
-        android:scaleType="centerCrop"
-        android:contentDescription="@string/memory_image" />
-
-    <TextView
-        android:id="@+id/memoryName"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:textSize="20sp"
-        android:gravity="center_horizontal"
-        android:layout_marginBottom="8dp"
-        android:textColor="@color/on_background" />
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/memoryPrice"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:textColor="@color/on_surface"
-        android:gravity="center_horizontal"
-        android:layout_marginBottom="8dp" />
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="87dp" />
 
-    <TextView
-        android:id="@+id/memoryType"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:textColor="@color/on_surface" />
+        <ImageButton
+            android:id="@+id/buttonBack"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="start"
+            android:background="@drawable/back_button_rounded"
+            android:padding="4dp"
+            android:src="@android:drawable/ic_menu_revert"
+            android:contentDescription="@string/back"
+            app:tint="@color/on_surface"
+            android:layout_marginBottom="16dp"
+            tools:ignore="TouchTargetSizeCheck" />
 
-    <TextView
-        android:id="@+id/memoryColor"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:textColor="@color/on_surface" />
+        <ImageView
+            android:id="@+id/memoryImage"
+            android:layout_width="180dp"
+            android:layout_height="180dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="16dp"
+            android:background="@color/surface"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/memory_image" />
 
-    <TextView
-        android:id="@+id/memoryCasLatency"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:textColor="@color/on_surface" />
+        <TextView
+            android:id="@+id/memoryName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:textColor="@color/on_background"
+            android:layout_marginBottom="4dp" />
 
-    <TextView
-        android:id="@+id/memoryFirstWordLatency"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:textColor="@color/on_surface" />
+        <TextView
+            android:id="@+id/memoryPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@color/on_surface"
+            android:gravity="center"
+            android:layout_marginBottom="16dp" />
 
-    <TextView
-        android:id="@+id/memoryModules"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:textColor="@color/on_surface" />
+        <!-- Grouped specs in clean container -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/surface"
+            android:padding="16dp"
+            android:layout_marginBottom="24dp"
+            android:elevation="2dp">
 
-    <TextView
-        android:id="@+id/memorySpeed"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:textColor="@color/on_surface" />
+            <TextView
+                android:id="@+id/memoryType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/on_surface"
+                android:layout_marginBottom="4dp" />
 
-    <Button
-        android:id="@+id/buttonAddToCart"
-        android:layout_width="260dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/add_to_cart"
-        android:textSize="16sp"
-        android:background="@drawable/rounded_button_bg"
-        android:backgroundTint="@color/primary"
-        android:textColor="@color/on_primary"
-        android:layout_marginTop="24dp" />
+            <TextView
+                android:id="@+id/memoryColor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/on_surface"
+                android:layout_marginBottom="4dp" />
 
-</LinearLayout>
+            <TextView
+                android:id="@+id/memoryCasLatency"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/on_surface"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:id="@+id/memoryFirstWordLatency"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/on_surface"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:id="@+id/memoryModules"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/on_surface"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:id="@+id/memorySpeed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/on_surface"
+                android:layout_marginBottom="4dp" />
+        </LinearLayout>
+
+        <!-- Bottom cart area (Button or Quantity Controller) -->
+        <FrameLayout
+            android:id="@+id/cartContainerMemory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal">
+
+            <Button
+                android:id="@+id/buttonAddToCartMemory"
+                android:layout_width="260dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/add_to_cart"
+                android:textSize="16sp"
+                android:backgroundTint="@color/primary"
+                android:textColor="@color/on_primary"
+                android:visibility="visible" />
+
+            <LinearLayout
+                android:id="@+id/layoutCartActionsMemory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:visibility="gone">
+
+                <ImageButton
+                    android:id="@+id/buttonRemoveFromCartMemory"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/add_or_remove_button_rounded"
+                    android:src="@drawable/ic_remove_button"
+                    android:contentDescription="@string/remove"
+                    android:layout_marginEnd="8dp"
+                    app:tint="@color/on_primary" />
+
+                <TextView
+                    android:id="@+id/textQuantityMemory"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1"
+                    android:textSize="16sp"
+                    android:gravity="center"
+                    android:textColor="@color/on_surface"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    tools:ignore="HardcodedText" />
+
+                <ImageButton
+                    android:id="@+id/buttonAddMoreToCartMemory"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/add_or_remove_button_rounded"
+                    android:src="@drawable/ic_add_button"
+                    android:contentDescription="@string/add"
+                    android:layout_marginStart="8dp"
+                    app:tint="@color/on_primary" />
+            </LinearLayout>
+        </FrameLayout>
+
+    </LinearLayout>
+</ScrollView>

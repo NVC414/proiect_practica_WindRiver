@@ -10,7 +10,6 @@
 
     <LinearLayout
 
-        android:id="@+id/linearLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="20dp"
@@ -22,20 +21,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0">
+
         <TextView
-            android:id="@+id/user_details"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/on_background" />
-        <Button
-            android:text="@string/logout"
-            android:id="@+id/logout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/primary"
-            android:textColor="@color/on_primary" />
-        <TextView
-            android:id="@+id/welcomeBannerTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
@@ -51,8 +38,15 @@
             android:textColor="@color/on_background"
             app:drawableStartCompat="@drawable/ic_guest" />
 
+        <Button
+            android:id="@+id/logout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/primary"
+            android:text="@string/logout"
+            android:textColor="@color/on_primary" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/linearLayout2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -102,44 +96,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <Button
-                android:id="@+id/button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:onClick="sendMessage"
-                android:text="Button"
-                app:cornerRadius="20dp"
-                android:background="@color/primary"
-                android:textColor="@color/on_primary" />
-
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="TextView"
-                android:textColor="@color/on_background"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <Button
-                android:id="@+id/sendPrompt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:onClick="requestData"
-                android:text="Request AI Prompt"
-                android:background="@color/primary"
-                android:textColor="@color/on_primary" />
-
-            <EditText
-                android:id="@+id/userPrompt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:gravity="start|top"
-                android:inputType="textMultiLine"
-                android:text="input here"
-                android:textColor="@color/on_background"
-                android:textColorHint="@color/on_surface" />
-
             <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -147,16 +103,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/aiPrompt"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="TextView"
-                        android:textColor="@color/on_background"
-                        app:layout_constraintStart_toStartOf="parent" />
-                </LinearLayout>
+                    android:orientation="vertical"/>
             </ScrollView>
 
         </LinearLayout>

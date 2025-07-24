@@ -14,8 +14,8 @@ import com.windriver.pcgate.R;
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHolder>
     {
 
-    private int[] images;
-    private LayoutInflater inflater;
+    private final int[] images;
+    private final LayoutInflater inflater;
 
     public ImageAdapter(Context context, int[] images)
         {
@@ -43,7 +43,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         return images.length;
         }
 
-    static class ImageViewHolder extends RecyclerView.ViewHolder
+    public static class ImageViewHolder extends RecyclerView.ViewHolder
         {
         ImageView imageView;
 

@@ -1,10 +1,9 @@
 package com.windriver.pcgate.adapter;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -19,18 +18,23 @@ import com.windriver.pcgate.model.CaseItem;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder>
     {
-    private List<CaseItem> caseList;
+    private final List<CaseItem> caseList;
     private OnAddToCartClickListener addToCartClickListener;
     private static final int TYPE_CASE = 0;
     private static final int TYPE_VIEW_MORE = 1;
     private OnViewMoreClickListener viewMoreClickListener;
+    @Getter
+    @Setter
     private List<CaseItem> allCases = new java.util.ArrayList<>();
     private final int layoutResId;
     private OnItemClickListener itemClickListener;
 
-    // Add a map to track cart quantities
+
     private java.util.Map<String, Integer> cartQuantities = new java.util.HashMap<>();
 
     public CaseAdapter(List<CaseItem> caseList)
@@ -64,17 +68,7 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
         this.viewMoreClickListener = listener;
         }
 
-    public void setAllCases(List<CaseItem> allCases)
-        {
-        this.allCases = allCases;
-        }
-
-    public List<CaseItem> getAllCases()
-        {
-        return allCases;
-        }
-
-    public interface OnItemClickListener
+        public interface OnItemClickListener
         {
         void onItemClick(CaseItem item);
         }
@@ -84,18 +78,26 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
         this.itemClickListener = listener;
         }
 
-    // Call this when cart changes
+
     public void setCartQuantities(java.util.Map<String, Integer> cartQuantities)
         {
+        for (int i = 0; i < caseList.size(); i++) {
+            CaseItem item = caseList.get(i);
+            String key = item.getName();
+            Integer oldQty = this.cartQuantities.get(key);
+            Integer newQty = cartQuantities.get(key);
+            if ((oldQty == null && newQty != null) || (oldQty != null && !oldQty.equals(newQty))) {
+                notifyItemChanged(i);
+            }
+        }
         this.cartQuantities = cartQuantities;
-        notifyDataSetChanged();
         }
 
     @Override
     public int getItemViewType(int position)
         {
         CaseItem item = caseList.get(position);
-        if ("__VIEW_MORE__".equals(item.name))
+        if ("__VIEW_MORE__".equals(item.getName()))
         {
             return TYPE_VIEW_MORE;
         }
@@ -106,12 +108,7 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
     @Override
     public CaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
         {
-        int layoutToUse = layoutResId;
-        if (viewType == TYPE_VIEW_MORE)
-        {
-            layoutToUse = layoutResId; // Always use the same layout for 'View More'
-        }
-        View view = LayoutInflater.from(parent.getContext()).inflate(layoutToUse, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(layoutResId, parent, false);
         if (viewType == TYPE_VIEW_MORE)
         {
             return new ViewMoreViewHolder(view);
@@ -122,6 +119,7 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
         }
         }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull CaseViewHolder holder, int position)
         {
@@ -148,11 +146,11 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
         else
         {
             CaseItem item = caseList.get(position);
-            holder.name.setText(item.name);
-            holder.price.setText(item.price);
-            int quantity = cartQuantities.containsKey(item.name) ? cartQuantities.get(
-                    item.name) : 0;
-            // Always reset visibility before animation logic
+            holder.name.setText(item.getName());
+            holder.price.setText("$" + item.getPrice());
+            Integer quantityObj = cartQuantities.getOrDefault(item.getName(), 0);
+            int quantity = (quantityObj != null) ? quantityObj : 0;
+
             if (quantity > 0)
             {
                 holder.addToCartButton.setVisibility(View.GONE);
@@ -163,51 +161,14 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
                 holder.addToCartButton.setVisibility(View.VISIBLE);
                 holder.layoutCartActions.setVisibility(View.GONE);
             }
-            // Animation logic
-            boolean wasInCart = holder.layoutCartActions.getVisibility() == View.VISIBLE;
+
+            holder.layoutCartActions.getVisibility();
             boolean nowInCart = quantity > 0;
             if (nowInCart)
             {
-                if (!wasInCart)
-                {
-                    holder.addToCartButton.clearAnimation();
-                    holder.layoutCartActions.clearAnimation();
-                    Animation splitOut = AnimationUtils.loadAnimation(holder.itemView.getContext(),
-                            R.anim.button_split_out);
-                    Animation splitIn = AnimationUtils.loadAnimation(holder.itemView.getContext(),
-                            R.anim.button_split_in);
-                    splitOut.setAnimationListener(
-                            new android.view.animation.Animation.AnimationListener()
-                                {
-                                @Override
-                                public void onAnimationStart(
-                                        android.view.animation.Animation animation)
-                                    {
-                                    }
+                holder.addToCartButton.setVisibility(View.GONE);
+                holder.layoutCartActions.setVisibility(View.VISIBLE);
 
-                                @Override
-                                public void onAnimationRepeat(
-                                        android.view.animation.Animation animation)
-                                    {
-                                    }
-
-                                @Override
-                                public void onAnimationEnd(
-                                        android.view.animation.Animation animation)
-                                    {
-                                    holder.addToCartButton.setVisibility(View.GONE);
-                                    holder.layoutCartActions.setVisibility(View.VISIBLE);
-                                    holder.layoutCartActions.startAnimation(splitIn);
-                                    }
-                                });
-                    holder.addToCartButton.startAnimation(splitOut);
-                }
-                else
-                {
-                    holder.addToCartButton.setVisibility(View.GONE);
-                    holder.layoutCartActions.setVisibility(View.VISIBLE);
-                }
-                // Set quantity text if present
                 TextView textQuantity = holder.itemView.findViewById(R.id.textQuantity);
                 if (textQuantity != null)
                 {
@@ -216,45 +177,8 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
             }
             else
             {
-                if (wasInCart)
-                {
-                    holder.addToCartButton.clearAnimation();
-                    holder.layoutCartActions.clearAnimation();
-                    Animation splitOut = AnimationUtils.loadAnimation(holder.itemView.getContext(),
-                            R.anim.button_split_out);
-                    Animation splitIn = AnimationUtils.loadAnimation(holder.itemView.getContext(),
-                            R.anim.button_split_in);
-                    splitOut.setAnimationListener(
-                            new android.view.animation.Animation.AnimationListener()
-                                {
-                                @Override
-                                public void onAnimationStart(
-                                        android.view.animation.Animation animation)
-                                    {
-                                    }
-
-                                @Override
-                                public void onAnimationRepeat(
-                                        android.view.animation.Animation animation)
-                                    {
-                                    }
-
-                                @Override
-                                public void onAnimationEnd(
-                                        android.view.animation.Animation animation)
-                                    {
-                                    holder.layoutCartActions.setVisibility(View.GONE);
-                                    holder.addToCartButton.setVisibility(View.VISIBLE);
-                                    holder.addToCartButton.startAnimation(splitIn);
-                                    }
-                                });
-                    holder.layoutCartActions.startAnimation(splitOut);
-                }
-                else
-                {
-                    holder.addToCartButton.setVisibility(View.VISIBLE);
-                    holder.layoutCartActions.setVisibility(View.GONE);
-                }
+                holder.addToCartButton.setVisibility(View.VISIBLE);
+                holder.layoutCartActions.setVisibility(View.GONE);
             }
             holder.addToCartButton.setOnClickListener(v ->
                 {
@@ -286,7 +210,7 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
                 });
             if (holder.caseImage != null)
             {
-                String url = item.imageUrl != null ? item.imageUrl : "";
+                String url = item.getImageUrl() != null ? item.getImageUrl() : "";
                 Glide.with(holder.itemView.getContext()).load(url).placeholder(
                         R.drawable.ic_case_placeholder).centerCrop().into(holder.caseImage);
             }
@@ -301,11 +225,34 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
 
     public void setCaseList(List<CaseItem> newList)
         {
-        this.caseList = newList;
-        notifyDataSetChanged();
+        androidx.recyclerview.widget.DiffUtil.DiffResult diffResult = androidx.recyclerview.widget.DiffUtil.calculateDiff(new androidx.recyclerview.widget.DiffUtil.Callback() {
+            @Override
+            public int getOldListSize() {
+                return caseList.size();
+            }
+            @Override
+            public int getNewListSize() {
+                return newList.size();
+            }
+            @Override
+            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                CaseItem oldItem = caseList.get(oldItemPosition);
+                CaseItem newItem = newList.get(newItemPosition);
+                return oldItem.getName().equals(newItem.getName());
+            }
+            @Override
+            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                CaseItem oldItem = caseList.get(oldItemPosition);
+                CaseItem newItem = newList.get(newItemPosition);
+                return oldItem.equals(newItem);
+            }
+        });
+        caseList.clear();
+        caseList.addAll(newList);
+        diffResult.dispatchUpdatesTo(this);
         }
 
-    // Add new interface for remove action
+
     public interface OnRemoveFromCartClickListener
         {
         void onRemoveFromCart(CaseItem item);
@@ -318,7 +265,7 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
         this.removeFromCartClickListener = listener;
         }
 
-    static class CaseViewHolder extends RecyclerView.ViewHolder
+    public static class CaseViewHolder extends RecyclerView.ViewHolder
         {
         TextView name, price;
         Button addToCartButton;

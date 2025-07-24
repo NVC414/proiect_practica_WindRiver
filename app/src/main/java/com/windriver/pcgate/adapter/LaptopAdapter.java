@@ -1,13 +1,16 @@
 package com.windriver.pcgate.adapter;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -15,6 +18,10 @@ import com.windriver.pcgate.R;
 import com.windriver.pcgate.model.LaptopItem;
 
 import java.util.List;
+import java.util.Map;
+
+import lombok.Getter;
+import lombok.Setter;
 
 public class LaptopAdapter extends RecyclerView.Adapter<LaptopAdapter.LaptopViewHolder>
     {
@@ -23,9 +30,13 @@ public class LaptopAdapter extends RecyclerView.Adapter<LaptopAdapter.LaptopView
     private static final int TYPE_LAPTOP = 0;
     private static final int TYPE_VIEW_MORE = 1;
     private OnViewMoreClickListener viewMoreClickListener;
+    @Getter
+    @Setter
     private List<LaptopItem> allLaptops = new java.util.ArrayList<>();
     private final int layoutResId;
     private OnItemClickListener itemClickListener;
+    private java.util.Map<String, Integer> cartQuantities = new java.util.HashMap<>();
+    private OnRemoveFromCartClickListener removeFromCartClickListener;
 
     public LaptopAdapter(List<LaptopItem> laptopList)
         {
@@ -58,17 +69,8 @@ public class LaptopAdapter extends RecyclerView.Adapter<LaptopAdapter.LaptopView
         this.viewMoreClickListener = listener;
         }
 
-    public void setAllLaptops(List<LaptopItem> allLaptops)
-        {
-        this.allLaptops = allLaptops;
-        }
 
-    public List<LaptopItem> getAllLaptops()
-        {
-        return allLaptops;
-        }
-
-    public interface OnItemClickListener
+        public interface OnItemClickListener
         {
         void onItemClick(LaptopItem item);
         }
@@ -78,11 +80,64 @@ public class LaptopAdapter extends RecyclerView.Adapter<LaptopAdapter.LaptopView
         this.itemClickListener = listener;
         }
 
+    public interface OnRemoveFromCartClickListener {
+        void onRemoveFromCart(LaptopItem item);
+    }
+
+    public void setOnRemoveFromCartClickListener(OnRemoveFromCartClickListener listener) {
+        this.removeFromCartClickListener = listener;
+    }
+
+    public void setCartQuantities(java.util.Map<String, Integer> cartQuantities) {
+        Map<String, Integer> oldCartQuantities = new java.util.HashMap<>(this.cartQuantities);
+        this.cartQuantities = cartQuantities;
+        for (int i = 0; i < laptopList.size(); i++) {
+            LaptopItem item = laptopList.get(i);
+            String key = item.getBrand() + "|" + item.getModel();
+            Integer oldQty = oldCartQuantities.get(key);
+            Integer newQty = cartQuantities.get(key);
+            if ((oldQty == null && newQty != null) || (oldQty != null && !oldQty.equals(newQty))) {
+                notifyItemChanged(i);
+            }
+        }
+    }
+
+    public void setLaptopList(List<LaptopItem> newList) {
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffUtil.Callback() {
+            @Override
+            public int getOldListSize() {
+                return laptopList != null ? laptopList.size() : 0;
+            }
+
+            @Override
+            public int getNewListSize() {
+                return newList != null ? newList.size() : 0;
+            }
+
+            @Override
+            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                LaptopItem oldItem = laptopList.get(oldItemPosition);
+                LaptopItem newItem = newList.get(newItemPosition);
+                // Assuming model+brand uniquely identifies a laptop
+                return oldItem.getModel().equals(newItem.getModel()) && oldItem.getBrand().equals(newItem.getBrand());
+            }
+
+            @Override
+            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                LaptopItem oldItem = laptopList.get(oldItemPosition);
+                LaptopItem newItem = newList.get(newItemPosition);
+                return oldItem.equals(newItem);
+            }
+        });
+        this.laptopList = newList;
+        diffResult.dispatchUpdatesTo(this);
+    }
+
     @Override
     public int getItemViewType(int position)
         {
         LaptopItem item = laptopList.get(position);
-        if ("__VIEW_MORE__".equals(item.model))
+        if ("__VIEW_MORE__".equals(item.getModel()))
         {
             return TYPE_VIEW_MORE;
         }
@@ -93,8 +148,7 @@ public class LaptopAdapter extends RecyclerView.Adapter<LaptopAdapter.LaptopView
     @Override
     public LaptopViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
         {
-        int layoutToUse = layoutResId;
-        View view = LayoutInflater.from(parent.getContext()).inflate(layoutToUse, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(layoutResId, parent, false);
         if (viewType == TYPE_VIEW_MORE)
         {
             return new ViewMoreViewHolder(view);
@@ -105,6 +159,7 @@ public class LaptopAdapter extends RecyclerView.Adapter<LaptopAdapter.LaptopView
         }
         }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull LaptopViewHolder holder, int position)
         {
@@ -131,16 +186,34 @@ public class LaptopAdapter extends RecyclerView.Adapter<LaptopAdapter.LaptopView
         else
         {
             LaptopItem item = laptopList.get(position);
-            holder.model.setText(item.model);
-            holder.price.setText(item.price);
-            holder.addToCartButton.setVisibility(View.VISIBLE);
-            holder.addToCartButton.setOnClickListener(v ->
-                {
-                    if (addToCartClickListener != null)
-                    {
-                        addToCartClickListener.onAddToCart(item);
-                    }
-                });
+            holder.model.setText(item.getModel());
+            holder.price.setText("$" + item.getPrice());
+            String key = item.getBrand() + "|" + item.getModel();
+            Integer quantityObj = cartQuantities.get(key);
+            int quantity = (quantityObj != null) ? quantityObj : 0;
+            if (quantity > 0) {
+                holder.addToCartButton.setVisibility(View.GONE);
+                holder.layoutCartActions.setVisibility(View.VISIBLE);
+                holder.textQuantity.setText(String.valueOf(quantity));
+            } else {
+                holder.addToCartButton.setVisibility(View.VISIBLE);
+                holder.layoutCartActions.setVisibility(View.GONE);
+            }
+            holder.addToCartButton.setOnClickListener(v -> {
+                if (addToCartClickListener != null) {
+                    addToCartClickListener.onAddToCart(item);
+                }
+            });
+            holder.buttonAddMoreToCart.setOnClickListener(v -> {
+                if (addToCartClickListener != null) {
+                    addToCartClickListener.onAddToCart(item);
+                }
+            });
+            holder.buttonRemoveFromCart.setOnClickListener(v -> {
+                if (removeFromCartClickListener != null) {
+                    removeFromCartClickListener.onRemoveFromCart(item);
+                }
+            });
             holder.itemView.setOnClickListener(v ->
                 {
                     if (itemClickListener != null)
@@ -150,7 +223,7 @@ public class LaptopAdapter extends RecyclerView.Adapter<LaptopAdapter.LaptopView
                 });
             if (holder.laptopImage != null)
             {
-                String url = item.imageUrl != null ? item.imageUrl : "";
+                String url = item.getImageUrl() != null ? item.getImageUrl() : "";
                 Glide.with(holder.itemView.getContext()).load(url).placeholder(
                         R.drawable.ic_laptop_placeholder).centerCrop().into(holder.laptopImage);
             }
@@ -163,18 +236,15 @@ public class LaptopAdapter extends RecyclerView.Adapter<LaptopAdapter.LaptopView
         return laptopList.size();
         }
 
-    public void setLaptopList(List<LaptopItem> newList)
-        {
-        this.laptopList = newList;
-        notifyDataSetChanged();
-        }
-
-    static class LaptopViewHolder extends RecyclerView.ViewHolder
+    public static class LaptopViewHolder extends RecyclerView.ViewHolder
         {
         TextView model, price;
         Button addToCartButton;
         ImageView laptopImage;
-
+        ImageButton buttonRemoveFromCart;
+        ImageButton buttonAddMoreToCart;
+        View layoutCartActions;
+        TextView textQuantity;
         public LaptopViewHolder(@NonNull View itemView)
             {
             super(itemView);
@@ -182,6 +252,10 @@ public class LaptopAdapter extends RecyclerView.Adapter<LaptopAdapter.LaptopView
             price = itemView.findViewById(R.id.laptopPrice);
             addToCartButton = itemView.findViewById(R.id.buttonAddToCart);
             laptopImage = itemView.findViewById(R.id.laptopImage);
+            buttonRemoveFromCart = itemView.findViewById(R.id.buttonRemoveFromCartLaptop);
+            buttonAddMoreToCart = itemView.findViewById(R.id.buttonAddMoreToCartLaptop);
+            layoutCartActions = itemView.findViewById(R.id.layoutCartActionsLaptop);
+            textQuantity = itemView.findViewById(R.id.textQuantityLaptop);
             }
         }
 
