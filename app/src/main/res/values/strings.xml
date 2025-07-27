@@ -82,4 +82,5 @@
     <string name="occupation">Occupation:</string>
     <string name="welcome_user">Welcome, User</string>
     <string name="need_help_call_support">Need help? Call support!</string>
+    <string name="agree_to_terms_and_conditions">Agree to terms and conditions</string>
 </resources>
