@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.windriver.pcgate.R;
 import com.windriver.pcgate.adapter.LaptopAdapter;
 import com.windriver.pcgate.adapter.LaptopAdapter.OnAddToCartClickListener;
-import com.windriver.pcgate.model.LaptopItem;
+import com.windriver.pcgate.model.firebaseItems.LaptopItem;
 import com.windriver.pcgate.ui.cart.CartItem;
 import com.windriver.pcgate.ui.cart.CartViewModel;
 
@@ -67,33 +67,51 @@ public class AllLaptopsDialog extends DialogFragment
                 intent.putExtra("ssd", item.getSsd());
                 startActivity(intent);
             });
-        adapter.setOnRemoveFromCartClickListener(item -> {
-            double priceValue = 0.0;
-            try { priceValue = Double.parseDouble(item.getPrice().replaceAll("[^0-9.]", "")); } catch (Exception ignored) {}
-            java.util.List<CartItem> current = cartViewModel.getCartItems().getValue();
-            if (current != null) {
-                for (CartItem ci : current) {
-                    if (ci.getName().equals(item.getModel())) {
-                        int newQty = ci.getQuantity() - 1;
-                        if (newQty > 0) {
-                            cartViewModel.addItem(new CartItem(item.getModel(), priceValue, -1));
-                        } else {
-                            cartViewModel.addItem(new CartItem(item.getModel(), priceValue, -ci.getQuantity()));
+        adapter.setOnRemoveFromCartClickListener(item ->
+            {
+                double priceValue = 0.0;
+                try
+                {
+                    priceValue = Double.parseDouble(item.getPrice().replaceAll("[^0-9.]", ""));
+                }
+                catch (Exception ignored)
+                {
+                }
+                java.util.List<CartItem> current = cartViewModel.getCartItems().getValue();
+                if (current != null)
+                {
+                    String cartKey = item.getBrand() + "|" + item.getModel();
+                    for (CartItem ci : current)
+                    {
+                        if (ci.getName().equals(cartKey))
+                        {
+                            int newQty = ci.getQuantity() - 1;
+                            if (newQty > 0)
+                            {
+                                cartViewModel.addItem(new CartItem(cartKey, priceValue, -1));
+                            }
+                            else
+                            {
+                                cartViewModel.addItem(
+                                        new CartItem(cartKey, priceValue, -ci.getQuantity()));
+                            }
+                            break;
                         }
-                        break;
                     }
                 }
-            }
-        });
-        cartViewModel.getCartItems().observe(getViewLifecycleOwner(), items -> {
-            java.util.Map<String, Integer> qtys = new java.util.HashMap<>();
-            if (items != null) {
-                for (CartItem ci : items) {
-                    qtys.put(ci.getName(), ci.getQuantity());
+            });
+        cartViewModel.getCartItems().observe(getViewLifecycleOwner(), items ->
+            {
+                java.util.Map<String, Integer> qtys = new java.util.HashMap<>();
+                if (items != null)
+                {
+                    for (CartItem ci : items)
+                    {
+                        qtys.put(ci.getName(), ci.getQuantity());
+                    }
                 }
-            }
-            adapter.setCartQuantities(qtys);
-        });
+                adapter.setCartQuantities(qtys);
+            });
         recyclerView.setAdapter(adapter);
         ImageButton backButton = view.findViewById(R.id.buttonBack);
         backButton.setOnClickListener(v -> dismiss());

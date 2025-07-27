@@ -17,12 +17,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.windriver.pcgate.databinding.ActivityMainBinding;
 import com.windriver.pcgate.ui.cart.CartViewModel;
-import com.windriver.pcgate.ui.LoginRegister.Login_activity;
+import com.windriver.pcgate.ui.loginRegister.Login_activity;
 
 public class MainActivity extends AppCompatActivity
     {
 
-        private ActivityMainBinding binding;
+    private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -33,8 +33,8 @@ public class MainActivity extends AppCompatActivity
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-            FirebaseAuth auth = FirebaseAuth.getInstance();
-            FirebaseUser user = auth.getCurrentUser();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
 
         if (user == null)
         {
@@ -43,8 +43,6 @@ public class MainActivity extends AppCompatActivity
             finish();
             return;
         }
-
-
 
 
         setupNavigation();
@@ -73,7 +71,7 @@ public class MainActivity extends AppCompatActivity
                 }
             });
 
-            View navHostFragment = findViewById(R.id.nav_host_fragment_activity_main);
+        View navHostFragment = findViewById(R.id.nav_host_fragment_activity_main);
         if (navHostFragment == null)
         {
             Toast.makeText(this, "Error: Navigation host missing.", Toast.LENGTH_LONG).show();
@@ -101,8 +99,6 @@ public class MainActivity extends AppCompatActivity
                 }
             });
         }
-
-
 
 
     }

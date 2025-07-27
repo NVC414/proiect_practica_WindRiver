@@ -1,4 +1,4 @@
-package com.windriver.pcgate.model;
+package com.windriver.pcgate.model.firebaseItems;
 
 import java.util.List;
 
@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemoryItem {
+public class MemoryItem
+    {
     private String name;
     private double price;
     private String imageUrl;
@@ -19,7 +20,7 @@ public class MemoryItem {
     private int firstWordLatency;
     private List<Integer> modules;
     private List<Integer> speed;
-}
+    }
 
 /*
 public class MemoryItem

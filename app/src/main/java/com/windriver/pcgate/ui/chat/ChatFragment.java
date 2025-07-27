@@ -60,32 +60,36 @@ public class ChatFragment extends Fragment implements MenuProvider
     private RecyclerView chatRecyclerView;
     private EditText messageInput;
     private ImageButton sendButton;
-        private ChatFutures chat;
+    private ChatFutures chat;
     private final List<Content> history = new ArrayList<>();
     @Getter
     private final Executor executor = Executors.newSingleThreadExecutor();
 
     private static final String[] KEYWORDS = {"case", "cpu", "laptop", "memory", "motherboard", "power-supply", "video-card", "processor", "ram", "psu", "gpu"};
     private static final String[] CPU_KEYWORDS = {"Ryzen", "Intel"};
-    private static final java.util.Map<String, String> KEYWORD_CATEGORY_MAP = new java.util.HashMap<>() {{
-        put("cpu", "cpu");
-        put("processor", "cpu");
-        put("memory", "memory");
-        put("ram", "memory");
-        put("power-supply", "power-supply");
-        put("psu", "power-supply");
-        put("video-card", "video-card");
-        put("gpu", "video-card");
-        put("case", "case");
-        put("laptop", "laptop");
-        put("motherboard", "motherboard");
-    }};
+    private static final java.util.Map<String, String> KEYWORD_CATEGORY_MAP = new java.util.HashMap<>()
+        {{
+            put("cpu", "cpu");
+            put("processor", "cpu");
+            put("memory", "memory");
+            put("ram", "memory");
+            put("power-supply", "power-supply");
+            put("psu", "power-supply");
+            put("video-card", "video-card");
+            put("gpu", "video-card");
+            put("case", "case");
+            put("laptop", "laptop");
+            put("motherboard", "motherboard");
+        }};
 
     private final List<String> chatHistory = new ArrayList<>();
     private ChatHistoryManager chatHistoryManager;
     private final List<ChatMessage> currentMessages = new ArrayList<>();
     private String currentChatId = null;
     private boolean keywordsAddedToContext = false;
+
+    // User data cache
+    private String cachedUserData = null;
 
     @Nullable
     @Override
@@ -98,7 +102,7 @@ public class ChatFragment extends Fragment implements MenuProvider
         sendButton = view.findViewById(R.id.sendButton);
 
 
-            if (getActivity() instanceof AppCompatActivity activity)
+        if (getActivity() instanceof AppCompatActivity activity)
         {
             if (activity.getSupportActionBar() != null)
             {
@@ -110,9 +114,10 @@ public class ChatFragment extends Fragment implements MenuProvider
         }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState)
+        {
         super.onCreate(savedInstanceState);
-    }
+        }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
@@ -130,11 +135,13 @@ public class ChatFragment extends Fragment implements MenuProvider
         List<ChatMessage> current = chatHistoryManager.loadCurrentChat();
         chatAdapter.clearMessages();
         currentMessages.clear();
-        if (!current.isEmpty()) {
+        if (!current.isEmpty())
+        {
             currentMessages.addAll(current);
             for (ChatMessage msg : current)
                 chatAdapter.addMessage(msg);
-            chatRecyclerView.post(() -> chatRecyclerView.scrollToPosition(chatAdapter.getItemCount() - 1));
+            chatRecyclerView.post(
+                    () -> chatRecyclerView.scrollToPosition(chatAdapter.getItemCount() - 1));
         }
         currentChatId = null;
 
@@ -189,7 +196,6 @@ public class ChatFragment extends Fragment implements MenuProvider
                     });
 
 
-
         Space bottomSpaceView = view.findViewById(R.id.bottomSpace);
         ViewCompat.setOnApplyWindowInsetsListener(view, (v, insets) ->
             {
@@ -203,46 +209,55 @@ public class ChatFragment extends Fragment implements MenuProvider
                 }
                 return insets;
             });
-
+        fetchAndCacheUserData();
         }
 
     @Override
-    public void onStop() {
+    public void onStop()
+        {
         super.onStop();
-
-        if (chatHistoryManager != null) {
+        if (chatHistoryManager != null)
+        {
             chatHistoryManager.saveCurrentChat(currentMessages);
         }
-    }
+        }
 
     @Override
-    public void onPause() {
+    public void onPause()
+        {
         super.onPause();
-        if (chatHistoryManager != null) {
+        if (chatHistoryManager != null)
+        {
             chatHistoryManager.saveCurrentChat(currentMessages);
             chatHistoryManager.saveChat(currentMessages, currentChatId);
         }
-        if (isVisible() && !requireActivity().isChangingConfigurations()) {
-            androidx.navigation.NavController navController = androidx.navigation.Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main);
-            if (navController.getCurrentDestination() != null && navController.getCurrentDestination().getId() == R.id.chatFragment) {
+        if (isVisible() && !requireActivity().isChangingConfigurations())
+        {
+            androidx.navigation.NavController navController = androidx.navigation.Navigation.findNavController(
+                    requireActivity(), R.id.nav_host_fragment_activity_main);
+            if (navController.getCurrentDestination() != null && navController.getCurrentDestination().getId() == R.id.chatFragment)
+            {
                 navController.navigate(R.id.navigation_home);
             }
         }
-    }
+        }
 
     @Override
-    public void onDestroy() {
+    public void onDestroy()
+        {
         super.onDestroy();
 
-    }
+        }
 
     @Override
-    public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+    public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater)
+        {
         menuInflater.inflate(R.menu.menu_chat, menu);
-    }
+        }
 
     @Override
-    public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+    public boolean onMenuItemSelected(@NonNull MenuItem menuItem)
+        {
         if (menuItem.getItemId() == android.R.id.home)
         {
             requireActivity().getOnBackPressedDispatcher().onBackPressed();
@@ -270,7 +285,7 @@ public class ChatFragment extends Fragment implements MenuProvider
             return true;
         }
         return false;
-    }
+        }
 
     private void showChatHistoryDialog()
         {
@@ -299,7 +314,7 @@ public class ChatFragment extends Fragment implements MenuProvider
                         currentMessages.addAll(chat);
                         for (ChatMessage msg : chat)
                             chatAdapter.addMessage(msg);
-                        // Set currentChatId to the loaded chat's UUID
+                        // Sort of works? Va trebui sa ma uit mai mult ig
                         currentChatId = history.get(which).id();
                     }).setNegativeButton("Cancel", null).show();
         }
@@ -307,10 +322,12 @@ public class ChatFragment extends Fragment implements MenuProvider
     private void handleUserMessage(String text)
         {
         ChatMessage userMsg = new ChatMessage.UserMessage(text);
-        requireActivity().runOnUiThread(() -> {
-            chatAdapter.addMessage(userMsg);
-            chatRecyclerView.post(() -> chatRecyclerView.scrollToPosition(chatAdapter.getItemCount() - 1));
-        });
+        requireActivity().runOnUiThread(() ->
+            {
+                chatAdapter.addMessage(userMsg);
+                chatRecyclerView.post(
+                        () -> chatRecyclerView.scrollToPosition(chatAdapter.getItemCount() - 1));
+            });
         currentMessages.add(userMsg);
         messageInput.setText("");
         chatHistory.add("User: " + text);
@@ -319,11 +336,16 @@ public class ChatFragment extends Fragment implements MenuProvider
         String lowerText = text.toLowerCase();
         boolean mentionsGpu = lowerText.contains("gpu") || lowerText.contains("video-card");
         boolean mentionsRam = lowerText.contains("ram") || lowerText.contains("memory");
-        if (mentionsGpu && mentionsRam) {
+        if (mentionsGpu && mentionsRam)
+        {
             mappedCategory = KEYWORD_CATEGORY_MAP.get("gpu");
-        } else {
-            for (String keyword : KEYWORDS) {
-                if (lowerText.contains(keyword)) {
+        }
+        else
+        {
+            for (String keyword : KEYWORDS)
+            {
+                if (lowerText.contains(keyword))
+                {
                     mappedCategory = KEYWORD_CATEGORY_MAP.get(keyword);
                     break;
                 }
@@ -383,85 +405,206 @@ public class ChatFragment extends Fragment implements MenuProvider
     private void sendMessageToGemini(String userInput, List<String> extraContext)
         {
         chatHistory.add("User: " + userInput);
-            StringBuilder contextBuilder = getStringBuilder(userInput, extraContext);
-            Content prompt = new Content.Builder().setRole("user").addText(
+        StringBuilder contextBuilder = getStringBuilder(userInput, extraContext);
+        Content prompt = new Content.Builder().setRole("user").addText(
                 contextBuilder.toString()).build();
         Publisher<GenerateContentResponse> streamingResponse = chat.sendMessageStream(prompt);
         final StringBuilder fullResponse = new StringBuilder();
         final boolean[] aiMessageStarted = {false};
-        streamingResponse.subscribe(new Subscriber<>() {
+        streamingResponse.subscribe(new Subscriber<>()
+            {
             @Override
-            public void onSubscribe(Subscription s) {
+            public void onSubscribe(Subscription s)
+                {
                 s.request(Long.MAX_VALUE);
-            }
+                }
 
             @Override
-            public void onNext(GenerateContentResponse response) {
+            public void onNext(GenerateContentResponse response)
+                {
                 String chunk = response.getText();
                 fullResponse.append(chunk);
                 requireActivity().runOnUiThread(() ->
-                {
-                    if (!aiMessageStarted[0]) {
-                        ChatMessage aiMsg = new ChatMessage.AiMessage(fullResponse.toString());
-                        chatAdapter.addMessage(aiMsg);
-                        currentMessages.add(aiMsg);
-                        aiMessageStarted[0] = true;
-                        chatRecyclerView.post(() -> chatRecyclerView.scrollToPosition(chatAdapter.getItemCount() - 1));
-                    } else {
-                        chatAdapter.updateLastAiMessage(fullResponse.toString());
+                    {
+                        if (!aiMessageStarted[0])
+                        {
+                            ChatMessage aiMsg = new ChatMessage.AiMessage(fullResponse.toString());
+                            chatAdapter.addMessage(aiMsg);
+                            currentMessages.add(aiMsg);
+                            aiMessageStarted[0] = true;
+                            chatRecyclerView.post(() -> chatRecyclerView.scrollToPosition(
+                                    chatAdapter.getItemCount() - 1));
+                        }
+                        else
+                        {
+                            chatAdapter.updateLastAiMessage(fullResponse.toString());
 
-                        for (int i = currentMessages.size() - 1; i >= 0; i--) {
-                            if (currentMessages.get(i) instanceof ChatMessage.AiMessage) {
-                                currentMessages.set(i,
-                                        new ChatMessage.AiMessage(fullResponse.toString()));
-                                break;
+                            for (int i = currentMessages.size() - 1; i >= 0; i--)
+                            {
+                                if (currentMessages.get(i) instanceof ChatMessage.AiMessage)
+                                {
+                                    currentMessages.set(i,
+                                            new ChatMessage.AiMessage(fullResponse.toString()));
+                                    break;
+                                }
                             }
                         }
-                    }
-                });
-            }
-
-            @Override
-            public void onError(Throwable t) {
-                requireActivity().runOnUiThread(() -> {
-                    chatAdapter.addMessage(new ChatMessage.AiMessage("[Error: " + t.getMessage() + "]"));
-                    chatRecyclerView.post(() -> chatRecyclerView.scrollToPosition(chatAdapter.getItemCount() - 1));
-                });
-            }
-
-            @Override
-            public void onComplete() {
-                String aiText = fullResponse.toString();
-                if (!aiText.isEmpty()) {
-                    requireActivity().runOnUiThread(() ->
-                            chatHistory.add("AI: " + aiText));
+                    });
                 }
-            }
-        });
+
+            @Override
+            public void onError(Throwable t)
+                {
+                requireActivity().runOnUiThread(() ->
+                    {
+                        chatAdapter.addMessage(
+                                new ChatMessage.AiMessage("[Error: " + t.getMessage() + "]"));
+                        chatRecyclerView.post(() -> chatRecyclerView.scrollToPosition(
+                                chatAdapter.getItemCount() - 1));
+                    });
+                }
+
+            @Override
+            public void onComplete()
+                {
+                String aiText = fullResponse.toString();
+                if (!aiText.isEmpty())
+                {
+                    requireActivity().runOnUiThread(() -> chatHistory.add("AI: " + aiText));
+                }
+                }
+            });
         }
 
-        @NonNull
-        private StringBuilder getStringBuilder(String userInput, List<String> extraContext) {
-            StringBuilder contextBuilder = new StringBuilder();
-            for (String msg : chatHistory)
+    private String getUserDataString()
+        {
+        if (cachedUserData != null)
+        {
+            return cachedUserData;
+        }
+        com.google.firebase.auth.FirebaseUser user = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null)
+        {
+            return "";
+        }
+        String uid = user.getUid();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(uid);
+        // Try to fetch synchronously (not recommended, but for contextBuilder, we cache after first async fetch)
+        // In production, you should fetch asynchronously and update the cache, then refresh the UI or retry the AI call.
+        ref.addListenerForSingleValueEvent(new ValueEventListener()
             {
-                contextBuilder.append(msg).append("\n\n");
-            }
-            for (String ctx : extraContext)
-            {
-                contextBuilder.append(ctx).append("\n\n");
-            }
-            contextBuilder.append(
-                    """
-                            Answer in a friendly and conversational tone. \
-                            Keep your answer concise—no more than 4 to 5 short lengths paragraphs. \
-                            Use newlines to separate ideas where appropriate, but avoid overly long paragraphs or dense blocks of text. \
-                            Do not use markdown formatting or symbols like asterisks or hashtags. \
-                            If the user asks anything outside the scope of the store, politely inform them that you can only help with store-related questions. \
-                            User's prompt:
-                            """).append(
-                    userInput);
-            return contextBuilder;
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot)
+                {
+                if (snapshot.exists())
+                {
+                    String date = snapshot.child("date").getValue(String.class);
+                    String name = snapshot.child("fullName").getValue(String.class);
+                    String gender = snapshot.child("gender").getValue(String.class);
+                    String occupation = snapshot.child("occupation").getValue(String.class);
+                    StringBuilder sb = new StringBuilder();
+                    if (date != null)
+                    {
+                        sb.append(date).append(", ");
+                    }
+                    if (name != null)
+                    {
+                        sb.append(name).append(", ");
+                    }
+                    if (gender != null)
+                    {
+                        sb.append(gender).append(", ");
+                    }
+                    if (occupation != null)
+                    {
+                        sb.append(occupation);
+                    }
+                    cachedUserData = sb.toString();
+                }
+                }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error)
+                {
+                }
+            });
+        return cachedUserData != null ? cachedUserData : "";
         }
 
+    @NonNull
+    private StringBuilder getStringBuilder(String userInput, List<String> extraContext)
+        {
+        StringBuilder contextBuilder = new StringBuilder();
+        String userData = getUserDataString();
+        if (!userData.isEmpty())
+        {
+            contextBuilder.append("User's data: ").append(userData).append("\n");
+        }
+        for (String msg : chatHistory)
+        {
+            contextBuilder.append(msg).append("\n\n");
+        }
+        for (String ctx : extraContext)
+        {
+            contextBuilder.append(ctx).append("\n\n");
+        }
+        contextBuilder.append("""
+                Answer in a friendly and conversational tone, and use the user's first name to address them. \
+                Keep your answer concise—no more than 4 to 5 short lengths paragraphs. \
+                Use newlines to separate ideas where appropriate, but avoid overly long paragraphs or dense blocks of text. \
+                Do not use markdown formatting or symbols like asterisks or hashtags. \
+                If the user asks anything outside the scope of the store, politely inform them that you can only help with store-related questions. \
+                Adapt responses based on the user's occupation and their level of computer proficiency, ensuring explanations match their technical understanding.
+                """);
+        contextBuilder.append("User's prompt:\n").append(userInput);
+        return contextBuilder;
+        }
+
+    private void fetchAndCacheUserData()
+        {
+        com.google.firebase.auth.FirebaseUser user = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null)
+        {
+            return;
+        }
+        String uid = user.getUid();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(uid);
+        ref.addListenerForSingleValueEvent(new ValueEventListener()
+            {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot)
+                {
+                if (snapshot.exists())
+                {
+                    String date = snapshot.child("date").getValue(String.class);
+                    String name = snapshot.child("fullName").getValue(String.class);
+                    String gender = snapshot.child("gender").getValue(String.class);
+                    String occupation = snapshot.child("occupation").getValue(String.class);
+                    StringBuilder sb = new StringBuilder();
+                    if (date != null)
+                    {
+                        sb.append(date).append(", ");
+                    }
+                    if (name != null)
+                    {
+                        sb.append(name).append(", ");
+                    }
+                    if (gender != null)
+                    {
+                        sb.append(gender).append(", ");
+                    }
+                    if (occupation != null)
+                    {
+                        sb.append(occupation);
+                    }
+                    cachedUserData = sb.toString();
+                }
+                }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error)
+                {
+                }
+            });
+        }
     }

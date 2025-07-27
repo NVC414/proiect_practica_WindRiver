@@ -1,4 +1,4 @@
-package com.windriver.pcgate.model;
+package com.windriver.pcgate.model.firebaseItems;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CpuItem{
+public class CpuItem
+    {
     private String name;
     private double price;
     private String imageUrl;
@@ -18,7 +19,7 @@ public class CpuItem{
     private boolean smt;
     private String socket;
     private int tdp;
-}
+    }
 
 
 /*

@@ -1,9 +1,8 @@
-package com.windriver.pcgate.ui.LoginRegister.Register;
+package com.windriver.pcgate.ui.loginRegister.register;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -11,21 +10,18 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.material.textfield.TextInputLayout;
-import com.windriver.pcgate.MainActivity;
-import com.windriver.pcgate.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.auth.AuthResult;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.windriver.pcgate.ui.LoginRegister.Login_activity;
+import com.windriver.pcgate.MainActivity;
+import com.windriver.pcgate.R;
+import com.windriver.pcgate.ui.loginRegister.Login_activity;
 
-public class Register_activity1 extends AppCompatActivity {
+public class Register_activity1 extends AppCompatActivity
+    {
     Button signup_next_button;
     TextInputEditText editTextEmail, editTextPassword;
     TextInputLayout textInputLayoutEmail, textInputLayoutPassword, textInputLayoutName, textInputLayoutPhone, textInputLayoutUsername;
@@ -35,19 +31,22 @@ public class Register_activity1 extends AppCompatActivity {
     ImageView ButtonBack;
 
     @Override
-    public void onStart() {
+    public void onStart()
+        {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
+        if (currentUser != null)
+        {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
             finish();
         }
-    }
+        }
 
     @SuppressLint("MissingInflatedId")
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+        {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         mAuth = FirebaseAuth.getInstance();
@@ -62,28 +61,23 @@ public class Register_activity1 extends AppCompatActivity {
         textInputLayoutUsername = findViewById(R.id.Username_Layout);
         ButtonBack = findViewById(R.id.ButtonBack);
 
-        textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        textView.setOnClickListener(view ->
+            {
                 Intent intent = new Intent(getApplicationContext(), Login_activity.class);
                 startActivity(intent);
                 finish();
-            }
-        });
+            });
 
 
-        ButtonBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        ButtonBack.setOnClickListener(view ->
+            {
                 Intent intent = new Intent(getApplicationContext(), Login_activity.class);
                 startActivity(intent);
                 finish();
-            }
-        });
+            });
         signup_next_button = findViewById(R.id.signup_next_button);
-        signup_next_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        signup_next_button.setOnClickListener(view ->
+            {
                 // Step 1: Validate all fields from this activity
                 // Use && for short-circuiting: if one fails, don't check others unnecessarily.
                 // Also, call all validation methods to ensure all errors are shown at once if multiple fields are wrong.
@@ -93,9 +87,11 @@ public class Register_activity1 extends AppCompatActivity {
                 boolean isEmailValid = validateEmail();
                 boolean isPasswordValid = validatePassword();
 
-                if (!isPhoneValid || !isNameValid || !isUsernameValid || !isEmailValid || !isPasswordValid) {
+                if (!isPhoneValid || !isNameValid || !isUsernameValid || !isEmailValid || !isPasswordValid)
+                {
                     // If any validation fails, Toast a general message or rely on individual field errors
-                    Toast.makeText(Register_activity1.this, "Please correct the errors.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Register_activity1.this, "Please correct the errors.",
+                            Toast.LENGTH_SHORT).show();
                     return; // Exit onClick
                 }
 
@@ -107,138 +103,178 @@ public class Register_activity1 extends AppCompatActivity {
                 String phone = textInputLayoutPhone.getEditText().getText().toString();
                 String username = textInputLayoutUsername.getEditText().getText().toString();
 
-                mAuth.createUserWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                progressBar.setVisibility(View.GONE);
-                                if (task.isSuccessful()) {
-                                    // User created successfully
-                                    Toast.makeText(Register_activity1.this, "Account created. Please verify your email.", Toast.LENGTH_LONG).show();
-                                    sendEmailVerifiation(); // This will sign the user out.
+                mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task ->
+                    {
+                        progressBar.setVisibility(View.GONE);
+                        if (task.isSuccessful())
+                        {
+                            // User created successfully
+                            Toast.makeText(Register_activity1.this,
+                                    "Account created. Please verify your email.",
+                                    Toast.LENGTH_LONG).show();
+                            sendEmailVerifiation(); // This will sign the user out.
 
-                                    // Get user details from the successful task for passing
-                                    FirebaseUser firebaseUser = task.getResult().getUser();
-                                    String userEmail = firebaseUser.getEmail(); // This is the confirmed email from Auth
+                            // Get user details from the successful task for passing
+                            FirebaseUser firebaseUser = task.getResult().getUser();
+                            String userEmail = firebaseUser.getEmail(); // This is the confirmed email from Auth
+                            String uid = firebaseUser.getUid(); // Get the UID
 
-                                    Intent intent = new Intent(getApplicationContext(), Register_activity2.class);
-                                    // Pass data collected in THIS activity and from Auth
-                                    intent.putExtra("email", userEmail);    // Pass the email used for auth
-                                    intent.putExtra("name", name);
-                                    intent.putExtra("phone", phone);
-                                    intent.putExtra("username", username);
-                                    // DO NOT pass the raw password further unless absolutely necessary for a non-DB purpose
-                                    // and even then, handle with extreme care. VerifyOTP does not seem to need it for UserHelperClass.
+                            Intent intent = new Intent(getApplicationContext(),
+                                    Register_activity2.class);
+                            // Pass data collected in THIS activity and from Auth
+                            intent.putExtra("email", userEmail);    // Pass the email used for auth
+                            intent.putExtra("name", name);
+                            intent.putExtra("phone", phone);
+                            intent.putExtra("username", username);
+                            intent.putExtra("uid", uid); // Pass the UID to next activity
+                            // DO NOT pass the raw password further unless absolutely necessary for a non-DB purpose
+                            // and even then, handle with extreme care. VerifyOTP does not seem to need it for UserHelperClass.
 
-                                    startActivity(intent);
-                                    finish();
-                                } else {
-                                    // Authentication failed
-                                    Toast.makeText(Register_activity1.this, "Authentication failed: " + task.getException().getMessage(),
-                                            Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        });
-            }
-        });
-    }
+                            startActivity(intent);
+                            finish();
+                        }
+                        else
+                        {
+                            // Authentication failed
+                            Toast.makeText(Register_activity1.this,
+                                    "Authentication failed: " + task.getException().getMessage(),
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    });
+            });
+        }
 
-    private void sendEmailVerifiation() {
+    private void sendEmailVerifiation()
+        {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if(user!=null)
-            user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful()){
-                        Toast.makeText(Register_activity1.this, "Verification email sent to "+user.getEmail(),
+        if (user != null)
+        {
+            user.sendEmailVerification().addOnCompleteListener(task ->
+                {
+                    if (task.isSuccessful())
+                    {
+                        Toast.makeText(Register_activity1.this,
+                                "Verification email sent to " + user.getEmail(),
                                 Toast.LENGTH_SHORT).show();
                         mAuth.signOut();
                     }
-                }
-            });
-    }
+                });
+        }
+        }
 
-    private boolean validateFullName() {
+    private boolean validateFullName()
+        {
         String val = textInputLayoutName.getEditText().getText().toString();
-        if (val.isEmpty()) {
+        if (val.isEmpty())
+        {
             textInputLayoutName.setError("Field cannot be empty");
             return false;
-        } else {
+        }
+        else
+        {
             textInputLayoutName.setError(null);
             textInputLayoutName.setErrorEnabled(false);
             return true;
         }
-    }
+        }
 
-    private boolean validateUsername() {
+    private boolean validateUsername()
+        {
         String val = textInputLayoutUsername.getEditText().getText().toString();
-        String checkspaces = "([a-zA-Z]*(\\s)*[\\.\\,]*)*";
-        if (val.isEmpty()) {
+        String checkspaces = "^[a-zA-Z0-9.,]+$"; // litere, cifre, punctuație, fără spații
+        if (val.isEmpty())
+        {
             textInputLayoutUsername.setError("Field cannot be empty");
             return false;
-        } else if (val.length() >= 20) {
+        }
+        else if (val.length() >= 20)
+        {
             textInputLayoutUsername.setError("Username invalid!");
             return false;
-        } else if (!val.matches(checkspaces)) {
-            textInputLayoutUsername.setError("No white spaces are allowed");
+        }
+        else if (!val.matches(checkspaces))
+        {
+            textInputLayoutUsername.setError("No white spaces or special characters allowed");
             return false;
-        } else {
+        }
+        else
+        {
             textInputLayoutUsername.setError(null);
             textInputLayoutUsername.setErrorEnabled(false);
             return true;
         }
-    }
+        }
 
-    private boolean validateEmail() {
+    private boolean validateEmail()
+        {
         String val = textInputLayoutEmail.getEditText().getText().toString();
         String checkEmail = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
-        if (val.isEmpty()) {
+        if (val.isEmpty())
+        {
             textInputLayoutEmail.setError("Field cannot be empty");
             return false;
-        } else if (!val.matches(checkEmail)) {
+        }
+        else if (!val.matches(checkEmail))
+        {
             textInputLayoutEmail.setError("Invalid Email!");
             return false;
-        } else {
+        }
+        else
+        {
             textInputLayoutEmail.setError(null);
             textInputLayoutEmail.setErrorEnabled(false);
             return true;
         }
-    }
-    private boolean validatePhoneNumber() {
+        }
+
+    private boolean validatePhoneNumber()
+        {
         String val = textInputLayoutPhone.getEditText().getText().toString();
-        String checkPhone = "[0]+[0-9]+[0-9]+[0-9]+[0-9]+[0-9]+[0-9]+[0-9]+[0-9]+[0-9]";
-        if (val.isEmpty()) {
+        String checkPhone = "0+[0-9]+[0-9]+[0-9]+[0-9]+[0-9]+[0-9]+[0-9]+[0-9]+[0-9]";
+        if (val.isEmpty())
+        {
             textInputLayoutPhone.setError("Field cannot be empty");
             return false;
-        } else if (!val.matches(checkPhone)) {
+        }
+        else if (!val.matches(checkPhone))
+        {
             textInputLayoutPhone.setError("Invalid Phone Number!");
             return false;
-        } else {
+        }
+        else
+        {
             textInputLayoutPhone.setError(null);
             textInputLayoutPhone.setErrorEnabled(false);
             return true;
         }
-    }
-    private boolean validatePassword() {
+        }
+
+    private boolean validatePassword()
+        {
         String val = textInputLayoutPassword.getEditText().getText().toString();
-        String checkPassword = "^" +
-                "(?=.*[0-9])" +    //at least 1 digit
+        String checkPassword = "^" + "(?=.*[0-9])" +    //at least 1 digit
                 "(?=.*[a-z])" +    //at least 1 lower case letter
                 "(?=.*[A-Z])" +    //at least 1 upper case letter
                 "(?=.*[@!#$%^&+=])" +    //at least 1 special character
                 "(?=\\S+$)" +    //no white spaces
                 ".{3,}" +    //at least 4 characters
                 "$";
-        if (val.isEmpty()) {
+        if (val.isEmpty())
+        {
             textInputLayoutPassword.setError("Field cannot be empty");
             return false;
-        } else if (!val.matches(checkPassword)) {
-            textInputLayoutPassword.setError("Password should contain at least 4 characters,\n including uppercase, lowercase, digit and special character.");
+        }
+        else if (!val.matches(checkPassword))
+        {
+            textInputLayoutPassword.setError(
+                    "Password should contain at least 4 characters,\n including uppercase, lowercase, digit and special character.");
             return false;
-        } else {
+        }
+        else
+        {
             textInputLayoutPassword.setError(null);
             textInputLayoutPassword.setErrorEnabled(false);
             return true;
         }
+        }
     }
-}

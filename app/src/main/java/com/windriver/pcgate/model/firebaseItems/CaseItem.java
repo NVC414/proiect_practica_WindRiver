@@ -1,4 +1,4 @@
-package com.windriver.pcgate.model;
+package com.windriver.pcgate.model.firebaseItems;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CaseItem {
+public class CaseItem
+    {
     private String name;
     private String price;
     private String imageUrl;
@@ -17,4 +18,4 @@ public class CaseItem {
     private String psu;
     private int internal35Bays;
     private double externalVolume;
-}
+    }

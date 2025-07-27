@@ -60,26 +60,33 @@ public class CpuDetailsActivity extends AppCompatActivity
         CartViewModel cartViewModel = CartViewModel.getInstance();
 
 
-        Runnable updateCartUI = () -> {
-            java.util.List<CartItem> items = cartViewModel.getCartItems().getValue();
-            int quantity = 0;
-            if (items != null) {
-                for (CartItem item : items) {
-                    if (item.getName().equals(name)) {
-                        quantity = item.getQuantity();
-                        break;
+        Runnable updateCartUI = () ->
+            {
+                java.util.List<CartItem> items = cartViewModel.getCartItems().getValue();
+                int quantity = 0;
+                if (items != null)
+                {
+                    for (CartItem item : items)
+                    {
+                        if (item.getName().equals(name))
+                        {
+                            quantity = item.getQuantity();
+                            break;
+                        }
                     }
                 }
-            }
-            if (quantity > 0) {
-                addToCartButton.setVisibility(View.GONE);
-                layoutCartActionsCpu.setVisibility(View.VISIBLE);
-                textQuantityCpu.setText(String.valueOf(quantity));
-            } else {
-                addToCartButton.setVisibility(View.VISIBLE);
-                layoutCartActionsCpu.setVisibility(View.GONE);
-            }
-        };
+                if (quantity > 0)
+                {
+                    addToCartButton.setVisibility(View.GONE);
+                    layoutCartActionsCpu.setVisibility(View.VISIBLE);
+                    textQuantityCpu.setText(String.valueOf(quantity));
+                }
+                else
+                {
+                    addToCartButton.setVisibility(View.VISIBLE);
+                    layoutCartActionsCpu.setVisibility(View.GONE);
+                }
+            };
         cartViewModel.getCartItems().observe(this, items -> updateCartUI.run());
         updateCartUI.run();
 
@@ -96,31 +103,41 @@ public class CpuDetailsActivity extends AppCompatActivity
         cpuSocket.setText("Socket: " + (socket != null ? socket : ""));
         cpuTDP.setText("TDP: " + tdp + " W");
 
-        addToCartButton.setOnClickListener(v -> {
-            CartItem cartItem = new CartItem(name, price, 1);
-            cartViewModel.addItem(cartItem);
-            Toast.makeText(this, "Added to cart", Toast.LENGTH_SHORT).show();
-        });
-        buttonAddMoreToCartCpu.setOnClickListener(v -> {
-            CartItem cartItem = new CartItem(name, price, 1);
-            cartViewModel.addItem(cartItem);
-        });
-        buttonRemoveFromCartCpu.setOnClickListener(v -> {
-            java.util.List<CartItem> items = cartViewModel.getCartItems().getValue();
-            if (items != null) {
-                for (CartItem item : items) {
-                    if (item.getName().equals(name)) {
-                        int newQty = item.getQuantity() - 1;
-                        if (newQty > 0) {
-                            cartViewModel.addItem(new CartItem(name, price, -1));
-                        } else {
-                            cartViewModel.addItem(new CartItem(name, price, -item.getQuantity()));
+        addToCartButton.setOnClickListener(v ->
+            {
+                CartItem cartItem = new CartItem(name, price, 1);
+                cartViewModel.addItem(cartItem);
+                Toast.makeText(this, "Added to cart", Toast.LENGTH_SHORT).show();
+            });
+        buttonAddMoreToCartCpu.setOnClickListener(v ->
+            {
+                CartItem cartItem = new CartItem(name, price, 1);
+                cartViewModel.addItem(cartItem);
+            });
+        buttonRemoveFromCartCpu.setOnClickListener(v ->
+            {
+                java.util.List<CartItem> items = cartViewModel.getCartItems().getValue();
+                if (items != null)
+                {
+                    for (CartItem item : items)
+                    {
+                        if (item.getName().equals(name))
+                        {
+                            int newQty = item.getQuantity() - 1;
+                            if (newQty > 0)
+                            {
+                                cartViewModel.addItem(new CartItem(name, price, -1));
+                            }
+                            else
+                            {
+                                cartViewModel.addItem(
+                                        new CartItem(name, price, -item.getQuantity()));
+                            }
+                            break;
                         }
-                        break;
                     }
                 }
-            }
-        });
+            });
         backButton.setOnClickListener(v -> finish());
         }
     }

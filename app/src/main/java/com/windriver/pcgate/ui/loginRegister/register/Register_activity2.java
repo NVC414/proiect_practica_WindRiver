@@ -1,18 +1,15 @@
-package com.windriver.pcgate.ui.LoginRegister.Register;
+package com.windriver.pcgate.ui.loginRegister.register;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView; // Assuming Occupation is a TextView that you type into or set programmatically
-// If Occupation is an EditText, use EditText instead of TextView for textViews variable.
-import android.widget.EditText; // If Occupation is an EditText
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.windriver.pcgate.R;
@@ -20,7 +17,8 @@ import com.windriver.pcgate.R;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class Register_activity2 extends AppCompatActivity {
+public class Register_activity2 extends AppCompatActivity
+    {
     // If Occupation is an EditText, use:
     // EditText occupationEditText;
     TextView textViewsOccupation; // Renamed for clarity if it's a TextView
@@ -30,10 +28,11 @@ public class Register_activity2 extends AppCompatActivity {
     DatePicker datePickerAge; // Renamed for clarity
 
     // Variables to hold data passed from Register_activity1
-    String  emailFromReg1, nameFromReg1, phoneFromReg1, usernameFromReg1;
+    String emailFromReg1, nameFromReg1, phoneFromReg1, usernameFromReg1, uidFromReg1;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+        {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register2);
 
@@ -43,6 +42,7 @@ public class Register_activity2 extends AppCompatActivity {
         nameFromReg1 = incomingIntent.getStringExtra("name");
         phoneFromReg1 = incomingIntent.getStringExtra("phone");
         usernameFromReg1 = incomingIntent.getStringExtra("username");
+        uidFromReg1 = incomingIntent.getStringExtra("uid"); // Get UID
 
         // Initialize UI elements
         radioGroupGender = findViewById(R.id.RadioGroup);
@@ -56,10 +56,10 @@ public class Register_activity2 extends AppCompatActivity {
 
         buttonNext = findViewById(R.id.next_button);
 
-        buttonNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!validateGender() || !validateAge()) { // Use || for logical OR
+        buttonNext.setOnClickListener(view ->
+            {
+                if (!validateGender() || !validateAge())
+                { // Use || for logical OR
                     return;
                 }
 
@@ -74,7 +74,8 @@ public class Register_activity2 extends AppCompatActivity {
                 int year = datePickerAge.getYear();
                 // Format the date as a string (e.g., "YYYY-MM-DD")
                 // Adding 1 to month because it's 0-indexed
-                String dateOfBirth = String.format(Locale.getDefault(), "%04d-%02d-%02d", year, month + 1, day);
+                String dateOfBirth = String.format(Locale.getDefault(), "%04d-%02d-%02d", year,
+                        month + 1, day);
 
                 // Get Occupation
                 // If textViewsOccupation is an EditText:
@@ -84,36 +85,46 @@ public class Register_activity2 extends AppCompatActivity {
 
 
                 // --- Create Intent for VerifyOTP ---
-                Intent intentToVerifyOTP = new Intent(getApplicationContext(), VerifyOTP.class);
-
-                // Pass ALL necessary data
-                // Data from Register_activity1
-                intentToVerifyOTP.putExtra("email", emailFromReg1);
-                intentToVerifyOTP.putExtra("name", nameFromReg1);
-                intentToVerifyOTP.putExtra("phone", phoneFromReg1);
-                intentToVerifyOTP.putExtra("username", usernameFromReg1);
-
-                // Data collected in Register_activity2
-                intentToVerifyOTP.putExtra("gender", gender);
-                intentToVerifyOTP.putExtra("date", dateOfBirth); // Pass the formatted date string
-                intentToVerifyOTP.putExtra("occupation", occupation);
+                Intent intentToVerifyOTP = getIntentToVerifyOTP(gender, dateOfBirth, occupation);
 
                 startActivity(intentToVerifyOTP);
                 finish();
-            }
-        });
-    }
+            });
+        }
 
-    private boolean validateGender() {
-        if (radioGroupGender.getCheckedRadioButtonId() == -1) {
+    @NonNull
+    private Intent getIntentToVerifyOTP(String gender, String dateOfBirth, String occupation)
+        {
+        Intent intentToVerifyOTP = new Intent(getApplicationContext(), VerifyOTP.class);
+
+        // Pass ALL necessary data
+        // Data from Register_activity1
+        intentToVerifyOTP.putExtra("email", emailFromReg1);
+        intentToVerifyOTP.putExtra("name", nameFromReg1);
+        intentToVerifyOTP.putExtra("phone", phoneFromReg1);
+        intentToVerifyOTP.putExtra("username", usernameFromReg1);
+        intentToVerifyOTP.putExtra("uid", uidFromReg1);
+        intentToVerifyOTP.putExtra("gender", gender);
+        intentToVerifyOTP.putExtra("date", dateOfBirth);
+        intentToVerifyOTP.putExtra("occupation", occupation);
+        return intentToVerifyOTP;
+        }
+
+    private boolean validateGender()
+        {
+        if (radioGroupGender.getCheckedRadioButtonId() == -1)
+        {
             Toast.makeText(this, "Please select gender", Toast.LENGTH_SHORT).show();
             return false;
-        } else {
+        }
+        else
+        {
             return true;
         }
-    }
+        }
 
-    private boolean validateAge() {
+    private boolean validateAge()
+        {
         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
         int userBirthYear = datePickerAge.getYear();
         // More accurate age calculation would also consider month and day
@@ -121,15 +132,20 @@ public class Register_activity2 extends AppCompatActivity {
 
         // You might want to get day/month from DatePicker and Calendar for a more precise age check
         // For simplicity, using year difference for now.
-        if (age < 12) {
-            Toast.makeText(this, "You are not old enough to create an account!", Toast.LENGTH_SHORT).show();
+        if (age < 12)
+        {
+            Toast.makeText(this, "You are not old enough to create an account!",
+                    Toast.LENGTH_SHORT).show();
             return false;
-        } else if (age > 100) { // Example upper bound
+        }
+        else if (age > 100)
+        { // Example upper bound
             Toast.makeText(this, "Please enter a valid birth year.", Toast.LENGTH_SHORT).show();
             return false;
         }
-        else {
+        else
+        {
             return true;
         }
+        }
     }
-}

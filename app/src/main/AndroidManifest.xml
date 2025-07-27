@@ -12,19 +12,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication">
         <activity
-            android:name=".ui.LoginRegister.Register.VerifyOTP"
-            android:exported="false"
-            android:theme="@style/Theme.Material3.Light.NoActionBar"/>
-        <activity
-            android:name=".ui.LoginRegister.Register.Register_activity1"
+            android:name=".ui.loginRegister.register.VerifyOTP"
             android:exported="false"
             android:theme="@style/Theme.Material3.Light.NoActionBar" />
         <activity
-            android:name=".ui.LoginRegister.Register.Register_activity2"
+            android:name=".ui.loginRegister.register.Register_activity1"
             android:exported="false"
             android:theme="@style/Theme.Material3.Light.NoActionBar" />
         <activity
-            android:name=".ui.LoginRegister.Login_activity"
+            android:name=".ui.loginRegister.register.Register_activity2"
+            android:exported="false"
+            android:theme="@style/Theme.Material3.Light.NoActionBar" />
+        <activity
+            android:name=".ui.loginRegister.Login_activity"
             android:exported="true"
             android:theme="@style/Theme.Material3.Light.NoActionBar">
             <intent-filter>
@@ -35,8 +35,7 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:exported="true"
-            >
+            android:exported="true">
 
         </activity>
         <activity
@@ -49,9 +48,11 @@
             android:name=".ui.detailView.MemoryDetailsActivity"
             android:exported="false" />
 
-        <activity android:name=".ui.detailView.MotherboardDetailsActivity"
+        <activity
+            android:name=".ui.detailView.MotherboardDetailsActivity"
             android:exported="false" />
-        <activity android:name=".ui.detailView.GpuDetailsActivity"
+        <activity
+            android:name=".ui.detailView.GpuDetailsActivity"
             android:exported="false" />
         <activity
             android:name=".ui.detailView.PsuDetailsActivity"

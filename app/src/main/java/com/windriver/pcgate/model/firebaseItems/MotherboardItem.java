@@ -1,4 +1,4 @@
-package com.windriver.pcgate.model;
+package com.windriver.pcgate.model.firebaseItems;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MotherboardItem {
+public class MotherboardItem
+    {
     private String name;
     private String price;
     private String imageUrl;
@@ -17,7 +18,7 @@ public class MotherboardItem {
     private String socket;
     private int maxMemory;
     private int memorySlots;
-}
+    }
 /*
 public class MotherboardItem {
     public String name;

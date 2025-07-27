@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.windriver.pcgate.R;
-import com.windriver.pcgate.model.CaseItem;
+import com.windriver.pcgate.model.firebaseItems.CaseItem;
 
 import java.util.List;
 
@@ -68,7 +68,7 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
         this.viewMoreClickListener = listener;
         }
 
-        public interface OnItemClickListener
+    public interface OnItemClickListener
         {
         void onItemClick(CaseItem item);
         }
@@ -81,12 +81,14 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
 
     public void setCartQuantities(java.util.Map<String, Integer> cartQuantities)
         {
-        for (int i = 0; i < caseList.size(); i++) {
+        for (int i = 0; i < caseList.size(); i++)
+        {
             CaseItem item = caseList.get(i);
             String key = item.getName();
             Integer oldQty = this.cartQuantities.get(key);
             Integer newQty = cartQuantities.get(key);
-            if ((oldQty == null && newQty != null) || (oldQty != null && !oldQty.equals(newQty))) {
+            if ((oldQty == null && newQty != null) || (oldQty != null && !oldQty.equals(newQty)))
+            {
                 notifyItemChanged(i);
             }
         }
@@ -108,7 +110,7 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
     @Override
     public CaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
         {
-            View view = LayoutInflater.from(parent.getContext()).inflate(layoutResId, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(layoutResId, parent, false);
         if (viewType == TYPE_VIEW_MORE)
         {
             return new ViewMoreViewHolder(view);
@@ -185,6 +187,7 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
                     if (addToCartClickListener != null)
                     {
                         addToCartClickListener.onAddToCart(item);
+                        notifyItemChanged(holder.getBindingAdapterPosition());
                     }
                 });
             holder.buttonAddMoreToCart.setOnClickListener(v ->
@@ -192,6 +195,7 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
                     if (addToCartClickListener != null)
                     {
                         addToCartClickListener.onAddToCart(item);
+                        notifyItemChanged(holder.getBindingAdapterPosition());
                     }
                 });
             holder.buttonRemoveFromCart.setOnClickListener(v ->
@@ -199,6 +203,7 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
                     if (removeFromCartClickListener != null)
                     {
                         removeFromCartClickListener.onRemoveFromCart(item);
+                        notifyItemChanged(holder.getBindingAdapterPosition());
                     }
                 });
             holder.itemView.setOnClickListener(v ->
@@ -225,28 +230,37 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
 
     public void setCaseList(List<CaseItem> newList)
         {
-        androidx.recyclerview.widget.DiffUtil.DiffResult diffResult = androidx.recyclerview.widget.DiffUtil.calculateDiff(new androidx.recyclerview.widget.DiffUtil.Callback() {
-            @Override
-            public int getOldListSize() {
-                return caseList.size();
-            }
-            @Override
-            public int getNewListSize() {
-                return newList.size();
-            }
-            @Override
-            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                CaseItem oldItem = caseList.get(oldItemPosition);
-                CaseItem newItem = newList.get(newItemPosition);
-                return oldItem.getName().equals(newItem.getName());
-            }
-            @Override
-            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                CaseItem oldItem = caseList.get(oldItemPosition);
-                CaseItem newItem = newList.get(newItemPosition);
-                return oldItem.equals(newItem);
-            }
-        });
+        androidx.recyclerview.widget.DiffUtil.DiffResult diffResult = androidx.recyclerview.widget.DiffUtil.calculateDiff(
+                new androidx.recyclerview.widget.DiffUtil.Callback()
+                    {
+                    @Override
+                    public int getOldListSize()
+                        {
+                        return caseList.size();
+                        }
+
+                    @Override
+                    public int getNewListSize()
+                        {
+                        return newList.size();
+                        }
+
+                    @Override
+                    public boolean areItemsTheSame(int oldItemPosition, int newItemPosition)
+                        {
+                        CaseItem oldItem = caseList.get(oldItemPosition);
+                        CaseItem newItem = newList.get(newItemPosition);
+                        return oldItem.getName().equals(newItem.getName());
+                        }
+
+                    @Override
+                    public boolean areContentsTheSame(int oldItemPosition, int newItemPosition)
+                        {
+                        CaseItem oldItem = caseList.get(oldItemPosition);
+                        CaseItem newItem = newList.get(newItemPosition);
+                        return oldItem.equals(newItem);
+                        }
+                    });
         caseList.clear();
         caseList.addAll(newList);
         diffResult.dispatchUpdatesTo(this);

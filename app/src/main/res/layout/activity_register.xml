@@ -8,7 +8,7 @@
     android:padding="24dp"
     style="@style/ScreenBackground"
     android:background="@color/background"
-    tools:context=".ui.LoginRegister.Register.Register_activity1">
+    tools:context=".ui.loginRegister.register.Register_activity1">
 
     <TextView
         android:id="@+id/registerTitle"
@@ -31,7 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="52dp"
-        android:textColorHint="@color/white"
+        android:textColorHint="@android:color/white"
         app:boxBackgroundMode="outline"
         app:boxCornerRadiusBottomEnd="12dp"
         app:boxCornerRadiusBottomStart="12dp"
@@ -44,7 +44,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/registerTitle"
         app:startIconDrawable="@drawable/pencil"
-        app:startIconTint="@color/white">
+        app:startIconTint="@android:color/white">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/Occupation"
@@ -56,7 +56,7 @@
             android:inputType="textPersonName"
             android:paddingStart="45dp"
             android:singleLine="true"
-            android:textColorHint="@color/white" />
+            android:textColorHint="@android:color/white" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -76,8 +76,8 @@
         app:boxCornerRadiusTopEnd="12dp"
         app:boxCornerRadiusBottomStart="12dp"
         app:boxCornerRadiusBottomEnd="12dp"
-        app:startIconTint="@color/white"
-        android:textColorHint="@color/white">
+        app:startIconTint="@android:color/white"
+        android:textColorHint="@android:color/white">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/username"
@@ -89,9 +89,10 @@
             android:inputType="text"
             android:singleLine="true"
             style="@style/TextColor"
-            android:textColorHint="@color/white" />
+            android:textColorHint="@android:color/white" />
 
     </com.google.android.material.textfield.TextInputLayout>
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/emailLayout"
         android:layout_width="0dp"
@@ -109,8 +110,8 @@
         app:boxCornerRadiusBottomStart="12dp"
         app:startIconDrawable="@drawable/mail_outline"
         app:boxCornerRadiusBottomEnd="12dp"
-        app:startIconTint="@color/white"
-        android:textColorHint="@color/white">
+        app:startIconTint="@android:color/white"
+        android:textColorHint="@android:color/white">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/email"
@@ -141,8 +142,8 @@
         app:boxCornerRadiusBottomStart="12dp"
         app:startIconDrawable="@drawable/phone_icon"
         app:boxCornerRadiusBottomEnd="12dp"
-        app:startIconTint="@color/white"
-        android:textColorHint="@color/white">
+        app:startIconTint="@android:color/white"
+        android:textColorHint="@android:color/white">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/PhoneNumber"
@@ -154,7 +155,7 @@
             android:inputType="phone"
             android:singleLine="true"
             style="@style/TextColor"
-            android:textColorHint="@color/white" />
+            android:textColorHint="@android:color/white" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -177,8 +178,8 @@
         app:boxCornerRadiusBottomStart="12dp"
         app:startIconDrawable="@drawable/lock"
         app:boxCornerRadiusBottomEnd="12dp"
-        app:startIconTint="@color/white"
-        android:textColorHint="@color/white">
+        app:startIconTint="@android:color/white"
+        android:textColorHint="@android:color/white">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/password"
@@ -190,7 +191,7 @@
             android:inputType="textPassword"
             android:singleLine="true"
             style="@style/TextColor"
-            android:textColorHint="@color/white" />
+            android:textColorHint="@android:color/white" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -242,6 +243,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/back_arrow"
-        app:tint="@color/white" />
+        app:tint="@android:color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

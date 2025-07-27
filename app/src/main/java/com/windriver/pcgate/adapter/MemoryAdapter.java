@@ -12,9 +12,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.windriver.pcgate.R;
-import com.windriver.pcgate.model.MemoryItem;
 import com.bumptech.glide.Glide;
+import com.windriver.pcgate.R;
+import com.windriver.pcgate.model.firebaseItems.MemoryItem;
 
 import java.util.List;
 
@@ -67,7 +67,7 @@ public class MemoryAdapter extends RecyclerView.Adapter<MemoryAdapter.MemoryView
         this.viewMoreClickListener = listener;
         }
 
-        public interface OnItemClickListener
+    public interface OnItemClickListener
         {
         void onItemClick(MemoryItem item);
         }
@@ -77,56 +77,69 @@ public class MemoryAdapter extends RecyclerView.Adapter<MemoryAdapter.MemoryView
         this.itemClickListener = listener;
         }
 
-    public interface OnRemoveFromCartClickListener {
+    public interface OnRemoveFromCartClickListener
+        {
         void onRemoveFromCart(MemoryItem item);
-    }
+        }
 
-    public void setOnRemoveFromCartClickListener(OnRemoveFromCartClickListener listener) {
+    public void setOnRemoveFromCartClickListener(OnRemoveFromCartClickListener listener)
+        {
         this.removeFromCartClickListener = listener;
-    }
+        }
 
     public void setCartQuantities(java.util.Map<String, Integer> cartQuantities)
-    {
-        for (int i = 0; i < memoryList.size(); i++) {
+        {
+        for (int i = 0; i < memoryList.size(); i++)
+        {
             MemoryItem item = memoryList.get(i);
             String key = item.getName();
             Integer oldQty = this.cartQuantities.get(key);
             Integer newQty = cartQuantities.get(key);
-            if ((oldQty == null && newQty != null) || (oldQty != null && !oldQty.equals(newQty))) {
+            if ((oldQty == null && newQty != null) || (oldQty != null && !oldQty.equals(newQty)))
+            {
                 notifyItemChanged(i);
             }
         }
         this.cartQuantities = cartQuantities;
-    }
+        }
 
     public void setMemoryList(List<MemoryItem> newList)
-    {
-        androidx.recyclerview.widget.DiffUtil.DiffResult diffResult = androidx.recyclerview.widget.DiffUtil.calculateDiff(new androidx.recyclerview.widget.DiffUtil.Callback() {
-            @Override
-            public int getOldListSize() {
-                return memoryList.size();
-            }
-            @Override
-            public int getNewListSize() {
-                return newList.size();
-            }
-            @Override
-            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                MemoryItem oldItem = memoryList.get(oldItemPosition);
-                MemoryItem newItem = newList.get(newItemPosition);
-                return oldItem.getName().equals(newItem.getName());
-            }
-            @Override
-            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                MemoryItem oldItem = memoryList.get(oldItemPosition);
-                MemoryItem newItem = newList.get(newItemPosition);
-                return oldItem.equals(newItem);
-            }
-        });
+        {
+        androidx.recyclerview.widget.DiffUtil.DiffResult diffResult = androidx.recyclerview.widget.DiffUtil.calculateDiff(
+                new androidx.recyclerview.widget.DiffUtil.Callback()
+                    {
+                    @Override
+                    public int getOldListSize()
+                        {
+                        return memoryList.size();
+                        }
+
+                    @Override
+                    public int getNewListSize()
+                        {
+                        return newList.size();
+                        }
+
+                    @Override
+                    public boolean areItemsTheSame(int oldItemPosition, int newItemPosition)
+                        {
+                        MemoryItem oldItem = memoryList.get(oldItemPosition);
+                        MemoryItem newItem = newList.get(newItemPosition);
+                        return oldItem.getName().equals(newItem.getName());
+                        }
+
+                    @Override
+                    public boolean areContentsTheSame(int oldItemPosition, int newItemPosition)
+                        {
+                        MemoryItem oldItem = memoryList.get(oldItemPosition);
+                        MemoryItem newItem = newList.get(newItemPosition);
+                        return oldItem.equals(newItem);
+                        }
+                    });
         memoryList.clear();
         memoryList.addAll(newList);
         diffResult.dispatchUpdatesTo(this);
-    }
+        }
 
     @Override
     public int getItemViewType(int position)
@@ -143,7 +156,7 @@ public class MemoryAdapter extends RecyclerView.Adapter<MemoryAdapter.MemoryView
     @Override
     public MemoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
         {
-            View view = LayoutInflater.from(parent.getContext()).inflate(layoutResId, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(layoutResId, parent, false);
         if (viewType == TYPE_VIEW_MORE)
         {
             return new ViewMoreViewHolder(view);
@@ -184,29 +197,42 @@ public class MemoryAdapter extends RecyclerView.Adapter<MemoryAdapter.MemoryView
             holder.name.setText(item.getName());
             holder.price.setText("$%s".formatted(item.getPrice()));
             Integer quantityObj = cartQuantities.get(item.getName());
-            int quantity = (quantityObj != null) ? quantityObj : 0;            if (quantity > 0) {
+            int quantity = (quantityObj != null) ? quantityObj : 0;
+            if (quantity > 0)
+            {
                 holder.addToCartButton.setVisibility(View.GONE);
                 holder.layoutCartActions.setVisibility(View.VISIBLE);
                 holder.textQuantity.setText(String.valueOf(quantity));
-            } else {
+            }
+            else
+            {
                 holder.addToCartButton.setVisibility(View.VISIBLE);
                 holder.layoutCartActions.setVisibility(View.GONE);
             }
-            holder.addToCartButton.setOnClickListener(v -> {
-                if (addToCartClickListener != null) {
-                    addToCartClickListener.onAddToCart(item);
-                }
-            });
-            holder.buttonAddMoreToCart.setOnClickListener(v -> {
-                if (addToCartClickListener != null) {
-                    addToCartClickListener.onAddToCart(item);
-                }
-            });
-            holder.buttonRemoveFromCart.setOnClickListener(v -> {
-                if (removeFromCartClickListener != null) {
-                    removeFromCartClickListener.onRemoveFromCart(item);
-                }
-            });
+            holder.addToCartButton.setOnClickListener(v ->
+                {
+                    if (addToCartClickListener != null)
+                    {
+                        addToCartClickListener.onAddToCart(item);
+                        notifyItemChanged(holder.getBindingAdapterPosition());
+                    }
+                });
+            holder.buttonAddMoreToCart.setOnClickListener(v ->
+                {
+                    if (addToCartClickListener != null)
+                    {
+                        addToCartClickListener.onAddToCart(item);
+                        notifyItemChanged(holder.getBindingAdapterPosition());
+                    }
+                });
+            holder.buttonRemoveFromCart.setOnClickListener(v ->
+                {
+                    if (removeFromCartClickListener != null)
+                    {
+                        removeFromCartClickListener.onRemoveFromCart(item);
+                        notifyItemChanged(holder.getBindingAdapterPosition());
+                    }
+                });
             holder.itemView.setOnClickListener(v ->
                 {
                     if (itemClickListener != null)

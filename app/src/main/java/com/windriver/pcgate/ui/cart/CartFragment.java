@@ -37,17 +37,20 @@ public class CartFragment extends Fragment
         final TextView textTotal = binding.textTotal;
         Button buttonCheckout = binding.buttonCheckout;
 
-        binding.fabChat.setOnClickListener(v -> {
-            androidx.navigation.NavController navController = androidx.navigation.Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main);
-            if (navController.getCurrentDestination() != null && navController.getCurrentDestination().getId() != R.id.chatFragment) {
-                navController.navigate(R.id.chatFragment);
-            }
-        });
+        binding.fabChat.setOnClickListener(v ->
+            {
+                androidx.navigation.NavController navController = androidx.navigation.Navigation.findNavController(
+                        requireActivity(), R.id.nav_host_fragment_activity_main);
+                if (navController.getCurrentDestination() != null && navController.getCurrentDestination().getId() != R.id.chatFragment)
+                {
+                    navController.navigate(R.id.chatFragment);
+                }
+            });
 
-        cartViewModel.getCartItems().observe(getViewLifecycleOwner(), items ->
-                cartAdapter.setCartItems(items));
-        cartViewModel.getTotalSum().observe(getViewLifecycleOwner(), sum ->
-                textTotal.setText(String.format("Total: $%.2f", sum)));
+        cartViewModel.getCartItems().observe(getViewLifecycleOwner(),
+                items -> cartAdapter.setCartItems(items));
+        cartViewModel.getTotalSum().observe(getViewLifecycleOwner(),
+                sum -> textTotal.setText(String.format("Total: $%.2f", sum)));
         return root;
         }
 

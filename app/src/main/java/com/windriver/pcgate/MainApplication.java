@@ -10,45 +10,72 @@ import com.windriver.pcgate.ui.chat.ChatMessage;
 
 import java.util.List;
 
-public class MainApplication extends Application {
+public class MainApplication extends Application
+    {
     private int activityReferences = 0;
     private boolean isActivityChangingConfigurations = false;
 
     @Override
-    public void onCreate() {
+    public void onCreate()
+        {
         super.onCreate();
-        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
+        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks()
+            {
             @Override
-            public void onActivityCreated(@NonNull Activity activity, android.os.Bundle savedInstanceState) {}
+            public void onActivityCreated(@NonNull Activity activity,
+                                          android.os.Bundle savedInstanceState)
+                {
+                }
+
             @Override
-            public void onActivityStarted(@NonNull Activity activity) {
+            public void onActivityStarted(@NonNull Activity activity)
+                {
                 activityReferences++;
                 isActivityChangingConfigurations = activity.isChangingConfigurations();
-            }
+                }
+
             @Override
-            public void onActivityResumed(@NonNull Activity activity) {}
+            public void onActivityResumed(@NonNull Activity activity)
+                {
+                }
+
             @Override
-            public void onActivityPaused(@NonNull Activity activity) {}
+            public void onActivityPaused(@NonNull Activity activity)
+                {
+                }
+
             @Override
-            public void onActivityStopped(@NonNull Activity activity) {
+            public void onActivityStopped(@NonNull Activity activity)
+                {
                 activityReferences--;
                 isActivityChangingConfigurations = activity.isChangingConfigurations();
-                if (activityReferences == 0 && !isActivityChangingConfigurations) {
+                if (activityReferences == 0 && !isActivityChangingConfigurations)
+                {
                     saveChatToHistory(activity);
                 }
-            }
+                }
+
             @Override
-            public void onActivitySaveInstanceState(@NonNull Activity activity, @NonNull android.os.Bundle outState) {}
+            public void onActivitySaveInstanceState(@NonNull Activity activity,
+                                                    @NonNull android.os.Bundle outState)
+                {
+                }
+
             @Override
-            public void onActivityDestroyed(@NonNull Activity activity) {}
-        });
-    }
-    private void saveChatToHistory(Activity activity) {
+            public void onActivityDestroyed(@NonNull Activity activity)
+                {
+                }
+            });
+        }
+
+    private void saveChatToHistory(Activity activity)
+        {
         ChatHistoryManager manager = new ChatHistoryManager(activity.getApplicationContext());
         List<ChatMessage> current = manager.loadCurrentChat();
-        if (current != null && !current.isEmpty()) {
+        if (current != null && !current.isEmpty())
+        {
             manager.saveChat(current);
             manager.clearCurrentChat();
         }
+        }
     }
-}

@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.windriver.pcgate.R;
-import com.windriver.pcgate.model.PsuItem;
+import com.windriver.pcgate.model.firebaseItems.PsuItem;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class PsuAdapter extends RecyclerView.Adapter<PsuAdapter.PsuViewHolder>
-{
+    {
     private final List<PsuItem> psuList;
     private OnAddToCartClickListener addToCartClickListener;
     private static final int TYPE_PSU = 0;
@@ -35,196 +35,261 @@ public class PsuAdapter extends RecyclerView.Adapter<PsuAdapter.PsuViewHolder>
     private OnItemClickListener itemClickListener;
     private java.util.Map<String, Integer> cartQuantities = new java.util.HashMap<>();
 
-    public PsuAdapter(List<PsuItem> psuList) {
+    public PsuAdapter(List<PsuItem> psuList)
+        {
         this(psuList, R.layout.item_psu);
-    }
+        }
 
-    public PsuAdapter(List<PsuItem> psuList, int layoutResId) {
+    public PsuAdapter(List<PsuItem> psuList, int layoutResId)
+        {
         this.psuList = psuList;
         this.layoutResId = layoutResId;
-    }
+        }
 
-    public interface OnAddToCartClickListener {
+    public interface OnAddToCartClickListener
+        {
         void onAddToCart(PsuItem item);
-    }
+        }
 
-    public void setOnAddToCartClickListener(OnAddToCartClickListener listener) {
+    public void setOnAddToCartClickListener(OnAddToCartClickListener listener)
+        {
         this.addToCartClickListener = listener;
-    }
+        }
 
-    public interface OnViewMoreClickListener {
+    public interface OnViewMoreClickListener
+        {
         void onViewMore();
-    }
+        }
 
-    public void setOnViewMoreClickListener(OnViewMoreClickListener listener) {
+    public void setOnViewMoreClickListener(OnViewMoreClickListener listener)
+        {
         this.viewMoreClickListener = listener;
-    }
+        }
 
-    public interface OnItemClickListener {
+    public interface OnItemClickListener
+        {
         void onItemClick(PsuItem item);
-    }
+        }
 
-    public void setOnItemClickListener(OnItemClickListener listener) {
+    public void setOnItemClickListener(OnItemClickListener listener)
+        {
         this.itemClickListener = listener;
-    }
+        }
 
-    public void setCartQuantities(java.util.Map<String, Integer> cartQuantities) {
-        for (int i = 0; i < psuList.size(); i++) {
+    public void setCartQuantities(java.util.Map<String, Integer> cartQuantities)
+        {
+        for (int i = 0; i < psuList.size(); i++)
+        {
             PsuItem item = psuList.get(i);
             String key = item.getName();
             Integer oldQty = this.cartQuantities.get(key);
             Integer newQty = cartQuantities.get(key);
-            if ((oldQty == null && newQty != null) || (oldQty != null && !oldQty.equals(newQty))) {
+            if ((oldQty == null && newQty != null) || (oldQty != null && !oldQty.equals(newQty)))
+            {
                 notifyItemChanged(i);
             }
         }
         this.cartQuantities = cartQuantities;
-    }
+        }
 
     @Override
-    public int getItemViewType(int position) {
+    public int getItemViewType(int position)
+        {
         PsuItem item = psuList.get(position);
-        if ("__VIEW_MORE__".equals(item.getName())) {
+        if ("__VIEW_MORE__".equals(item.getName()))
+        {
             return TYPE_VIEW_MORE;
         }
         return TYPE_PSU;
-    }
+        }
 
     @NonNull
     @Override
-    public PsuViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public PsuViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
+        {
         View view = LayoutInflater.from(parent.getContext()).inflate(layoutResId, parent, false);
-        if (viewType == TYPE_VIEW_MORE) {
+        if (viewType == TYPE_VIEW_MORE)
+        {
             return new ViewMoreViewHolder(view);
-        } else {
+        }
+        else
+        {
             return new PsuViewHolder(view);
         }
-    }
+        }
 
-    public interface OnRemoveFromCartClickListener {
+    public interface OnRemoveFromCartClickListener
+        {
         void onRemoveFromCart(PsuItem item);
-    }
+        }
 
     private OnRemoveFromCartClickListener removeFromCartClickListener;
 
-    public void setOnRemoveFromCartClickListener(OnRemoveFromCartClickListener listener) {
+    public void setOnRemoveFromCartClickListener(OnRemoveFromCartClickListener listener)
+        {
         this.removeFromCartClickListener = listener;
-    }
+        }
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(@NonNull PsuViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull PsuViewHolder holder, int position)
+        {
         int viewType = getItemViewType(position);
-        if (viewType == TYPE_VIEW_MORE) {
+        if (viewType == TYPE_VIEW_MORE)
+        {
             ViewMoreViewHolder viewMoreHolder = (ViewMoreViewHolder) holder;
             viewMoreHolder.name.setText("View More");
             viewMoreHolder.price.setText("");
             viewMoreHolder.addToCartButton.setVisibility(View.GONE);
-            if (viewMoreHolder.psuImage != null) {
+            if (viewMoreHolder.psuImage != null)
+            {
                 viewMoreHolder.psuImage.setVisibility(View.VISIBLE);
                 viewMoreHolder.psuImage.setImageResource(R.drawable.ic_psu_placeholder);
             }
-            viewMoreHolder.itemView.setOnClickListener(v -> {
-                if (viewMoreClickListener != null) {
-                    viewMoreClickListener.onViewMore();
-                }
-            });
-        } else {
+            viewMoreHolder.itemView.setOnClickListener(v ->
+                {
+                    if (viewMoreClickListener != null)
+                    {
+                        viewMoreClickListener.onViewMore();
+                    }
+                });
+        }
+        else
+        {
             PsuItem item = psuList.get(position);
             holder.name.setText(item.getName());
             holder.price.setText("$" + item.getPrice());
             Integer quantityObj = cartQuantities.get(item.getName());
             int quantity = (quantityObj != null) ? quantityObj : 0;
-            View layoutCartActions = holder.itemView.findViewById(R.id.layoutCartActionsPsu) != null ?
-                holder.itemView.findViewById(R.id.layoutCartActionsPsu) : holder.itemView.findViewById(R.id.layoutCartActions);
+            View layoutCartActions = holder.itemView.findViewById(
+                    R.id.layoutCartActionsPsu) != null ? holder.itemView.findViewById(
+                    R.id.layoutCartActionsPsu) : holder.itemView.findViewById(
+                    R.id.layoutCartActions);
             Button addToCartButton = holder.itemView.findViewById(R.id.buttonAddToCart);
-            ImageButton buttonAddMoreToCart = holder.itemView.findViewById(R.id.buttonAddMoreToCartPsu) != null ?
-                holder.itemView.findViewById(R.id.buttonAddMoreToCartPsu) : holder.itemView.findViewById(R.id.buttonAddMoreToCart);
-            ImageButton buttonRemoveFromCart = holder.itemView.findViewById(R.id.buttonRemoveFromCartPsu) != null ?
-                holder.itemView.findViewById(R.id.buttonRemoveFromCartPsu) : holder.itemView.findViewById(R.id.buttonRemoveFromCart);
-            TextView textQuantity = holder.itemView.findViewById(R.id.textQuantityPsu) != null ?
-                holder.itemView.findViewById(R.id.textQuantityPsu) : holder.itemView.findViewById(R.id.textQuantity);
+            ImageButton buttonAddMoreToCart = holder.itemView.findViewById(
+                    R.id.buttonAddMoreToCartPsu) != null ? holder.itemView.findViewById(
+                    R.id.buttonAddMoreToCartPsu) : holder.itemView.findViewById(
+                    R.id.buttonAddMoreToCart);
+            ImageButton buttonRemoveFromCart = holder.itemView.findViewById(
+                    R.id.buttonRemoveFromCartPsu) != null ? holder.itemView.findViewById(
+                    R.id.buttonRemoveFromCartPsu) : holder.itemView.findViewById(
+                    R.id.buttonRemoveFromCart);
+            TextView textQuantity = holder.itemView.findViewById(
+                    R.id.textQuantityPsu) != null ? holder.itemView.findViewById(
+                    R.id.textQuantityPsu) : holder.itemView.findViewById(R.id.textQuantity);
 
-            if (addToCartButton != null && layoutCartActions != null) {
-                if (quantity > 0) {
+            if (addToCartButton != null && layoutCartActions != null)
+            {
+                if (quantity > 0)
+                {
                     addToCartButton.setVisibility(View.GONE);
                     layoutCartActions.setVisibility(View.VISIBLE);
-                } else {
+                }
+                else
+                {
                     addToCartButton.setVisibility(View.VISIBLE);
                     layoutCartActions.setVisibility(View.GONE);
                 }
             }
-            if (textQuantity != null) {
+            if (textQuantity != null)
+            {
                 textQuantity.setText(String.valueOf(quantity));
             }
-            if (addToCartButton != null) {
-                addToCartButton.setOnClickListener(v -> {
-                    if (addToCartClickListener != null) {
-                        addToCartClickListener.onAddToCart(item);
+            if (addToCartButton != null)
+            {
+                addToCartButton.setOnClickListener(v ->
+                    {
+                        if (addToCartClickListener != null)
+                        {
+                            addToCartClickListener.onAddToCart(item);
+                            notifyItemChanged(holder.getBindingAdapterPosition());
+                        }
+                    });
+            }
+            if (buttonAddMoreToCart != null)
+            {
+                buttonAddMoreToCart.setOnClickListener(v ->
+                    {
+                        if (addToCartClickListener != null)
+                        {
+                            addToCartClickListener.onAddToCart(item);
+                            notifyItemChanged(holder.getBindingAdapterPosition());
+                        }
+                    });
+            }
+            if (buttonRemoveFromCart != null)
+            {
+                buttonRemoveFromCart.setOnClickListener(v ->
+                    {
+                        if (removeFromCartClickListener != null)
+                        {
+                            removeFromCartClickListener.onRemoveFromCart(item);
+                            notifyItemChanged(holder.getBindingAdapterPosition());
+                        }
+                    });
+            }
+            holder.itemView.setOnClickListener(v ->
+                {
+                    if (itemClickListener != null)
+                    {
+                        itemClickListener.onItemClick(item);
                     }
                 });
-            }
-            if (buttonAddMoreToCart != null) {
-                buttonAddMoreToCart.setOnClickListener(v -> {
-                    if (addToCartClickListener != null) {
-                        addToCartClickListener.onAddToCart(item);
-                    }
-                });
-            }
-            if (buttonRemoveFromCart != null) {
-                buttonRemoveFromCart.setOnClickListener(v -> {
-                    if (removeFromCartClickListener != null) {
-                        removeFromCartClickListener.onRemoveFromCart(item);
-                    }
-                });
-            }
-            holder.itemView.setOnClickListener(v -> {
-                if (itemClickListener != null) {
-                    itemClickListener.onItemClick(item);
-                }
-            });
-            if (holder.psuImage != null) {
+            if (holder.psuImage != null)
+            {
                 String url = item.getImageUrl() != null ? item.getImageUrl() : "";
                 Glide.with(holder.itemView.getContext()).load(url).placeholder(
                         R.drawable.ic_psu_placeholder).centerCrop().into(holder.psuImage);
             }
         }
-    }
+        }
 
     @Override
-    public int getItemCount() {
+    public int getItemCount()
+        {
         return psuList.size();
-    }
+        }
 
-    public void setPsuList(List<PsuItem> newList) {
-        androidx.recyclerview.widget.DiffUtil.DiffResult diffResult = androidx.recyclerview.widget.DiffUtil.calculateDiff(new androidx.recyclerview.widget.DiffUtil.Callback() {
-            @Override
-            public int getOldListSize() {
-                return psuList.size();
-            }
-            @Override
-            public int getNewListSize() {
-                return newList.size();
-            }
-            @Override
-            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                PsuItem oldItem = psuList.get(oldItemPosition);
-                PsuItem newItem = newList.get(newItemPosition);
-                return oldItem.getName().equals(newItem.getName());
-            }
-            @Override
-            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                PsuItem oldItem = psuList.get(oldItemPosition);
-                PsuItem newItem = newList.get(newItemPosition);
-                return oldItem.equals(newItem);
-            }
-        });
+    public void setPsuList(List<PsuItem> newList)
+        {
+        androidx.recyclerview.widget.DiffUtil.DiffResult diffResult = androidx.recyclerview.widget.DiffUtil.calculateDiff(
+                new androidx.recyclerview.widget.DiffUtil.Callback()
+                    {
+                    @Override
+                    public int getOldListSize()
+                        {
+                        return psuList.size();
+                        }
+
+                    @Override
+                    public int getNewListSize()
+                        {
+                        return newList.size();
+                        }
+
+                    @Override
+                    public boolean areItemsTheSame(int oldItemPosition, int newItemPosition)
+                        {
+                        PsuItem oldItem = psuList.get(oldItemPosition);
+                        PsuItem newItem = newList.get(newItemPosition);
+                        return oldItem.getName().equals(newItem.getName());
+                        }
+
+                    @Override
+                    public boolean areContentsTheSame(int oldItemPosition, int newItemPosition)
+                        {
+                        PsuItem oldItem = psuList.get(oldItemPosition);
+                        PsuItem newItem = newList.get(newItemPosition);
+                        return oldItem.equals(newItem);
+                        }
+                    });
         psuList.clear();
         psuList.addAll(newList);
         diffResult.dispatchUpdatesTo(this);
-    }
+        }
 
-    public static class PsuViewHolder extends RecyclerView.ViewHolder {
+    public static class PsuViewHolder extends RecyclerView.ViewHolder
+        {
         TextView name, price;
         Button addToCartButton;
         ImageButton buttonRemoveFromCart;
@@ -232,7 +297,8 @@ public class PsuAdapter extends RecyclerView.Adapter<PsuAdapter.PsuViewHolder>
         View layoutCartActions;
         ImageView psuImage;
 
-        public PsuViewHolder(@NonNull View itemView) {
+        public PsuViewHolder(@NonNull View itemView)
+            {
             super(itemView);
             name = itemView.findViewById(R.id.psuName);
             price = itemView.findViewById(R.id.psuPrice);
@@ -241,12 +307,14 @@ public class PsuAdapter extends RecyclerView.Adapter<PsuAdapter.PsuViewHolder>
             buttonAddMoreToCart = itemView.findViewById(R.id.buttonAddMoreToCart);
             layoutCartActions = itemView.findViewById(R.id.layoutCartActions);
             psuImage = itemView.findViewById(R.id.psuImage);
+            }
         }
-    }
 
-    static class ViewMoreViewHolder extends PsuViewHolder {
-        public ViewMoreViewHolder(@NonNull View itemView) {
+    static class ViewMoreViewHolder extends PsuViewHolder
+        {
+        public ViewMoreViewHolder(@NonNull View itemView)
+            {
             super(itemView);
+            }
         }
     }
-}

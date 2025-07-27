@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.windriver.pcgate.R;
 import com.windriver.pcgate.adapter.MemoryAdapter;
 import com.windriver.pcgate.adapter.MemoryAdapter.OnAddToCartClickListener;
-import com.windriver.pcgate.model.MemoryItem;
+import com.windriver.pcgate.model.firebaseItems.MemoryItem;
 import com.windriver.pcgate.ui.cart.CartItem;
 import com.windriver.pcgate.ui.cart.CartViewModel;
 
@@ -61,37 +61,56 @@ public class AllMemoryDialog extends DialogFragment
                 intent.putExtra("color", item.getColor());
                 intent.putExtra("cas_latency", item.getCasLatency());
                 intent.putExtra("first_word_latency", item.getFirstWordLatency());
-                intent.putIntegerArrayListExtra("modules", new java.util.ArrayList<>(item.getModules()));
-                intent.putIntegerArrayListExtra("speed", new java.util.ArrayList<>(item.getSpeed()));
+                intent.putIntegerArrayListExtra("modules",
+                        new java.util.ArrayList<>(item.getModules()));
+                intent.putIntegerArrayListExtra("speed",
+                        new java.util.ArrayList<>(item.getSpeed()));
                 startActivity(intent);
             });
-        adapter.setOnRemoveFromCartClickListener(item -> {
-            double priceValue = 0.0;
-            try { priceValue = Double.parseDouble(String.valueOf(item.getPrice())); } catch (Exception ignored) {}
-            java.util.List<CartItem> current = cartViewModel.getCartItems().getValue();
-            if (current != null) {
-                for (CartItem ci : current) {
-                    if (ci.getName().equals(item.getName())) {
-                        int newQty = ci.getQuantity() - 1;
-                        if (newQty > 0) {
-                            cartViewModel.addItem(new CartItem(item.getName(), priceValue, -1));
-                        } else {
-                            cartViewModel.addItem(new CartItem(item.getName(), priceValue, -ci.getQuantity()));
+        adapter.setOnRemoveFromCartClickListener(item ->
+            {
+                double priceValue = 0.0;
+                try
+                {
+                    priceValue = Double.parseDouble(String.valueOf(item.getPrice()));
+                }
+                catch (Exception ignored)
+                {
+                }
+                java.util.List<CartItem> current = cartViewModel.getCartItems().getValue();
+                if (current != null)
+                {
+                    for (CartItem ci : current)
+                    {
+                        if (ci.getName().equals(item.getName()))
+                        {
+                            int newQty = ci.getQuantity() - 1;
+                            if (newQty > 0)
+                            {
+                                cartViewModel.addItem(new CartItem(item.getName(), priceValue, -1));
+                            }
+                            else
+                            {
+                                cartViewModel.addItem(new CartItem(item.getName(), priceValue,
+                                        -ci.getQuantity()));
+                            }
+                            break;
                         }
-                        break;
                     }
                 }
-            }
-        });
-        cartViewModel.getCartItems().observe(getViewLifecycleOwner(), items -> {
-            java.util.Map<String, Integer> qtys = new java.util.HashMap<>();
-            if (items != null) {
-                for (CartItem ci : items) {
-                    qtys.put(ci.getName(), ci.getQuantity());
+            });
+        cartViewModel.getCartItems().observe(getViewLifecycleOwner(), items ->
+            {
+                java.util.Map<String, Integer> qtys = new java.util.HashMap<>();
+                if (items != null)
+                {
+                    for (CartItem ci : items)
+                    {
+                        qtys.put(ci.getName(), ci.getQuantity());
+                    }
                 }
-            }
-            adapter.setCartQuantities(qtys);
-        });
+                adapter.setCartQuantities(qtys);
+            });
         recyclerView.setAdapter(adapter);
         View backButton = view.findViewById(R.id.buttonBack);
         if (backButton != null)

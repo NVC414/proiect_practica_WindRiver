@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.windriver.pcgate.R;
 import com.windriver.pcgate.adapter.CpuAdapter;
-import com.windriver.pcgate.model.CpuItem;
+import com.windriver.pcgate.model.firebaseItems.CpuItem;
 import com.windriver.pcgate.ui.cart.CartItem;
 import com.windriver.pcgate.ui.cart.CartViewModel;
 
@@ -48,7 +48,8 @@ public class AllCpusDialog extends DialogFragment
         }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
+        {
         super.onViewCreated(view, savedInstanceState);
         RecyclerView recyclerView = view.findViewById(R.id.allCpusRecyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 3));
@@ -56,48 +57,63 @@ public class AllCpusDialog extends DialogFragment
         CpuAdapter adapter = new CpuAdapter(allCpus, R.layout.item_cpu_grid);
 
         adapter.setOnAddToCartClickListener(addToCartClickListener);
-        adapter.setOnRemoveFromCartClickListener(item -> {
-            java.util.List<CartItem> current = cartViewModel.getCartItems().getValue();
-            if (current != null) {
-                for (CartItem ci : current) {
-                    if (ci.getName().equals(item.getName())) {
-                        int newQty = ci.getQuantity() - 1;
-                        if (newQty > 0) {
-                            cartViewModel.addItem(new CartItem(item.getName(), item.getPrice(), -1));
-                        } else {
-                            cartViewModel.addItem(new CartItem(item.getName(), item.getPrice(), -ci.getQuantity()));
+        adapter.setOnRemoveFromCartClickListener(item ->
+            {
+                java.util.List<CartItem> current = cartViewModel.getCartItems().getValue();
+                if (current != null)
+                {
+                    for (CartItem ci : current)
+                    {
+                        if (ci.getName().equals(item.getName()))
+                        {
+                            int newQty = ci.getQuantity() - 1;
+                            if (newQty > 0)
+                            {
+                                cartViewModel.addItem(
+                                        new CartItem(item.getName(), item.getPrice(), -1));
+                            }
+                            else
+                            {
+                                cartViewModel.addItem(new CartItem(item.getName(), item.getPrice(),
+                                        -ci.getQuantity()));
+                            }
+                            break;
                         }
-                        break;
                     }
                 }
-            }
-        });
-        adapter.setOnAddMoreToCartClickListener(item -> cartViewModel.addItem(new CartItem(item.getName(), item.getPrice(), 1)));
-        adapter.setOnItemClickListener(item -> {
-            android.content.Intent intent = new android.content.Intent(requireContext(), com.windriver.pcgate.ui.detailView.CpuDetailsActivity.class);
-            intent.putExtra("name", item.getName());
-            intent.putExtra("price", item.getPrice());
-            intent.putExtra("imageUrl", item.getImageUrl());
-            intent.putExtra("boostClock", item.getBoostClock());
-            intent.putExtra("coreClock", item.getCoreClock());
-            intent.putExtra("coreCount", item.getCoreCount());
-            intent.putExtra("graphics", item.getGraphics());
-            intent.putExtra("smt", item.isSmt());
-            intent.putExtra("socket", item.getSocket());
-            intent.putExtra("tdp", item.getTdp());
-            startActivity(intent);
-        });
-        cartViewModel.getCartItems().observe(getViewLifecycleOwner(), items -> {
-            java.util.Map<String, Integer> qtys = new java.util.HashMap<>();
-            if (items != null) {
-                for (CartItem ci : items) {
-                    qtys.put(ci.getName(), ci.getQuantity());
+            });
+        adapter.setOnAddMoreToCartClickListener(
+                item -> cartViewModel.addItem(new CartItem(item.getName(), item.getPrice(), 1)));
+        adapter.setOnItemClickListener(item ->
+            {
+                android.content.Intent intent = new android.content.Intent(requireContext(),
+                        com.windriver.pcgate.ui.detailView.CpuDetailsActivity.class);
+                intent.putExtra("name", item.getName());
+                intent.putExtra("price", item.getPrice());
+                intent.putExtra("imageUrl", item.getImageUrl());
+                intent.putExtra("boostClock", item.getBoostClock());
+                intent.putExtra("coreClock", item.getCoreClock());
+                intent.putExtra("coreCount", item.getCoreCount());
+                intent.putExtra("graphics", item.getGraphics());
+                intent.putExtra("smt", item.isSmt());
+                intent.putExtra("socket", item.getSocket());
+                intent.putExtra("tdp", item.getTdp());
+                startActivity(intent);
+            });
+        cartViewModel.getCartItems().observe(getViewLifecycleOwner(), items ->
+            {
+                java.util.Map<String, Integer> qtys = new java.util.HashMap<>();
+                if (items != null)
+                {
+                    for (CartItem ci : items)
+                    {
+                        qtys.put(ci.getName(), ci.getQuantity());
+                    }
                 }
-            }
-            adapter.setCartQuantities(qtys);
-        });
+                adapter.setCartQuantities(qtys);
+            });
         recyclerView.setAdapter(adapter);
-    }
+        }
 
     @Override
     public void onStart()

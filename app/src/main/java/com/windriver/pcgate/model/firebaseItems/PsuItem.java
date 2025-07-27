@@ -1,4 +1,4 @@
-package com.windriver.pcgate.model;
+package com.windriver.pcgate.model.firebaseItems;
 
 
 import lombok.AllArgsConstructor;
@@ -8,7 +8,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PsuItem {
+public class PsuItem
+    {
     private String name;
     private String price;
     private String imageUrl;
@@ -17,7 +18,7 @@ public class PsuItem {
     private String modular;
     private String type;
     private int wattage;
-}
+    }
 
 /*
 public class PsuItem {

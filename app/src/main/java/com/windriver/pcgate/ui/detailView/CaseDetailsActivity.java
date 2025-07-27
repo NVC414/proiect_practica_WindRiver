@@ -47,7 +47,7 @@ public class CaseDetailsActivity extends AppCompatActivity
         TextView caseInternal35Bays = findViewById(R.id.caseInternal35Bays);
         TextView caseExternalVolume = findViewById(R.id.caseExternalVolume);
         Button addToCartButton = findViewById(R.id.buttonAddToCart);
-            ImageButton backButton = findViewById(R.id.buttonBack);
+        ImageButton backButton = findViewById(R.id.buttonBack);
         android.view.View layoutCartActions = findViewById(R.id.layoutCartActions);
         ImageButton buttonRemoveFromCart = findViewById(R.id.buttonRemoveFromCart);
         ImageButton buttonAddMoreToCart = findViewById(R.id.buttonAddMoreToCart);
@@ -74,9 +74,9 @@ public class CaseDetailsActivity extends AppCompatActivity
                 int quantity = 0;
                 try
                 {
-                    if (price != null) {
-                        Double.parseDouble(
-                                price.replaceAll("[^0-9.]", ""));
+                    if (price != null)
+                    {
+                        Double.parseDouble(price.replaceAll("[^0-9.]", ""));
                     }
                 }
                 catch (Exception ignored)

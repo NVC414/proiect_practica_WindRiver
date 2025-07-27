@@ -41,7 +41,8 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         {
         int size = messages.size();
         messages.clear();
-        if (size > 0) {
+        if (size > 0)
+        {
             notifyItemRangeRemoved(0, size);
         }
         }

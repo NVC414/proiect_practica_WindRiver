@@ -12,15 +12,17 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.windriver.pcgate.R;
 import com.windriver.pcgate.ui.cart.CartItem;
 import com.windriver.pcgate.ui.cart.CartViewModel;
-import com.bumptech.glide.Glide;
 
-public class PsuDetailsActivity extends AppCompatActivity {
+public class PsuDetailsActivity extends AppCompatActivity
+    {
     @SuppressLint("SetTextI18n")
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState)
+        {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_psu_details);
 
@@ -62,69 +64,98 @@ public class PsuDetailsActivity extends AppCompatActivity {
 
         CartViewModel cartViewModel = CartViewModel.getInstance();
 
-        Runnable updateCartUI = () -> {
-            java.util.List<CartItem> items = cartViewModel.getCartItems().getValue();
-            int quantity = 0;
-            if (items != null) {
-                for (CartItem item : items) {
-                    if (item.getName().equals(name)) {
-                        quantity = item.getQuantity();
-                        break;
+        Runnable updateCartUI = () ->
+            {
+                java.util.List<CartItem> items = cartViewModel.getCartItems().getValue();
+                int quantity = 0;
+                if (items != null)
+                {
+                    for (CartItem item : items)
+                    {
+                        if (item.getName().equals(name))
+                        {
+                            quantity = item.getQuantity();
+                            break;
+                        }
                     }
                 }
-            }
-            if (quantity > 0) {
-                addToCartButton.setVisibility(android.view.View.GONE);
-                layoutCartActions.setVisibility(android.view.View.VISIBLE);
-                textQuantity.setText(String.valueOf(quantity));
-            } else {
-                addToCartButton.setVisibility(android.view.View.VISIBLE);
-                layoutCartActions.setVisibility(android.view.View.GONE);
-            }
-        };
+                if (quantity > 0)
+                {
+                    addToCartButton.setVisibility(android.view.View.GONE);
+                    layoutCartActions.setVisibility(android.view.View.VISIBLE);
+                    textQuantity.setText(String.valueOf(quantity));
+                }
+                else
+                {
+                    addToCartButton.setVisibility(android.view.View.VISIBLE);
+                    layoutCartActions.setVisibility(android.view.View.GONE);
+                }
+            };
         cartViewModel.getCartItems().observe(this, items -> updateCartUI.run());
         updateCartUI.run();
 
-        addToCartButton.setOnClickListener(v -> {
-            double priceValue = 0.0;
-            try {
-                priceValue = price != null ? Double.parseDouble(
-                        price.replaceAll("[^0-9.]", "")) : 0.0;
-            } catch (Exception ignored) {}
-            CartItem cartItem = new CartItem(name, priceValue, 1);
-            cartViewModel.addItem(cartItem);
-            Toast.makeText(this, "Added to cart", Toast.LENGTH_SHORT).show();
-        });
-        buttonAddMoreToCart.setOnClickListener(v -> {
-            double priceValue = 0.0;
-            try {
-                priceValue = price != null ? Double.parseDouble(
-                        price.replaceAll("[^0-9.]", "")) : 0.0;
-            } catch (Exception ignored) {}
-            CartItem cartItem = new CartItem(name, priceValue, 1);
-            cartViewModel.addItem(cartItem);
-        });
-        buttonRemoveFromCart.setOnClickListener(v -> {
-            java.util.List<CartItem> items = cartViewModel.getCartItems().getValue();
-            double priceValue = 0.0;
-            try {
-                priceValue = price != null ? Double.parseDouble(
-                        price.replaceAll("[^0-9.]", "")) : 0.0;
-            } catch (Exception ignored) {}
-            if (items != null) {
-                for (CartItem item : items) {
-                    if (item.getName().equals(name)) {
-                        int newQty = item.getQuantity() - 1;
-                        if (newQty > 0) {
-                            cartViewModel.addItem(new CartItem(name, priceValue, -1));
-                        } else {
-                            cartViewModel.addItem(new CartItem(name, priceValue, -item.getQuantity()));
+        addToCartButton.setOnClickListener(v ->
+            {
+                double priceValue = 0.0;
+                try
+                {
+                    priceValue = price != null ? Double.parseDouble(
+                            price.replaceAll("[^0-9.]", "")) : 0.0;
+                }
+                catch (Exception ignored)
+                {
+                }
+                CartItem cartItem = new CartItem(name, priceValue, 1);
+                cartViewModel.addItem(cartItem);
+                Toast.makeText(this, "Added to cart", Toast.LENGTH_SHORT).show();
+            });
+        buttonAddMoreToCart.setOnClickListener(v ->
+            {
+                double priceValue = 0.0;
+                try
+                {
+                    priceValue = price != null ? Double.parseDouble(
+                            price.replaceAll("[^0-9.]", "")) : 0.0;
+                }
+                catch (Exception ignored)
+                {
+                }
+                CartItem cartItem = new CartItem(name, priceValue, 1);
+                cartViewModel.addItem(cartItem);
+            });
+        buttonRemoveFromCart.setOnClickListener(v ->
+            {
+                java.util.List<CartItem> items = cartViewModel.getCartItems().getValue();
+                double priceValue = 0.0;
+                try
+                {
+                    priceValue = price != null ? Double.parseDouble(
+                            price.replaceAll("[^0-9.]", "")) : 0.0;
+                }
+                catch (Exception ignored)
+                {
+                }
+                if (items != null)
+                {
+                    for (CartItem item : items)
+                    {
+                        if (item.getName().equals(name))
+                        {
+                            int newQty = item.getQuantity() - 1;
+                            if (newQty > 0)
+                            {
+                                cartViewModel.addItem(new CartItem(name, priceValue, -1));
+                            }
+                            else
+                            {
+                                cartViewModel.addItem(
+                                        new CartItem(name, priceValue, -item.getQuantity()));
+                            }
+                            break;
                         }
-                        break;
                     }
                 }
-            }
-        });
+            });
         backButton.setOnClickListener(v -> finish());
+        }
     }
-}

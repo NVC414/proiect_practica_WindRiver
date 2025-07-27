@@ -59,7 +59,7 @@ public class CartRepository
                 int newQty = cartItem.getQuantity() + item.getQuantity();
                 if (newQty > 0)
                 {
-                    cartItem.setQuantity(newQty);
+                    cartItems.set(i, new CartItem(cartItem.getName(), cartItem.getPrice(), newQty));
                 }
                 else
                 {

@@ -8,8 +8,7 @@
     android:padding="24dp"
     style="@style/ScreenBackground"
     android:background="@color/background"
-    tools:context=".ui.LoginRegister.Register.Register_activity2"
-    >
+    tools:context=".ui.loginRegister.register.Register_activity2">
 
 
     <TextView
@@ -55,10 +54,11 @@
         android:layout_marginTop="32dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/back_arrow"
-        app:tint="@color/white" />
+        app:tint="@android:color/white" />
 
     <LinearLayout
         android:id="@+id/linearLayout3"
@@ -78,7 +78,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="0dp"
             android:layout_marginTop="10dp"
-            android:text="Choose Gender"
+            android:text="@string/choose_gender"
             android:textColor="@color/on_background"
             android:textSize="18sp"
 
@@ -120,7 +120,7 @@
             android:layout_height="4dp"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
-            android:background="@color/dark_grey" />
+            android:background="@color/surface" />
 
         <TextView
             android:id="@+id/Agetext"
@@ -154,7 +154,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:layout_marginBottom="8dp"
-        android:textColorHint="@color/white"
+        android:textColorHint="@android:color/white"
         app:boxBackgroundMode="outline"
         app:boxCornerRadiusBottomEnd="12dp"
         app:boxCornerRadiusBottomStart="12dp"
@@ -165,19 +165,19 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/linearLayout3"
         app:startIconDrawable="@drawable/pencil"
-        app:startIconTint="@color/white">
+        app:startIconTint="@android:color/white">
 
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/Occupation"
-        style="@style/TextColor"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/what_s_your_occupation"
-        android:paddingBottom="20dp"
-        android:gravity="center"
-        android:inputType="textPersonName"
-        android:singleLine="true"
-        android:textColorHint="@color/white" />
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/Occupation"
+            style="@style/TextColor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/what_s_your_occupation"
+            android:paddingBottom="20dp"
+            android:gravity="center"
+            android:inputType="textPersonName"
+            android:singleLine="true"
+            android:textColorHint="@android:color/white" />
 
     </com.google.android.material.textfield.TextInputLayout>
 

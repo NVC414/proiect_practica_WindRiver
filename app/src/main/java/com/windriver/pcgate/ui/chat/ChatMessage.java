@@ -12,7 +12,7 @@ public abstract class ChatMessage
         this.text = text;
         }
 
-        public static class UserMessage extends ChatMessage
+    public static class UserMessage extends ChatMessage
         {
         public UserMessage(String text)
             {

@@ -316,8 +316,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.84000003"
         app:tint="@color/on_primary"
-        app:srcCompat="@drawable/ic_gemini_chat"
-        />
-        <!-- -->
+        app:srcCompat="@drawable/ic_gemini_chat" />
+    <!-- -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
