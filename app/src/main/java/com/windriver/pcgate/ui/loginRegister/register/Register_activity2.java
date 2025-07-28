@@ -3,6 +3,7 @@ package com.windriver.pcgate.ui.loginRegister.register;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -26,6 +27,7 @@ public class Register_activity2 extends AppCompatActivity
     RadioGroup radioGroupGender; // Renamed for clarity
     // selectedGender RadioButton is only needed locally in onClick
     DatePicker datePickerAge; // Renamed for clarity
+    CheckBox checkboxTerms; // Reference to the terms checkbox
 
     // Variables to hold data passed from Register_activity1
     String emailFromReg1, nameFromReg1, phoneFromReg1, usernameFromReg1, uidFromReg1;
@@ -55,6 +57,16 @@ public class Register_activity2 extends AppCompatActivity
         textViewsOccupation = findViewById(R.id.Occupation); // Or use EditText if it's an EditText
 
         buttonNext = findViewById(R.id.next_button);
+        checkboxTerms = findViewById(R.id.checkbox_terms);
+        // Initially disable the Next button and set transparency
+        buttonNext.setEnabled(false);
+        buttonNext.setAlpha(0.5f);
+
+        checkboxTerms.setOnCheckedChangeListener((buttonView, isChecked) ->
+            {
+                buttonNext.setEnabled(isChecked);
+                buttonNext.setAlpha(isChecked ? 1.0f : 0.5f);
+            });
 
         buttonNext.setOnClickListener(view ->
             {
